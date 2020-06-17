@@ -20,7 +20,7 @@ module.exports = {
           position: 'left',
         },
         {
-          href: 'https://www.etesync.com/community-chat/',
+          href: 'https://www.etebase.com/community-chat/',
           label: 'Chat',
           position: 'left',
         },
@@ -77,6 +77,9 @@ module.exports = {
       ],
       copyright: `Copyright © EteSync Ltd`,
     },
+    prism: {
+      theme: require('prism-react-renderer/themes/dracula'),
+    },
   },
   presets: [
     [
@@ -85,7 +88,7 @@ module.exports = {
         docs: {
           routeBasePath: '/',
           // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: 'doc1',
+          homePageId: 'introduction',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
             'https://github.com/etesync/etebase-docs/edit/master/website/',

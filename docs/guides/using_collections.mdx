@@ -1,0 +1,24 @@
+---
+title: Using Collections
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+export function CodeTabs({ children }) {
+    return (
+        <Tabs
+          defaultValue="js"
+          groupId="programming-language"
+          values={[
+            { label: 'JavaScript', value: 'js', },
+          ]
+        }>
+        {children}
+        </Tabs>
+    );
+}
+
+
+This section assumes you have already read [the overview](../overview) and understand what are collections and what they are for.
+
