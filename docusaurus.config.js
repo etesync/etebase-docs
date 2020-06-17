@@ -26,7 +26,8 @@ module.exports = {
         },
         {
           href: 'https://github.com/etesync/etebase-docs',
-          label: 'Source Code',
+          className: 'header-github-link',
+          'aria-label': 'GitHub repository',
           position: 'right',
         },
       ],
