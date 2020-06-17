@@ -1,28 +1,32 @@
 module.exports = {
-  title: 'My Site',
-  tagline: 'The tagline of my site',
-  url: 'https://your-docusaurus-test-site.com',
+  title: 'Etebase',
+  tagline: 'The Etebase documentation',
+  url: 'https://docs.etebase.com',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'etesync',
+  projectName: 'etebase',
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: 'etebase',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'etebase logo',
         src: 'img/logo.svg',
       },
       links: [
         {
-          to: 'docs/',
-          activeBasePath: 'docs',
-          label: 'Docs',
+          href: 'https://www.etebase.com',
+          label: 'Website',
           position: 'left',
         },
         {
-          href: 'https://github.com/facebook/docusaurus',
-          label: 'GitHub',
+          href: 'https://www.etesync.com/community-chat/',
+          label: 'Chat',
+          position: 'left',
+        },
+        {
+          href: 'https://github.com/etesync/etebase-docs',
+          label: 'Source Code',
           position: 'right',
         },
       ],
@@ -64,17 +68,13 @@ module.exports = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: 'blog',
-            },
-            {
               label: 'GitHub',
               href: 'https://github.com/facebook/docusaurus',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © EteSync Ltd`,
     },
   },
   presets: [
@@ -82,12 +82,12 @@ module.exports = {
       '@docusaurus/preset-classic',
       {
         docs: {
+          routeBasePath: '/',
           // It is recommended to set document id as docs home page (`docs/` path).
           homePageId: 'doc1',
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
+            'https://github.com/etesync/etebase-docs/edit/master/website/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
