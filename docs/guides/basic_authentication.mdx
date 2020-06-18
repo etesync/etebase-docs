@@ -84,10 +84,10 @@ Saving and restoring a session is as simple as:
 
 ```js
 const etebase = await Etebase.Account.login("username", "password");
-const savedSession = etebase.save();
+const savedSession = await etebase.save();
 
 // Later on...
-const etebase = await Etebase.Account.load(savedSession);
+const etebase = await Etebase.Account.restore(savedSession);
 ```
 
 </TabItem>
