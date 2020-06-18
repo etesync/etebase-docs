@@ -20,5 +20,285 @@ export function CodeTabs({ children }) {
 }
 
 
-This section assumes you have already read [the overview](../overview) and understand what are collections and what they are for.
+This section assumes you have already read [the overview](../overview) and understand what collections are and what they are for.
 
+## Creating collections
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const etebase = await Etebase.Account.login("username", "password");
+const collectionManager = etebase.getCollectionManager();
+
+// Create, encrypt and upload a new collection
+const collection = await collectionManager.create(
+  {
+    type: "cyberdyne.calendar",
+    name: "Holidays",
+    description: "My holiday calendar",
+    color: "#23aabbff",
+  },
+  "" // Empty content
+);
+await collectionManager.upload(collection);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Fetching collections
+
+Fetching the list of collections is easy, and is the first step in any Etebase application, because collections contain the data.
+
+### Simple fetch
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const etebase = await Etebase.Account.login("username", "password");
+const collectionManager = etebase.getCollectionManager();
+
+const collections = await collectionManager.list();
+/*
+Collections:
+{
+  data: Etebase.Collection[], // Returned array of collections
+  stoken: string, // The sync token for this fetch
+  ... // More fields we'll cover later
+}
+*/
+```
+
+</TabItem>
+</CodeTabs>
+
+The number of returned collections is limited by default, and you can control this limit by passing a different limit parameter as we'll see in the next example:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const collections = await collectionManager.list({ limit: 50 });
+```
+
+</TabItem>
+</CodeTabs>
+
+### Only fetch changed changes
+
+We can use the `stoken` we have gotten in previous fetches to only return changed collections. A collection is considered changed if either it or any of its items have changed.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const stoken = "..."; // An stoken we got previously
+
+const collections = await collectionManager.list({ stoken });
+```
+
+</TabItem>
+</CodeTabs>
+
+### Fetch in chunks
+
+We can use a combination of limit and stoken to fetch the changes in chunks rather than all at once. This is more resistant to spotty internet connections, and means we can show data to users faster.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+let stoken = null;
+while (true) {
+  const collections = await collectionManager.list({ stoken, limit: 30 });
+  stoken = collections.stoken;
+
+  if (collections.data.length === 0) {
+    break;
+  }
+
+  processNewCollections(collections.data);
+}
+```
+
+</TabItem>
+</CodeTabs>
+
+Please note that if a collection is changed after it's been shown, it'll show again. XXX reword
+
+
+### Fetch by `uid`
+
+Sometimes we don't care about getting the whole list of collections, and we are just interested in fetching one collection based on its `uid`. We can do it like this:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const collection = await collectionManager.fetch(collectionUid);
+```
+
+</TabItem>
+</CodeTabs>
+
+Please note that if a collection is changed after it's been shown, it'll show again. XXX reword
+
+
+### Removed memberships
+
+When a collection is deleted it will be marked as deleted and signed so clients can verify it was really deleted by the owner rather than forged by the server.
+
+However, when a user loses access to a collection it's not marked as deleted. Instead, its `uid` is returned in a special list. Here is how it looks:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const stoken = "..."; // An stoken we got previously
+
+const collections = await collectionManager.list({ stoken });
+
+/*
+collections.removedMemberships is either undefined or a list of removed uids.
+*/
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Modifying and deleting collections
+
+Modifying collections is easy, it's just a matter of changing them and uploading them.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const meta = await collection.getMeta();
+await collection.setMeta({ ...meta, name: "New name" });
+
+await collectionManager.upload(collection);
+```
+
+</TabItem>
+</CodeTabs>
+
+Deleting is even easier:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+await collection.delete();
+
+await collectionManager.upload(collection);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Advanced uploads and transactions
+
+In the examples above we always uploaded the collections in a way that overwrote whatever is on the server, regardless if it has changed since we last fetched it, or not. While this is fine in many cases, in some cases you want to prevent that in order to ensure the consistency of data.
+
+### Transactions
+
+The easiest way to ensure consistency is just to use transactions. Transactions make sure that what we think is the most recent version, really is, and will fail otherwise.
+
+For example:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// -> On device A:
+const collection = await collectionManager.fetch(collectionUid);
+
+
+// -> On device B:
+const collection = await collectionManager.fetch(collectionUid);
+const meta = await collection.getMeta();
+await collection.setMeta({ ...meta, name: "New name" });
+
+await collectionManager.upload(collection);
+
+
+// -> On device A (using the previously saved collection)
+const meta = await collection.getMeta();
+await collection.setMeta({ ...meta, name: "Another name" });
+
+// Will fail
+await collectionManager.trannaction(collection);
+// Will succeed
+await collectionManager.upload(collection);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+### Using `stoken`
+
+Transactions will only fail if the collection itself has changed, but will not fail if one of its items has changed. In some cases we want to have collection-wide consistency and want to make sure nothing has changed.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// -> On device A:
+const collection = await collectionManager.fetch(collectionUid);
+
+
+// -> On device B:
+const collection = await collectionManager.fetch(collectionUid);
+const itemManager = await collectionManager.getItemManager();
+// Add a new item to tho collection (redacted for simplicity)
+await itemManager.batch(...);
+
+
+// -> On device A (using the previously saved collection)
+const stoken = collection.stoken;
+const meta = await collection.getMeta();
+await collection.setMeta({ ...meta, name: "Another name" });
+
+// Will both fail
+await collectionManager.trannaction(collection, { stoken });
+await collectionManager.upload(collection, { stoken });
+
+// Will both succeed
+await collectionManager.trannaction(collection);
+await collectionManager.upload(collection);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Binary content
+
+In the examples above content was always a string. However, content is actually a binary blob of data, not a string. Using it as a string is just a convenience.
+
+Here is how you can control the formatting of the data:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// default, returns a Uint8Array
+collection.getContent();
+// tries to convert the binary data to a string and returns that
+collection.getContent(Etebase.OutputFormat.String);
+
+// Sets the content to a binary blob
+collection.setContent(Uint8Array.from([72, 101, 108, 108, 111]));
+// Sets the content to a string
+collection.setContent("Hello");
+```
+
+</TabItem>
+</CodeTabs>

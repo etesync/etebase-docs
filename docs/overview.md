@@ -23,6 +23,8 @@ The metadata of items consists of the following fields:
 
 The type of the item. It uses a dotted notation, prefixed with a unique developer prefix followed with whatever you want. For example, if your developer name is _Cyberdyne_, example types could be: `cyberdyne.file`, `cyberdyne.image` or really, whatever you want.
 
+In addition to creating your own types, you can also use existing types as long as you follow their specifications.
+
 #### `name: string (optional)`
 
 An optional name for the item. If this item needs a user visible name, this is the place for it. This can be used, for example, for filenames.
@@ -42,9 +44,10 @@ The content of the item can be whatever you want. Internally it's treated like a
 
 ## Collections
 
-Collections are a collection of items. Like items, they also have their own metadata and content, and are also encrypted and signed. Collections can also be shared with other users and have associated access control.
+Collections are a collection of items. Like items, they also have their own metadata and content, and are also encrypted and signed. Unlike items, they also have an associated sync token (`stoken`) which indicates whether the collection or its items have changed.
 
-If you think of items as the equivalent of [inodes](https://en.wikipedia.org/wiki/Inode), then collections are the equivalent of filesystems.
+In addition to the above, collections can also be shared with other users and have associated access control. If you think of items as the equivalent of [inodes](https://en.wikipedia.org/wiki/Inode), then collections are the equivalent of filesystems.
+
 
 ### Metadata
 
@@ -53,6 +56,8 @@ The metadata of collections consists of the following fields:
 #### `type: string`
 
 The type of the item. It uses a dotted notation, prefixed with a unique developer prefix followed with whatever you want. For example, if your developer name is _Cyberdyne_, example types could be: `cyberdyne.files`, `cyberdyne.calendar` or really, whatever you want.
+
+In addition to creating your own types, you can also use existing types as long as you follow their specifications.
 
 #### `name: string`
 
@@ -74,6 +79,9 @@ A dictionary of arbitrary objects for extra, developer specific data. It's the s
 
 The content of the item can be whatever you want. Internally it's treated like a blob of data. In most cases you will just store your raw data here, but in some cases, such as when representing an hierarchical structure (such as directories), it's better to conform to the standard Etebase way of doing it.
 
+### Sync token (`stoken`)
+
+The collection also has an addition read-only field called `stoken`. It changes every time a collection or its items have changed, and can be used to efficiently fetch only changed entries, or to enforce collection-wide integrity.
 
 ## Revisions
 
