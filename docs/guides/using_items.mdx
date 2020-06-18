@@ -1,0 +1,372 @@
+---
+title: Using Items
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+export function CodeTabs({ children }) {
+    return (
+        <Tabs
+          defaultValue="js"
+          groupId="programming-language"
+          values={[
+            { label: 'JavaScript', value: 'js', },
+          ]
+        }>
+        {children}
+        </Tabs>
+    );
+}
+
+
+This section assumes you have already read [the overview](../overview) and understand what collections and items are and what each are for.
+
+Items are very similar to collections in how you interact with them, so this section may look familiar, especially if you just finished the previous one. However, there are some differences, especially when uploading data.
+
+
+## Perquisite: have a collection
+
+This section assumes you already have a collection created and uploaded. We already covered it in the previous section, but as a reminder:
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const etebase = await Etebase.Account.login("username", "password");
+const collectionManager = etebase.getCollectionManager();
+const collection = await collectionManager.create(
+  {
+    type: "cyberdyne.files",
+    name: "My files",
+    description: "A collection of files of different types",
+  },
+  ""
+);
+await collectionManager.upload(collection);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Creating items
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// We can reuse the collection and manager from above
+const collectionManager = ...;
+const collection = ...;
+
+// Similar to how we have collection manager
+const itemManager = collectionManager.getItemManager(collection);
+
+// Create, encrypt and upload a new item
+const item = await itemManager.create(
+  {
+    type: "cyberdyne.file",
+    name: "note.txt",
+    mtime: (new Date()).getTime(),
+  },
+  "My secret note",
+);
+await itemManager.batch([item]);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Fetching items
+
+Fetching items is very similar to fetching collections:
+
+### Simple fetch
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const itemManager = collectionManager.getItemManager(collection);
+const items = await itemManager.list();
+/*
+Items:
+{
+  data: Etebase.CollectionItem[], // Returned array of items
+  stoken: string, // The sync token for this fetch
+}
+*/
+```
+
+</TabItem>
+</CodeTabs>
+
+The number of returned items is limited by default, and you can control this limit by passing a different limit parameter as we'll see in the next example:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const items = await itemManager.list({ limit: 50 });
+```
+
+</TabItem>
+</CodeTabs>
+
+### Only fetch changed changes
+
+We can use the `stoken` we have gotten in previous fetches to only return changed items.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const stoken = "..."; // An stoken we got previously (items.stoken)
+
+const items = await itemManager.list({ stoken });
+```
+
+</TabItem>
+</CodeTabs>
+
+### Fetch in chunks
+
+We can use a combination of limit and stoken to fetch the changes in chunks rather than all at once. This is more resistant to spotty internet connections, and means we can show data to users faster.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+let stoken = null;
+while (true) {
+  const items = await itemManager.list({ stoken, limit: 30 });
+  stoken = items .stoken;
+
+  if (items.data.length === 0) {
+    break;
+  }
+
+  processNewItems(items.data);
+}
+```
+
+</TabItem>
+</CodeTabs>
+
+
+### Fetch by `uid`
+
+Sometimes we don't care about getting the whole list of collections, and we are just interested in fetching one collection based on its `uid`. We can do it like this:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const item = await itemManager.fetch(itemUid);
+
+// Can optionally pass stoken to only return the item if changed:
+const item = await itemManager.fetch(itemUid, { stoken });
+```
+
+</TabItem>
+</CodeTabs>
+
+
+### Fetch a group of items
+
+In addition to fetching all of the changes in a collection, you can also limit the fetching to only a specific subset of items. This is useful, for example, if your data is structured hierarchically (e.g. a directory tree), and you are only interested in refreshing the currently viewed directory.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const toFetch = [item1, item2, item3];
+const items = await itemManager.fetchUpdates(toFetch);
+
+// Can optionally pass stoken to limit to new changes
+const items = await itemManager.fetchUpdates(toFetch, { stoken });
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Modifying and deleting items
+
+Modifying items is easy, it's just a matter of changing them and uploading them.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+await item.setContent("new secret content");
+
+await itemManager.batch([item]);
+```
+
+</TabItem>
+</CodeTabs>
+
+Deleting is even easier:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+await item.delete();
+
+await itemManager.batch([item]);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Uploading multiple items
+
+As you saw in the previous examples, unlike the collection's `upload`, `batch` accepts an array of items. This can be used for uploading multiple items at once:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+await itemManager.batch([item1, item2, item3, ...]);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Advanced uploads and transactions
+
+In the examples above we always uploaded the items in a way that overwrote whatever is on the server, regardless if it has changed since we last fetched it, or not. While this is fine in many cases, in some cases you want to prevent that in order to ensure the consistency of data.
+
+### Transactions
+
+The easiest way to ensure consistency is just to use transactions. Transactions make sure that what we think is the most recent version, really is, and will fail otherwise. This consistency check is done across all of the items, and if one item fails the check, the whole transaction fails.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// -> On device A:
+const item1 = await.itemManager.fetch(itemUid1);
+const item2 = await.itemManager.fetch(itemUid2);
+
+
+// -> On device B:
+const item1 = await.itemManager.fetch(itemUid1);
+await item1.setContent("something else for item 1");
+await itemManager.batch([item1]);
+
+
+// -> On device A (using the previously saved collection)
+await item2.setContent("new content for item 2");
+
+// Will fail because item1 changed on device B
+await itemManager.transaction([item1, item2]);
+// Will succeed
+await itemManager.batch([item1, item2]);
+// Will succeed because item2 hasn't changed on device B
+await itemManager.transaction([item2]);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+### Using `stoken`
+
+Like with collections, transactions will only fail if the items themselves have changed, but will not fail if another item of the collection has changed. In some cases we want to have collection-wide consistency and want to make sure nothing has changed.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// -> On device A:
+const stoken = collection.stoken;
+const item1 = await.itemManager.fetch(itemUid1);
+
+
+// -> On device B:
+const anotherItem = await.itemManager.fetch(anotherItemUid);
+await anotherItem.setContent("content for another item");
+await itemManager.batch([anotherItem]);
+
+
+// -> On device A (using the previously saved items and stoken)
+await item.setContent("new secret content");
+
+// Will both fail
+await itemManager.transaction([item], null, { stoken });
+await itemManager.batch([item], null, { stoken });
+
+// Will both succeed
+await itemManager.transaction([item]);
+await itemManager.batch([item]);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+### Additional dependencies
+
+Sometimes we may want a `transaction` or `batch` upload to fail if some items have changed but not upload them. These are called dependencies and can be passed to both transactions and batches.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// -> On device A:
+const item1 = await.itemManager.fetch(itemUid1);
+const item2 = await.itemManager.fetch(itemUid2);
+
+
+// -> On device B:
+const item1 = await.itemManager.fetch(itemUid1);
+await item1.setContent("something else for item 1");
+await itemManager.batch([item1]);
+
+
+// -> On device A (using the previously saved items and stoken)
+await item2.setContent("new secret content");
+
+// Will both fail because item1 changed
+await itemManager.transaction([item2], [item1]);
+await itemManager.batch([item2], [item1]);
+
+// Can even use the item in both the list and deps in batch
+await item1.setContent("new secret content for item 1");
+// Will fail because item1 changed on device B
+await itemManager.batch([item1, item2], [item1]);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Binary content
+
+In the examples above content was always a string. However, content is actually a binary blob of data, not a string. Using it as a string is just a convenience.
+
+Here is how you can control the formatting of the data:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// default, returns a Uint8Array
+item.getContent();
+// tries to convert the binary data to a string and returns that
+item.getContent(Etebase.OutputFormat.String);
+
+// Sets the content to a binary blob
+item.setContent(Uint8Array.from([72, 101, 108, 108, 111]));
+// Sets the content to a string
+item.setContent("Hello");
+```
+
+</TabItem>
+</CodeTabs>

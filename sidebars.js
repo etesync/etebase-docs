@@ -9,6 +9,7 @@ module.exports = {
       Guides: [
         'guides/basic_authentication',
         'guides/using_collections',
+        'guides/using_items',
         'doc2',
         'doc3',
       ],
