@@ -1,0 +1,180 @@
+---
+title: Collection Sharing
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+export function CodeTabs({ children }) {
+    return (
+        <Tabs
+          defaultValue="js"
+          groupId="programming-language"
+          values={[
+            { label: 'JavaScript', value: 'js', },
+          ]
+        }>
+        {children}
+        </Tabs>
+    );
+}
+
+
+:::note
+In the future we will have more ways to share collections among users (e.g: [PAKE](https://en.wikipedia.org/wiki/Password-authenticated_key_agreement)), but until we do, the only way to sure is using [public-key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography) which is what this section is about.
+:::
+
+This section assumes you have already read the [collections](./using_collections) section and are familiar with collections.
+
+Collections can be shared among users for easy collaboration. This can be used for sharing files between users, editing a shared document, or giving others access to parts of your account (e.g. a calendar).
+
+## Getting your public key
+
+An important part of using public key cryptography is making sure the other side of the interaction is whoever you think it is. This can be achieved by verifying each-other's public key. Your public key, as the name implies, is public, so feel free to share it with others.
+
+Getting your public key:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const etebase = await Etebase.Account.login("username", "password");
+const invitationManager = new Etebase.CollectionInvitationManager(etebase);
+
+// You can now share your pubkey
+const myPubkey = collectionInvitationManager.pubkey;
+```
+
+</TabItem>
+</CodeTabs>
+
+## Sending invitations
+
+The first step towards sharing collections with other users is sending them an invitation. Only a collection admin can send an invitation, so make sure you are one before trying to invite users.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const invitationManager = new Etebase.CollectionInvitationManager(etebase);
+
+// Fetch their public key
+const user2 = await invitationManager.fetchUserProfile("username2");
+
+// Verify user2.pubkey is indeed the pubkey you expect.
+// This is done in a secure channel (e.g. encrypted chat or in person)
+
+// Assuming the pubkey is as expected, send the invitation
+await invitationManager.invite(collection, "username2", user2.pubkey,
+                               Etebase.CollectionAccessLevel.ReadOnly);
+```
+
+</TabItem>
+</CodeTabs>
+
+As you can see from the example above, when inviting a user you also set the wanted access level. Allowed values are: `Admin`, `ReadWrite`, and `ReadOnly`.
+
+
+## Responding to invitations
+
+In the previous example we sent an access invitation to `user2`. In this section we will see how to respond to these invitations.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// login as user2
+const etebase = await Etebase.Account.login("username2", "password");
+const invitationManager = new Etebase.CollectionInvitationManager(etebase);
+
+// List pending invitations
+const invitations = await invitationManager.listIncoming();
+const invitation = invitations.data[0]; // get first invitation
+
+// Verify the sender's pubkey is indeed the pubkey you expect.
+// This is done in a secure channel (e.g. encrypted chat or in person)
+const fromPubkey = invitation.fromPubkey;
+
+// We can now either accept
+await invitationManager.accept(invitation);
+// or reject the invitation:
+await invitationManager.reject(invitation);
+```
+
+</TabItem>
+</CodeTabs>
+
+## Leaving collections
+
+Sometimes a user may want to leave a collection he has been invited to. This can be done as follows:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const memberManager = new Etebase.CollectionMemberManager(etebase,
+  collectionManager, collection);
+
+await memberManager.leave();
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Controlling access
+
+Like with invitations, only collection admins can see who has access to a collection, modify access levels and revoke access altogether.
+
+### Listing collection members
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const memberManager = new Etebase.CollectionMemberManager(etebase,
+  collectionManager, collection);
+
+const members = await memberManager.list();
+
+// Print the users and their access levels
+for (const member of members) {
+  console.log(member.username, member.accessLevel);
+}
+```
+
+</TabItem>
+</CodeTabs>
+
+
+### Modifying access level
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const memberManager = new Etebase.CollectionMemberManager(etebase,
+  collectionManager, collection);
+
+const newAccessLevel = Etebase.CollectionAccessLevel.ReadWrite;
+await memberManager.modifyAccessLevel("username2", newAccessLevel);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+### Revoking access
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const memberManager = new Etebase.CollectionMemberManager(etebase,
+  collectionManager, collection);
+
+await memberManager.remove("username2");
+```
+
+</TabItem>
+</CodeTabs>
