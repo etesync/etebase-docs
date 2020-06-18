@@ -127,8 +127,6 @@ while (true) {
 </TabItem>
 </CodeTabs>
 
-Please note that if a collection is changed after it's been shown, it'll show again. XXX reword
-
 
 ### Fetch by `uid`
 
@@ -139,12 +137,13 @@ Sometimes we don't care about getting the whole list of collections, and we are 
 
 ```js
 const collection = await collectionManager.fetch(collectionUid);
+
+// Can optionally pass stoken to only return the collection if changed:
+const collection = await collectionManager.fetch(collectionUid, { stoken });
 ```
 
 </TabItem>
 </CodeTabs>
-
-Please note that if a collection is changed after it's been shown, it'll show again. XXX reword
 
 
 ### Removed memberships
@@ -256,7 +255,7 @@ const collection = await collectionManager.fetch(collectionUid);
 
 // -> On device B:
 const collection = await collectionManager.fetch(collectionUid);
-const itemManager = await collectionManager.getItemManager();
+const itemManager = collectionManager.getItemManager(collection);
 // Add a new item to tho collection (redacted for simplicity)
 await itemManager.batch(...);
 
