@@ -141,9 +141,9 @@ We can use a combination of limit and stoken to fetch the changes in chunks rath
 let stoken = null;
 while (true) {
   const items = await itemManager.list({ stoken, limit: 30 });
-  stoken = items .stoken;
+  stoken = items.stoken;
 
-  if (items.data.length === 0) {
+  if (!items.done) {
     break;
   }
 

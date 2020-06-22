@@ -116,7 +116,7 @@ while (true) {
   const collections = await collectionManager.list({ stoken, limit: 30 });
   stoken = collections.stoken;
 
-  if (collections.data.length === 0) {
+  if (!collections.done) {
     break;
   }
 
