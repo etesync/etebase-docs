@@ -48,6 +48,34 @@ const myPubkey = collectionInvitationManager.pubkey;
 </TabItem>
 </CodeTabs>
 
+### Pretty-print the public key
+
+You would almost always want users to compare public keys in a secure manner (usually phone, in-person, or secure chat).
+The following function formats the pubkey for you in a way that's easy for users to compare, so you don't have to figure it out yourself.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// The delimiter parameter is optional and defaults to "   "
+const delimiter = "   ";
+const prettyFingerprint = Etebase.getPrettyFingerprint(myPubkey, delimiter);
+
+console.log(prettyFingerprint);
+/* Output:
+59015   06339   15209   34335
+33325   43829   22169   46131
+39378   39949   54591   49756
+29874   56290   38212   30949
+*/
+```
+
+</TabItem>
+</CodeTabs>
+
+The format we use is similar to the one used by [Signal](https://signal.org). Please refer to [their post](https://signal.org/blog/safety-number-updates/) for more information about it.
+
+
 ## Sending invitations
 
 The first step towards sharing collections with other users is sending them an invitation. Only a collection admin can send an invitation, so make sure you are one before trying to invite users.
