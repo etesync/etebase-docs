@@ -206,3 +206,31 @@ await memberManager.remove("username2");
 
 </TabItem>
 </CodeTabs>
+
+
+## Iterating through responses
+
+Like with the rest of the Etebase API, list responses can be iterated through in smaller chunks.
+Here is how it's done for outgoing invitations, but the same can be done for incoming invitations and collection members.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const invitationManager = new Etebase.CollectionInvitationManager(etebase);
+
+let iterator = null;
+while (true) {
+  const items = await invitationManager.listOutgoing({ iterator, limit: 30 });
+  iterator = items.iterator;
+
+  if (!items.done) {
+    break;
+  }
+
+  processOutgoingInvitations(items.data);
+}
+```
+
+</TabItem>
+</CodeTabs>
