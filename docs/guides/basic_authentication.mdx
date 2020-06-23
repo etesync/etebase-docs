@@ -92,3 +92,25 @@ const etebase = await Etebase.Account.restore(savedSession);
 
 </TabItem>
 </CodeTabs>
+
+### Encrypting the stored session
+
+While the above works, it's advised to encrypt the stored session with a randomly generated key that is
+stored securely (e.g. in the operating system's key store), or securely derived from a user storage password.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const etebase = await Etebase.Account.login("username", "password");
+
+// Save the key somewhere safe (e.g. the OS's key store)
+const encryptionKey = Etebase.randomBytes(32);
+const savedSession = await etebase.save(encryptionKey);
+
+// Later on...
+const etebase = await Etebase.Account.restore(savedSession, encryptionKey);
+```
+
+</TabItem>
+</CodeTabs>
