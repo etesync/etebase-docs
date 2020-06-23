@@ -346,6 +346,65 @@ await itemManager.batch([item1, item2], [item1]);
 </TabItem>
 </CodeTabs>
 
+### Treating collections as items
+
+In the examples above we only covered consistency of items, but what happens if we want to ensure the collection itself is consistent with its items?
+One case where this is useful, is if your data is ordered hierarchically (e.g. as a tree) with the collection as the root.
+In this case, you will want to be able to create a child and have it added to the root node in the same transaction.
+
+In Etebase, collections are essentially just items with some extra data, so you can use collections directly as items with just a small difference.
+
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// A pre-existing collection and a few items:
+const collection = ...;
+const item1 = ...;
+const item2 = ...;
+
+// Get the item out of the collection
+const colItem = collection.item;
+
+// The collection item can then be used like any other item:
+await itemManager.transaction([colItem, item1], [item2]);
+await itemManager.transaction([item1, item2], [colItem]);
+await itemManager.batch([colItem, item1]);
+
+// In addition, these are true:
+assert((await collection.getMeta()) === (await colItem.getMeta()));
+assert((await collection.getContent()) === (await colItem.getContent()));
+```
+
+</TabItem>
+</CodeTabs>
+
+
+You can also fetch the collection as an item from all of the item API functions:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const itemManager = collectionManager.getItemManager(collection);
+
+// Will return the collection item as part of the list:
+const items = await itemManager.list({ withCollection: true });
+
+// Assuming the collection is the first item returned:
+const colItem = items.data[0];
+assert(colItem.uid === collection.uid);
+
+// You can also fetch collection items based on UID:
+const colItem = await itemManager.fetch(collection.uid);
+
+// Or fetch updates of the collection along with other items:
+const items = await itemManager.fetchUpdates([collection.item, item1]);
+```
+
+</TabItem>
+</CodeTabs>
 
 ## Binary content
 
