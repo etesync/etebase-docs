@@ -1,0 +1,64 @@
+---
+title: Utilities
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+export function CodeTabs({ children }) {
+    return (
+        <Tabs
+          defaultValue="js"
+          groupId="programming-language"
+          values={[
+            { label: 'JavaScript', value: 'js', },
+          ]
+        }>
+        {children}
+        </Tabs>
+    );
+}
+
+
+In addition to the main API, Etebase provides a few utility functions to make development easier
+
+
+## Base64
+
+[Base64](https://en.wikipedia.org/wiki/Base64) is a popular way to encode binary data to an ASCII string format, and is used throughout Etebase.
+We use the [URL-friendly variant](https://en.wikipedia.org/wiki/Base64#URL_applications) and provide functions to convert to and from it.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const binaryData = Uint8Array.from([1, 2, 3]);
+
+const b64encoded = Etebase.toBase64(binaryData);
+const decoded = Etebase.fromBase64(b64encoded);
+// decoded is equal to binaryData
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Random bytes
+
+Getting secure random data is at the core of almost every cryptographic operation.
+Etebase takes care of the cryptography for you so you won't often need to generate random data on your own, but for when you do:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// Wait for Etebase to be ready.
+// Note: if you already have an Account instance you don't need to manually wait.
+await Etebase.ready;
+
+// Generate 32 random bytes
+const randomData = Etebase.randomBytes(32);
+```
+
+</TabItem>
+</CodeTabs>

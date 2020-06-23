@@ -12,8 +12,9 @@ module.exports = {
         'guides/using_items',
         'guides/collection_sharing',
       ],
-      // 'API Reference': [
-      // ],
+      'API Reference': [
+        'api/utilities',
+      ],
     },
   ],
 };
