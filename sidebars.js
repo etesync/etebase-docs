@@ -11,6 +11,7 @@ module.exports = {
         'guides/using_collections',
         'guides/using_items',
         'guides/collection_sharing',
+        'guides/revisions',
       ],
       'API Reference': [
         'api/utilities',

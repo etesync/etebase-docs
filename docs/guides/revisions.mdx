@@ -1,0 +1,83 @@
+---
+title: Revision history
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+export function CodeTabs({ children }) {
+    return (
+        <Tabs
+          defaultValue="js"
+          groupId="programming-language"
+          values={[
+            { label: 'JavaScript', value: 'js', },
+          ]
+        }>
+        {children}
+        </Tabs>
+    );
+}
+
+
+Every time you change a collection or an item, a new revision is created in Etebase. Each revision is a snapshot of the collection or item at that point in time so you can easily view and rollback changes.
+
+This is very useful if you would like to offer a change history to your users, or even if you just want to make sure your data is never lost, even if you make a mistake.
+
+
+## Listing revisions
+
+Listing revisions returns normal items you can then manipulate like any others. The items are sorted newest to oldest and exclude the current revision.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const item = await itemManager.create(
+  { type: "cyberdyne.file", },
+  "First draft",
+);
+await itemManager.batch([item]);
+
+item.setContent("Second draft");
+await itemManager.batch([item]);
+
+const revisions = await itemManager.itemRevisions(item);
+assert(revisions.data.length === 1);
+
+// Revisions are normal items so we can use them as such
+const content = await revisions.data[0].getContent();
+assert(content === "First draft");
+
+
+// Collections are just items, so for collection revisions:
+const collectionRevisions = await itemManager.itemRevisions(collection.item);
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Iterating through revisions
+
+Like the rest of the API, revisions can be iterated over.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+let iterator = null;
+while (true) {
+  const revisions = await itemManager.itemRevisions(item, { iterator, limit: 5 });
+  iterator = revisions.iterator;
+
+  if (!revisions.done) {
+    break;
+  }
+
+  processRevisions(revisions.data);
+}
+```
+
+</TabItem>
+</CodeTabs>
