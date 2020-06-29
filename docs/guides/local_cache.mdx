@@ -1,0 +1,121 @@
+---
+title: Local Cache
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+export function CodeTabs({ children }) {
+    return (
+        <Tabs
+          defaultValue="js"
+          groupId="programming-language"
+          values={[
+            { label: 'JavaScript', value: 'js', },
+          ]
+        }>
+        {children}
+        </Tabs>
+    );
+}
+
+
+At this point you should already know how to create, edit, list and delete data from Etebase.
+However, as you may have noticed, in order to edit Etebase collections and items, you need to have them objects themselves to work with. Something you don't always have.
+
+For example, to edit a collection's content you will call `setContent` on an existing collection object.
+This is fine if you already have the collection object, but what if you just started the app and don't have a collection object already?
+You could just fetch the object each time before changing it, though it's both inefficient and in many cases incorrect.
+
+The correct solution to this problem is to be able to save the objects to a local cache and load them afterwards, which is what this section is about.
+
+:::tip Cache objects are encrypted
+Cache objects are encrypted so you can store them locally without worrying.
+:::
+
+Storing and loading from cache is quite easy and is almost exactly the same for collections and items. The cache objects are just binary blobs, though if you require them to be valid strings you can convert them using the [Base64 utilitis](../api/utilities#base64) as shown below.
+
+## Saving and loading collections
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// Create a collection
+const collection = await collectionManager.create(...);
+
+// The cache blob is just a Uint8Array that can be saved for later use
+const cacheBlob = await collectionManager.cacheSave(collection);
+
+// Later on we can load the object back
+const collection = await collectionManager.cacheLoad(cacheBlob);
+// And use it like any other object:
+await collection.setContent("New content");
+```
+
+</TabItem>
+</CodeTabs>
+
+### As Base64 encoded string
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// Create a collection
+const collection = await collectionManager.create(...);
+
+// The cache blob is just a Uint8Array that can be saved for later use
+const cacheB64 = Etebase.toBase64(await collectionManager.cacheSave(collection));
+
+// Later on we can load the object back
+const collection = await collectionManager.cacheLoad(Etebase.toBase64(cacheB64));
+// And use it like any other object:
+await collection.setContent("New content");
+```
+
+</TabItem>
+</CodeTabs>
+
+
+## Saving and loading items
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// Create a item
+const item = await itemManager.create(...);
+
+// The cache blob is just a Uint8Array that can be saved for later use
+const cacheBlob = await itemManager.cacheSave(item);
+
+// Later on we can load the object back
+const item = await itemManager.cacheLoad(cacheBlob);
+// And use it like any other object:
+await item.setContent("New content");
+```
+
+</TabItem>
+</CodeTabs>
+
+### As Base64 encoded string
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+// Create a item
+const item = await itemManager.create(...);
+
+// The cache blob is just a Uint8Array that can be saved for later use
+const cacheB64 = Etebase.toBase64(await itemManager.cacheSave(item));
+
+// Later on we can load the object back
+const item = await itemManager.cacheLoad(Etebase.toBase64(cacheB64));
+// And use it like any other object:
+await item.setContent("New content");
+```
+
+</TabItem>
+</CodeTabs>

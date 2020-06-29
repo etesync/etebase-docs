@@ -12,6 +12,7 @@ module.exports = {
         'guides/using_items',
         'guides/collection_sharing',
         'guides/revisions',
+        'guides/local_cache',
       ],
       'API Reference': [
         'api/utilities',
