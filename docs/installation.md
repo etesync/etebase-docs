@@ -31,7 +31,7 @@ Run the following commands from your project's directory to install the Etebase 
 <TabItem value="js">
 
 ```shell
-yarn add etebase@beta
+yarn add etebase
 ```
 
 
@@ -77,7 +77,8 @@ Etebase is currently still in beta, so it's moving fast. If there's a feature yo
 ```shell
 git clone https://github.com/etesync/etebase-js/
 cd etebase-js
-yarn && yarn build  # install dependencies and build
+yarn # install dependencies
+yarn build
 ```
 
 </TabItem>
