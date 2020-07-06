@@ -65,7 +65,7 @@ const itemManager = collectionManager.getItemManager(collection);
 // Create, encrypt and upload a new item
 const item = await itemManager.create(
   {
-    type: "cyberdyne.file",
+    type: "file",
     name: "note.txt",
     mtime: (new Date()).getTime(),
   },

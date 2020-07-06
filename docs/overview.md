@@ -19,11 +19,9 @@ Items have two different areas where data is stored, one for metadata and one fo
 
 The metadata of items consists of the following fields:
 
-#### `type: string`
+#### `type: string (optional)`
 
-The type of the item. It uses a dotted notation, prefixed with a unique developer prefix followed with whatever you want. For example, if your developer name is _Cyberdyne_, example types could be: `cyberdyne.file`, `cyberdyne.image` or really, whatever you want.
-
-In addition to creating your own types, you can also use existing types as long as you follow their specifications.
+The type of the item. It's useful if you have multiple types of information inside the same collection. E.g. if you are building a note-taking app you may use `note` for notes and `attachment` for image attachments.
 
 #### `name: string (optional)`
 
