@@ -33,7 +33,7 @@ When this item was last modified in milliseconds since epoch.
 
 #### `extra: dictionary (optional)`
 
-A dictionary of arbitrary objects for extra, developer specific data. Just like type, you can use a dotted notation name to store extra data. For example: `cyberdyne.author` to store the author of the data, and `cyberdyne.color` in case you want color associated with this item.
+A dictionary of arbitrary objects for extra, developer specific data. For example: `author` to store the author of the data, and `color` in case you want color associated with this item.
 
 ### Content
 
