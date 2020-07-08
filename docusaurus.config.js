@@ -91,7 +91,7 @@ module.exports = {
           homePageId: 'introduction',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
-            'https://github.com/etesync/etebase-docs/edit/master/website/',
+            'https://github.com/etesync/etebase-docs/edit/master/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
