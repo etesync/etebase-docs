@@ -42,7 +42,7 @@ Installation on React Native requires a few additional steps:
 1. Install [react-native-get-random-values](https://github.com/LinusU/react-native-get-random-values)
 2. Install a few packages to make the metro bundler happy (not actually used):
 ```shell
-yarn add crypto@npm:leftpad path fs`.
+yarn add crypto@npm:leftpad path fs
 ```
 3. Install [react-native-sodium](https://github.com/lyubo/react-native-sodium)
 
