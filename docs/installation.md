@@ -35,6 +35,14 @@ yarn add etebase
 ```
 
 
+### On Node
+
+Node requires one additional dependency:
+
+```shell
+yarn add node-fetch
+```
+
 ### On React Native
 
 Installation on React Native requires a few additional steps:
