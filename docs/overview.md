@@ -29,7 +29,7 @@ An optional name for the item. If this item needs a user visible name, this is t
 
 #### `mtime: number (optional)`
 
-When this item was last modified in milliseconds since epoch.
+When this item was last modified.
 
 #### `extra: dictionary (optional)`
 
