@@ -23,7 +23,7 @@ If the type is empty, it indicates a vCard item. New types may be added in the f
 
 This is exactly the same as the UID inside the vCard itself, and is used for quick lookup.
 
-### mitm: optional
+### mtime: optional
 
 When was this item last modified. Useful for sorting based on modification time.
 
