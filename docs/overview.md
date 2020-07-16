@@ -55,7 +55,7 @@ The metadata of collections consists of the following fields:
 
 The type of the item. It uses a dotted notation, prefixed with a unique developer prefix followed with whatever you want. For example, if your developer name is _Cyberdyne_, example types could be: `cyberdyne.files`, `cyberdyne.calendar` or really, whatever you want.
 
-In addition to creating your own types, you can also use existing types as long as you follow their specifications.
+In addition to creating your own types, you can also use [existing types](type-sepcs/introduction) as long as you follow their specifications.
 
 #### `name: string`
 

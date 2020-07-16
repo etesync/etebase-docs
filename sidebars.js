@@ -17,6 +17,12 @@ module.exports = {
       'API Reference': [
         'api/utilities',
       ],
+      'Type Specifications': [
+        'type-sepcs/introduction',
+        'type-sepcs/address-book',
+        'type-sepcs/calendar',
+        'type-sepcs/tasks',
+      ],
     },
   ],
 };
