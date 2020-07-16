@@ -51,7 +51,11 @@ Installation on React Native requires a few additional steps:
 ```shell
 yarn add react-native-get-random-values react-native-sodium
 ```
-2. Install a few packages to make the metro bundler happy (not actually used):
+2. Make sure to setup `react-native-get-random-values` by importing it from the top of `index.js` or `App.jsx`:
+```js
+import "react-native-get-random-values";
+```
+3. Install a few packages to make the metro bundler happy (not actually used):
 ```shell
 yarn add crypto@npm:leftpad path fs
 ```
