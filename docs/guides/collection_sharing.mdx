@@ -39,7 +39,7 @@ Getting your public key:
 
 ```js
 const etebase = await Etebase.Account.login("username", "password");
-const invitationManager = new Etebase.CollectionInvitationManager(etebase);
+const invitationManager = etebase.getInvitationManager();
 
 // You can now share your pubkey
 const myPubkey = collectionInvitationManager.pubkey;
@@ -84,7 +84,7 @@ The first step towards sharing collections with other users is sending them an i
 <TabItem value="js">
 
 ```js
-const invitationManager = new Etebase.CollectionInvitationManager(etebase);
+const invitationManager = etebase.getInvitationManager();
 
 // Fetch their public key
 const user2 = await invitationManager.fetchUserProfile("username2");
@@ -113,7 +113,7 @@ In the previous example we sent an access invitation to `user2`. In this section
 ```js
 // login as user2
 const etebase = await Etebase.Account.login("username2", "password");
-const invitationManager = new Etebase.CollectionInvitationManager(etebase);
+const invitationManager = etebase.getInvitationManager();
 
 // List pending invitations
 const invitations = await invitationManager.listIncoming();
@@ -140,8 +140,7 @@ Sometimes a user may want to leave a collection he has been invited to. This can
 <TabItem value="js">
 
 ```js
-const memberManager = new Etebase.CollectionMemberManager(etebase,
-  collectionManager, collection);
+const memberManager = collectionManager.getMemberManager(collection);
 
 await memberManager.leave();
 ```
@@ -160,8 +159,7 @@ Like with invitations, only collection admins can see who has access to a collec
 <TabItem value="js">
 
 ```js
-const memberManager = new Etebase.CollectionMemberManager(etebase,
-  collectionManager, collection);
+const memberManager = collectionManager.getMemberManager(collection);
 
 const members = await memberManager.list();
 
@@ -181,8 +179,7 @@ for (const member of members) {
 <TabItem value="js">
 
 ```js
-const memberManager = new Etebase.CollectionMemberManager(etebase,
-  collectionManager, collection);
+const memberManager = collectionManager.getMemberManager(collection);
 
 const newAccessLevel = Etebase.CollectionAccessLevel.ReadWrite;
 await memberManager.modifyAccessLevel("username2", newAccessLevel);
@@ -198,8 +195,7 @@ await memberManager.modifyAccessLevel("username2", newAccessLevel);
 <TabItem value="js">
 
 ```js
-const memberManager = new Etebase.CollectionMemberManager(etebase,
-  collectionManager, collection);
+const memberManager = collectionManager.getMemberManager(collection);
 
 await memberManager.remove("username2");
 ```
@@ -217,7 +213,7 @@ Here is how it's done for outgoing invitations, but the same can be done for inc
 <TabItem value="js">
 
 ```js
-const invitationManager = new Etebase.CollectionInvitationManager(etebase);
+const invitationManager = etebase.getInvitationManager();
 
 let iterator = null;
 while (true) {
