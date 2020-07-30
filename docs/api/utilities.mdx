@@ -2,22 +2,8 @@
 title: Utilities
 ---
 
-import Tabs from '@theme/Tabs';
+import CodeTabs from '@theme/CodeTabs';
 import TabItem from '@theme/TabItem';
-
-export function CodeTabs({ children }) {
-    return (
-        <Tabs
-          defaultValue="js"
-          groupId="programming-language"
-          values={[
-            { label: 'JavaScript', value: 'js', },
-          ]
-        }>
-        {children}
-        </Tabs>
-    );
-}
 
 
 In addition to the main API, Etebase provides a few utility functions to make development easier

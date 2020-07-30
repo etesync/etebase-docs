@@ -2,22 +2,9 @@
 title: Installation
 ---
 
-import Tabs from '@theme/Tabs';
+import CodeTabs from '@theme/CodeTabs';
 import TabItem from '@theme/TabItem';
 
-export function CodeTabs({ children }) {
-    return (
-        <Tabs
-          defaultValue="js"
-          groupId="programming-language"
-          values={[
-            { label: 'JavaScript', value: 'js', },
-          ]
-        }>
-        {children}
-        </Tabs>
-    );
-}
 
 :::info
 These docs currently refer to the TypeScript/JavaScript client library, but they will be expanded once we release the other clients.

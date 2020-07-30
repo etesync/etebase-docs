@@ -2,22 +2,8 @@
 title: Authentication
 ---
 
-import Tabs from '@theme/Tabs';
+import CodeTabs from '@theme/CodeTabs';
 import TabItem from '@theme/TabItem';
-
-export function CodeTabs({ children }) {
-    return (
-        <Tabs
-          defaultValue="js"
-          groupId="programming-language"
-          values={[
-            { label: 'JavaScript', value: 'js', },
-          ]
-        }>
-        {children}
-        </Tabs>
-    );
-}
 
 
 Etebase automatically takes care of the encryption for you, securely deriving an encryption key from the user password. It then also creates an asymmetric keypair to login so the password never leaves the user's device.

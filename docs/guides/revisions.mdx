@@ -2,22 +2,8 @@
 title: Revision history
 ---
 
-import Tabs from '@theme/Tabs';
+import CodeTabs from '@theme/CodeTabs';
 import TabItem from '@theme/TabItem';
-
-export function CodeTabs({ children }) {
-    return (
-        <Tabs
-          defaultValue="js"
-          groupId="programming-language"
-          values={[
-            { label: 'JavaScript', value: 'js', },
-          ]
-        }>
-        {children}
-        </Tabs>
-    );
-}
 
 
 Every time you change a collection or an item, a new revision is created in Etebase. Each revision is a snapshot of the collection or item at that point in time so you can easily view and rollback changes.
