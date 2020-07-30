@@ -13,7 +13,7 @@ module.exports = {
         alt: 'etebase logo',
         src: 'img/logo.svg',
       },
-      links: [
+      items: [
         {
           href: 'https://www.etebase.com',
           label: 'Website',
