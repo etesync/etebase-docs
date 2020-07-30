@@ -39,12 +39,37 @@ module.exports = {
           title: 'Docs',
           items: [
             {
-              label: 'Style Guide',
-              to: 'docs/',
+              label: 'Introduction',
+              to: '/',
             },
             {
-              label: 'Second Doc',
-              to: 'docs/doc2/',
+              label: 'Getting started',
+              to: 'installation',
+            },
+            {
+              label: 'Overview',
+              to: 'overview',
+            },
+            {
+              label: 'Guides',
+              to: 'guides/basic_authentication',
+            },
+          ],
+        },
+        {
+          title: 'Company',
+          items: [
+            {
+              label: 'About',
+              href: 'https://www.etebase.com/about',
+            },
+            {
+              label: 'Blog',
+              href: 'https://blog.etesync.com',
+            },
+            {
+              label: 'Support',
+              href: 'https://www.etebase.com/about#contact',
             },
           ],
         },
@@ -52,25 +77,24 @@ module.exports = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'Code of Conduct',
+              href: 'https://www.etebase.com/code-of-conduct',
             },
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              label: 'Github',
+              href: 'https://www.etebase.com/#open-source',
             },
             {
               label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
+              href: 'https://twitter.com/EteSyncHQ',
             },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
             {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              label: 'Mastodon',
+              href: 'https://mastodon.social/@EteSync',
+            },
+            {
+              label: 'Reddit',
+              href: 'https://www.reddit.com/r/EteSync/',
             },
           ],
         },
