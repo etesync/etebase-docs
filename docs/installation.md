@@ -24,27 +24,20 @@ yarn add etebase
 
 ### On Node
 
-Node requires one additional dependency:
-
 ```shell
-yarn add node-fetch
+yarn add etebase node-fetch
 ```
 
 ### On React Native
 
-Installation on React Native requires a few additional steps:
+```shell
+yarn add react-native-etebase react-native-get-random-values react-native-sodium
+```
 
-1. Install [react-native-get-random-values](https://github.com/LinusU/react-native-get-random-values) and [react-native-sodium](https://github.com/lyubo/react-native-sodium):
-```shell
-yarn add react-native-get-random-values react-native-sodium
-```
-2. Make sure to setup `react-native-get-random-values` by importing it from the top of `index.js` or `App.jsx`:
+You can now use it instead of the normal `etebase` module:
+
 ```js
-import "react-native-get-random-values";
-```
-3. Install a few packages to make the metro bundler happy (not actually used):
-```shell
-yarn add crypto@npm:leftpad path fs
+import * as Etebase from 'react-native-etebase';
 ```
 
 </TabItem>
