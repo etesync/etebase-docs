@@ -31,13 +31,13 @@ yarn add etebase node-fetch
 ### On React Native
 
 ```shell
-yarn add react-native-etebase react-native-get-random-values react-native-sodium
+yarn add etebase react-native-etebase react-native-get-random-values react-native-sodium
 ```
 
-You can now use it instead of the normal `etebase` module:
+You now need to import it at the top of your project (e.g. `index.js`) like so:
 
 ```js
-import * as Etebase from 'react-native-etebase';
+import 'react-native-etebase';
 ```
 
 </TabItem>
