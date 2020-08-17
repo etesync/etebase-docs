@@ -57,11 +57,11 @@ while (true) {
   const revisions = await itemManager.itemRevisions(item, { iterator, limit: 5 });
   iterator = revisions.iterator;
 
-  if (!revisions.done) {
+  processRevisions(revisions.data);
+
+  if (revisions.done) {
     break;
   }
-
-  processRevisions(revisions.data);
 }
 ```
 

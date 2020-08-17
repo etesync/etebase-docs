@@ -206,11 +206,11 @@ while (true) {
   const items = await invitationManager.listOutgoing({ iterator, limit: 30 });
   iterator = items.iterator;
 
-  if (!items.done) {
+  processOutgoingInvitations(items.data);
+
+  if (items.done) {
     break;
   }
-
-  processOutgoingInvitations(items.data);
 }
 ```
 

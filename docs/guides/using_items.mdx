@@ -247,7 +247,7 @@ await item1.setContent("something else for item 1");
 await itemManager.batch([item1]);
 
 
-// -> On device A (using the previously saved collection)
+// -> On device A (using the previously saved item)
 await item2.setContent("new content for item 2");
 
 // Will fail because item1 changed on device B

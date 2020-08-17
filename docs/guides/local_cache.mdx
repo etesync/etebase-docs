@@ -55,7 +55,7 @@ const collection = await collectionManager.create(...);
 const cacheB64 = Etebase.toBase64(await collectionManager.cacheSave(collection));
 
 // Later on we can load the object back
-const collection = await collectionManager.cacheLoad(Etebase.toBase64(cacheB64));
+const collection = await collectionManager.cacheLoad(Etebase.fromBase64(cacheB64));
 // And use it like any other object:
 await collection.setContent("New content");
 ```
@@ -70,7 +70,7 @@ await collection.setContent("New content");
 <TabItem value="js">
 
 ```js
-// Create a item
+// Create an item
 const item = await itemManager.create(...);
 
 // The cache blob is just a Uint8Array that can be saved for later use
@@ -91,14 +91,14 @@ await item.setContent("New content");
 <TabItem value="js">
 
 ```js
-// Create a item
+// Create an item
 const item = await itemManager.create(...);
 
 // The cache blob is just a Uint8Array that can be saved for later use
 const cacheB64 = Etebase.toBase64(await itemManager.cacheSave(item));
 
 // Later on we can load the object back
-const item = await itemManager.cacheLoad(Etebase.toBase64(cacheB64));
+const item = await itemManager.cacheLoad(Etebase.fromBase64(cacheB64));
 // And use it like any other object:
 await item.setContent("New content");
 ```
