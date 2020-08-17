@@ -81,7 +81,7 @@ We can use the `stoken` we have gotten in previous fetches to only return change
 <TabItem value="js">
 
 ```js
-const stoken = "..."; // An stoken we got previously
+const stoken = "..."; // An stoken we got previously e.g. collections.stoken
 
 const collections = await collectionManager.list({ stoken });
 ```
@@ -102,11 +102,11 @@ while (true) {
   const collections = await collectionManager.list({ stoken, limit: 30 });
   stoken = collections.stoken;
 
-  if (!collections.done) {
+  processNewCollections(collections.data);
+
+  if (collections.done) {
     break;
   }
-
-  processNewCollections(collections.data);
 }
 ```
 

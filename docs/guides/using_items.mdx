@@ -129,11 +129,11 @@ while (true) {
   const items = await itemManager.list({ stoken, limit: 30 });
   stoken = items.stoken;
 
-  if (!items.done) {
+  processNewItems(items.data);
+
+  if (items.done) {
     break;
   }
-
-  processNewItems(items.data);
 }
 ```
 
