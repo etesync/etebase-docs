@@ -26,6 +26,19 @@ const decoded = Etebase.fromBase64(b64encoded);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+from etebase import Base64Url
+
+binary_data = b"test"
+
+b64encoded = Base64Url.to_base64(binary_data);
+decoded = Base64Url.from_base64(b64encoded);
+# decoded is equal to binary_data
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -44,6 +57,16 @@ await Etebase.ready;
 
 // Generate 32 random bytes
 const randomData = Etebase.randomBytes(32);
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+from etebase import random_bytes
+
+# Generate 32 random bytes
+random_data = random_bytes(32)
 ```
 
 </TabItem>

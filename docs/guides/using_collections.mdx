@@ -31,6 +31,30 @@ await collectionManager.upload(collection);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+from etebase import Client, Account
+
+client = Client("client-name")
+etebase = Account.login(client, "username", "password")
+
+col_mgr = etebase.get_collection_manager()
+
+# Create, encrypt and upload a new collection
+collection = col_mgr.create(
+    {
+        "type": "cyberdyne.calendar",
+        "name": "Holidays",
+        "description": "My holiday calendar",
+        "color": "#23aabbff",
+    },
+    b"" # Empty content
+)
+col_mgr.upload(collection)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -59,6 +83,21 @@ Collections:
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+etebase = Account.login(...)
+
+col_mgr = etebase.get_collection_manager()
+collections = col_mgr.list()
+# {
+#   data: iter(etebase.Collection),  # Returned iterator of collections
+#   stoken: string,  # The sync token for this fetch
+#   ...  # More fields we'll cover later
+# }
+```
+
+</TabItem>
 </CodeTabs>
 
 The number of returned collections is limited by default, and you can control this limit by passing a different limit parameter as we'll see in the next example:
@@ -68,6 +107,18 @@ The number of returned collections is limited by default, and you can control th
 
 ```js
 const collections = await collectionManager.list({ limit: 50 });
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+from etebase import FetchOptions
+
+etebase = Account.login(...)
+
+col_mgr = etebase.get_collection_manager()
+collections = col_mgr.list(FetchOptions().limit(50))
 ```
 
 </TabItem>
@@ -84,6 +135,16 @@ We can use the `stoken` we have gotten in previous fetches to only return change
 const stoken = "..."; // An stoken we got previously e.g. collections.stoken
 
 const collections = await collectionManager.list({ stoken });
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+stoken = "..."  # An stoken we got previously e.g. collections.stoken
+
+col_mgr = etebase.get_collection_manager()
+collections = col_mgr.list(FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -111,6 +172,24 @@ while (true) {
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+etebase = Account.login(...)
+
+col_mgr = etebase.get_collection_manager()
+
+stoken = None
+done = False
+while not done:
+    collections = col_mgr.list(FetchOptions().stoken(stoken).limit(30))
+    stoken = collections.stoken
+    done = collections.done
+
+    process_new_collections(collections.data)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -126,6 +205,18 @@ const collection = await collectionManager.fetch(collectionUid);
 
 // Can optionally pass stoken to only return the collection if changed:
 const collection = await collectionManager.fetch(collectionUid, { stoken });
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+col_mgr = etebase.get_collection_manager()
+
+collection = col_mgr.fetch(collection_uid)
+
+# Can optionally pass stoken to only return the collection if changed:
+collection = col_mgr.fetch(collection_uid, FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -151,11 +242,21 @@ collections.removedMemberships is either undefined or a list of removed uids.
 */
 ```
 
-*Note:* because membership removals are not signed, it's good practice to show an indication to the user before removing the local copy.
+</TabItem>
+<TabItem value="py">
+
+```python
+stoken = "..."  # An stoken we got previously e.g. collections.stoken
+
+collections = col_mgr.list(FetchOptions().stoken(stoken))
+
+# collections.removed_memberships is an iterator of removed uids
+```
 
 </TabItem>
 </CodeTabs>
 
+*Note:* because membership removals are not signed, it's good practice to show an indication to the user before removing the local copy.
 
 ## Modifying and deleting collections
 
@@ -172,6 +273,17 @@ await collectionManager.upload(collection);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+meta = collection.meta
+meta["name"] = "New name"
+collection.meta = meta
+
+col_mgr.upload(collection)
+```
+
+</TabItem>
 </CodeTabs>
 
 Deleting is even easier:
@@ -183,6 +295,15 @@ Deleting is even easier:
 await collection.delete();
 
 await collectionManager.upload(collection);
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+collection.delete()
+
+col_mgr.upload(collection)
 ```
 
 </TabItem>
@@ -226,6 +347,33 @@ await collectionManager.upload(collection);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+# -> On device A:
+collection = col_mgr.fetch(collection_uid)
+
+# -> On device B:
+collection = col_mgr.fetch(collection_uid)
+meta = collection.meta
+meta["name"] = "New name"
+collection.meta = meta
+
+col_mgr.upload(collection)
+
+
+# -> On device A (using the previously saved collection)
+meta = collection.meta
+meta["name"] = "Another name"
+collection.meta = meta
+
+# Will fail
+col_mgr.transaction(collection)
+# Will succeed
+col_mgr.upload(collection)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -239,6 +387,7 @@ Transactions will only fail if the collection itself has changed, but will not f
 ```js
 // -> On device A:
 const collection = await collectionManager.fetch(collectionUid);
+const stoken = collection.stoken;
 
 
 // -> On device B:
@@ -260,6 +409,34 @@ await collectionManager.upload(collection, { stoken });
 // Will both succeed
 await collectionManager.trannaction(collection);
 await collectionManager.upload(collection);
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+# -> On device A:
+collection = col_mgr.fetch(collection_uid)
+stoken = collection.stoken
+
+# -> On device B:
+collection = col_mgr.fetch(collection_uid)
+item_mgr = col_mgr.get_item_manager(collection)
+# Add a new item to tho collection (redacted for simplicity)
+item_mgr.batch(...)
+
+
+# -> On device A (using the previously saved collection)
+meta = collection.meta
+meta["name"] = "Another name"
+collection.meta = meta
+
+# Will both fail
+col_mgr.transaction(collection, FetchOptions().stoken(stoken))
+col_mgr.upload(collection, FetchOptions().stoken(stoken))
+# Will both succeed
+col_mgr.transaction(collection)
+col_mgr.upload(collection)
 ```
 
 </TabItem>
@@ -285,6 +462,21 @@ collection.getContent(Etebase.OutputFormat.String);
 collection.setContent(Uint8Array.from([72, 101, 108, 108, 111]));
 // Sets the content to a string
 collection.setContent("Hello");
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+# The Python API returns `bytes` by default
+collection.content
+# Try decoding the binary data to a UTF-8 string
+collection.content.decode()
+
+# Sets the content to some byte array
+collection.content = b"Some bytes"
+# Set the content to a string
+collection.content = "Some bytes".encode()
 ```
 
 </TabItem>

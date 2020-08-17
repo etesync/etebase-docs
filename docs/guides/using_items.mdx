@@ -32,6 +32,30 @@ await collectionManager.upload(collection);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+from etebase import Client, Account
+
+client = Client("client-name")
+etebase = Account.login(client, "username", "password")
+
+col_mgr = etebase.get_collection_manager()
+
+# Create, encrypt and upload a new collection
+collection = col_mgr.create(
+    {
+        "type": "cyberdyne.calendar",
+        "name": "Holidays",
+        "description": "My holiday calendar",
+        "color": "#23aabbff",
+    },
+    "" # Empty content
+)
+col_mgr.upload(collection)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -61,6 +85,31 @@ await itemManager.batch([item]);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+import time
+
+# We can reuse the collection and manager from above
+col_mgr = ...
+collection = ...
+
+# Similar to how we have a collection manager
+item_mgr = col_mgr.get_item_manager(collection)
+
+# Create, encrypt and upload a new item
+item = item_mgr.create(
+    {
+        "type": "file",
+        "name": "note.txt",
+        "mtime": int(round(time.time() * 1000))
+    },
+    b"My secret note"
+)
+item_mgr.batch([item])
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -81,8 +130,23 @@ Items:
 {
   data: Etebase.CollectionItem[], // Returned array of items
   stoken: string, // The sync token for this fetch
+  ... // More fields we'll cover later
 }
 */
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+item_mgr = col_mgr.get_item_manager(collection)
+items = item_mgr.list()
+
+# {
+#   data: iter(etebase.Item), // Returned iterator of items
+#   stoken: string, // The sync token for this fetch
+#   ... // More fields we'll cover later
+# }
 ```
 
 </TabItem>
@@ -95,6 +159,14 @@ The number of returned items is limited by default, and you can control this lim
 
 ```js
 const items = await itemManager.list({ limit: 50 });
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+item_mgr = col_mgr.get_item_manager(collection)
+items = item_mgr.list(FetchOptions().limit(50))
 ```
 
 </TabItem>
@@ -111,6 +183,15 @@ We can use the `stoken` we have gotten in previous fetches to only return change
 const stoken = "..."; // An stoken we got previously (items.stoken)
 
 const items = await itemManager.list({ stoken });
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+stoken = "..."  # An stoken we got previously e.g. collections.stoken
+
+items = item_mgr.list(FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -138,6 +219,20 @@ while (true) {
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+stoken = None
+done = False
+while not done:
+    items = item_mgr.list(FetchOptions().stoken(stoken).limit(30))
+    stoken = items.stoken
+    done = items.done
+
+    process_new_items(items.data)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -153,6 +248,16 @@ const item = await itemManager.fetch(itemUid);
 
 // Can optionally pass stoken to only return the item if changed:
 const item = await itemManager.fetch(itemUid, { stoken });
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+item = item_mgr.fetch(item_uid)
+
+# Can optionally pass stoken to only return the items if changed:
+item = item_mgr.fetch(collection_uid, FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -175,6 +280,17 @@ const items = await itemManager.fetchUpdates(toFetch, { stoken });
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+to_fetch = [item1, item2, item3]
+items = item_mgr.fetch_updates(to_fetch)
+
+# Can optionally pass stoken to only return the items if changed:
+collection = col_mgr.fetch_updates(to_fetch, FetchOptions().stoken(stoken))
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -192,6 +308,15 @@ await itemManager.batch([item]);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+item.content = "new secret content"
+
+item_mgr.batch([item])
+```
+
+</TabItem>
 </CodeTabs>
 
 Deleting is even easier:
@@ -203,6 +328,15 @@ Deleting is even easier:
 await item.delete();
 
 await itemManager.batch([item]);
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+item.delete()
+
+item_mgr.batch([item])
 ```
 
 </TabItem>
@@ -218,6 +352,13 @@ As you saw in the previous examples, unlike the collection's `upload`, `batch` a
 
 ```js
 await itemManager.batch([item1, item2, item3, ...]);
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+item_mgr.batch([item1, item2, item3, ...])
 ```
 
 </TabItem>
@@ -259,6 +400,32 @@ await itemManager.transaction([item2]);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+# -> On device A:
+item1 = item_mgr.fetch(item_uid1)
+item2 = item_mgr.fetch(item_uid2)
+
+
+# -> On device B:
+item1 = item_mgr.fetch(item_uid1)
+item1.content = b"something else for item 1"
+item_mgr.batch([item1])
+
+
+# -> On device A (using the previously saved item)
+item2.content = b"new content for item 2"
+
+# Will fail because item1 changed on device B
+item_mgr.transaction([item1, item2])
+# Will succeed
+item_mgr.batch([item1, item2])
+# Will succeed because item2 hasn't changed on device B
+item_mgr.transaction([item2])
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -291,6 +458,34 @@ await itemManager.batch([item], null, { stoken });
 // Will both succeed
 await itemManager.transaction([item]);
 await itemManager.batch([item]);
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+# -> On device A:
+stoken = collection.stoken
+item1 = item_mgr.fetch(item_uid1)
+
+
+# -> On device B:
+another_item = item_mgr.fetch(another_item_uid)
+another_item.content = b"content for another item"
+item_mgr.batch([another_item])
+
+
+# -> On device A (using the previously saved item and stoken)
+item.content = b"new secret content"
+
+# Will both fail
+fetch_options = FetchOptions().stoken(stoken)
+item_mgr.transaction([item], fetch_options=fetch_options)
+item_mgr.batch([item], fetch_options=fetch_options)
+
+# Will both succeed
+item_mgr.transaction([item])
+item_mgr.batch([item])
 ```
 
 </TabItem>
@@ -330,6 +525,34 @@ await itemManager.batch([item1, item2], [item1]);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+# -> On device A:
+item1 = item_mgr.fetch(item_uid1)
+item2 = item_mgr.fetch(item_uid2)
+
+
+# -> On device B:
+item1 = item_mgr.fetch(item_uid1)
+item1.content = b"something else for item 1"
+item_mgr.batch([item1])
+
+
+# -> On device A (using the previously saved item)
+item2.content = b"new content for item 2"
+
+# Will both fail because item1 changed
+item_mgr.transaction([item2], [item1])
+item_mgr.batch([item2], [item1])
+
+# Can even use the item in both the list and deps in batch
+item1.content = b"new secret content for item 1"
+# Will fail because item1 changed on device B
+item_mgr.batch([item1, item2], [item1])
+```
+
+</TabItem>
 </CodeTabs>
 
 ### Treating collections as items
@@ -363,6 +586,27 @@ assert((await collection.getMeta()) === (await colItem.getMeta()));
 assert((await collection.getContent()) === (await colItem.getContent()));
 ```
 
+</TabItem><TabItem value="py">
+
+```python
+# A pre-existing collection and a few items:
+collection = ...
+item1 = ...
+item2 = ...
+
+# Get the item out of the collection
+col_item = collection.item;
+
+# The collection item can then be used like any other item:
+item_mgr.transaction([col_item, item1], [item2]);
+item_mgr.transaction([item1, item2], [col_item]);
+item_mgr.batch([col_item, item1]);
+
+# In addition, these are true:
+assert(collection.meta == col_item.meta)
+assert(collection.content == col_item.content)
+```
+
 </TabItem>
 </CodeTabs>
 
@@ -390,6 +634,27 @@ const items = await itemManager.fetchUpdates([collection.item, item1]);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+item_mgr = col_mgr.get_item_manager(collection)
+
+# Will return the collection item as part of the list:
+fetch_options = FetchOptions().with_collection(true)
+items = item_mgr.list(fetch_options);
+
+# Assuming the collection is the first item returned:
+col_item = items.data[0];
+assert(col_item.uid == collection.uid)
+
+# You can also fetch collection items based on UID:
+col_item = item_mgr.fetch(collection.uid);
+
+# Or fetch updates of the collection along with other items:
+items = item_mgr.fetch_updates([collection.item, item1]);
+```
+
+</TabItem>
 </CodeTabs>
 
 ## Binary content
@@ -411,6 +676,21 @@ item.getContent(Etebase.OutputFormat.String);
 item.setContent(Uint8Array.from([72, 101, 108, 108, 111]));
 // Sets the content to a string
 item.setContent("Hello");
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+# The Python API returns `bytes` by default
+item.content
+# Try decoding the binary data to a UTF-8 string
+item.content.decode()
+
+# Sets the content to some byte array
+item.content = b"Some bytes"
+# Set the content to a string
+item.content = "Some bytes".encode()
 ```
 
 </TabItem>

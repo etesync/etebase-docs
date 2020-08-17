@@ -40,6 +40,22 @@ await collection.setContent("New content");
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+# Create a collection
+collection = col_mgr.create(...)
+
+# The cache blob is just a bytes object that can be saved for later use
+cache_blob = col_mgr.cache_save(collection)
+
+# Later on we can load the object back
+collection = col_mgr.cache_load(cache_blob)
+# And use it like any other object:
+collection.content = b"New content"
+```
+
+</TabItem>
 </CodeTabs>
 
 ### As Base64 encoded string
@@ -58,6 +74,24 @@ const cacheB64 = Etebase.toBase64(await collectionManager.cacheSave(collection))
 const collection = await collectionManager.cacheLoad(Etebase.fromBase64(cacheB64));
 // And use it like any other object:
 await collection.setContent("New content");
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+from etebase import Base64Url
+
+# Create a collection
+collection = col_mgr.create(...)
+
+# The cache blob is just a bytes object that can be saved for later use
+cache_b64 = Base64Url.to_base64(col_mgr.cache_save(collection))
+
+# Later on we can load the object back
+collection = col_mgr.cache_load(Base64Url.from_base64(cache_blob))
+# And use it like any other object:
+collection.content = b"New content"
 ```
 
 </TabItem>
@@ -83,6 +117,22 @@ await item.setContent("New content");
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+# Create an item
+item = item_mgr.create(...)
+
+# The cache blob is just a bytes object that can be saved for later use
+cache_blob = item_mgr.cache_save(item)
+
+# Later on we can load the object back
+item = item_mgr.cache_load(cache_blob)
+# And use it like any other object:
+item.content = b"New content"
+```
+
+</TabItem>
 </CodeTabs>
 
 ### As Base64 encoded string
@@ -101,6 +151,24 @@ const cacheB64 = Etebase.toBase64(await itemManager.cacheSave(item));
 const item = await itemManager.cacheLoad(Etebase.fromBase64(cacheB64));
 // And use it like any other object:
 await item.setContent("New content");
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+from etebase import Base64Url
+
+# Create an item
+item = item_mgr.create(...)
+
+# The cache blob is just a bytes object that can be saved for later use
+cache_b64 = Base64Url.to_base64(item_mgr.cache_save(item))
+
+# Later on we can load the object back
+item = item_mgr.cache_load(Base64Url.from_base64(cache_blob))
+# And use it like any other object:
+item.content = b"New content"
 ```
 
 </TabItem>

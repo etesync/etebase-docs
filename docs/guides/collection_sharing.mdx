@@ -32,6 +32,17 @@ const myPubkey = collectionInvitationManager.pubkey;
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+etebase = Account.login(...)
+invitation_manager = etebase.get_invitation_manager()
+
+# You can now share your pubkey
+invitation_manager.pubkey
+```
+
+</TabItem>
 </CodeTabs>
 
 ### Pretty-print the public key
@@ -48,6 +59,23 @@ const delimiter = "   ";
 const prettyFingerprint = Etebase.getPrettyFingerprint(myPubkey, delimiter);
 
 console.log(prettyFingerprint);
+/* Output:
+59015   06339   15209   34335
+33325   43829   22169   46131
+39378   39949   54591   49756
+29874   56290   38212   30949
+*/
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+from etebase import pretty_fingerprint
+
+fingerprint = pretty_fingerprint(my_pubkey)
+
+print(fingerprint)
 /* Output:
 59015   06339   15209   34335
 33325   43829   22169   46131
@@ -84,6 +112,22 @@ await invitationManager.invite(collection, "username2", user2.pubkey,
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+invitation_manager = etebase.get_invitation_manager()
+
+# Fetch their public key
+user2 = invitation_manager.fetch_user_profile("username2");
+
+# Verify user2.pubkey is indeed the pubkey you expect.
+# This is done in a secure channel (e.g. encrypted chat or in person)
+
+# Assuming the pubkey is as expected, send the invitation
+invitation_manager.invite(collection, "username2", user2.pubkey, "ro")
+```
+
+</TabItem>
 </CodeTabs>
 
 As you can see from the example above, when inviting a user you also set the wanted access level. Allowed values are: `Admin`, `ReadWrite`, and `ReadOnly`.
@@ -116,6 +160,28 @@ await invitationManager.reject(invitation);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+# login as user2
+invitation_manager = etebase.get_invitation_manager()
+
+# List pending invitations
+invitations = invitation_manager.list_incoming()
+invitation = list(invitations.data)[0]  # get first invitation
+
+# Verify the sender's pubkey is indeed the pubkey you expect.
+# This is done in a secure channel (e.g. encrypted chat or in person)
+from_pubkey = invitation.from_pubkey
+const fromPubkey = invitation.fromPubkey;
+
+# We can now either accept
+invitation_manager.accept(invitation)
+# or reject the invitation:
+invitation_manager.reject(invitation)
+```
+
+</TabItem>
 </CodeTabs>
 
 ## Leaving collections
@@ -129,6 +195,15 @@ Sometimes a user may want to leave a collection he has been invited to. This can
 const memberManager = collectionManager.getMemberManager(collection);
 
 await memberManager.leave();
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+member_manager = col_mgr.get_member_manager(collection)
+
+member_manager.leave()
 ```
 
 </TabItem>
@@ -156,6 +231,19 @@ for (const member of members) {
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+member_manager = col_mgr.get_member_manager(collection)
+
+members = member_manager.list()
+
+# Print the users and their access levels
+for member in members.data:
+    print(member.username, member.access_level)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -172,6 +260,16 @@ await memberManager.modifyAccessLevel("username2", newAccessLevel);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+member_manager = col_mgr.get_member_manager(collection)
+
+new_access_level = "rw"
+member_manager.modify_access_level("username2", new_access_level)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -184,6 +282,15 @@ await memberManager.modifyAccessLevel("username2", newAccessLevel);
 const memberManager = collectionManager.getMemberManager(collection);
 
 await memberManager.remove("username2");
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+member_manager = col_mgr.get_member_manager(collection)
+
+member_manager.remove("username2")
 ```
 
 </TabItem>
@@ -212,6 +319,23 @@ while (true) {
     break;
   }
 }
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+invitation_manager = etebase.get_invitation_manager()
+
+iterator = None
+done = False
+while not done:
+    fetch_options = FetchOptions().iterator(iterator).limit(30)
+    invitations = invitation_manager.list_outgoing(fetch_options)
+    iterator = invitations.iterator
+    done = invitations.done
+
+    process_outgoing_invitations(invitations.data)
 ```
 
 </TabItem>

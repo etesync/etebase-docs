@@ -9,6 +9,7 @@ export default function CodeTabs({ children }) {
           groupId="programming-language"
           values={[
             { label: 'JavaScript', value: 'js', },
+            { label: 'Python', value: 'py', },
           ]
         }>
 

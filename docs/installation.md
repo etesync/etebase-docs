@@ -41,6 +41,13 @@ import 'react-native-etebase';
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```shell
+pip install etebase
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -57,26 +64,23 @@ Etebase.Account.login(...);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+from etebase import Account
+
+Account.login(...)
+```
+
+</TabItem>
 </CodeTabs>
 
 ## Advanced
 
 ### Building the package from source
 
-Etebase is currently still in beta, so it's moving fast. If there's a feature you would like to use that hasn't yet been realeased, you can build the package directly from source:
+Please check out the README of each library for language specific instructions.
 
-<CodeTabs>
-<TabItem value="js">
-
-```shell
-git clone https://github.com/etesync/etebase-js/
-cd etebase-js
-yarn # install dependencies
-yarn build
-```
-
-</TabItem>
-</CodeTabs>
 
 ## Problems?
 

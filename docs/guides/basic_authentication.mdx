@@ -27,6 +27,17 @@ const etebase = await Etebase.Account.signup("username", "password");
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+from etebase import Client, Account, User
+
+client = Client("client-name")
+user = User("username", "test@example.com")
+etebase = Account.signup(client, user, "password")
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -42,6 +53,16 @@ const etebase = await Etebase.Account.login("username", "password");
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+from etebase import Client, Account
+
+client = Client("client-name")
+etebase = Account.login(client, "username", "password")
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -54,6 +75,13 @@ Unlike signup and login, changing password requires an already set up client.
 
 ```js
 await etebase.changePassword("new password");
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+etebase.changePassword("new password")
 ```
 
 </TabItem>
@@ -77,6 +105,21 @@ const etebase = await Etebase.Account.restore(savedSession);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+from etebase import Client, Account
+
+client = Client("client-name")
+etebase = Account.login(client, "username", "password")
+
+stored_session = etebase.save(None)
+
+# later on...
+etebase = Account.restore(client, stored_session, None)
+```
+
+</TabItem>
 </CodeTabs>
 
 ### Encrypting the stored session
@@ -96,6 +139,23 @@ const savedSession = await etebase.save(encryptionKey);
 
 // Later on...
 const etebase = await Etebase.Account.restore(savedSession, encryptionKey);
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+from etebase import Client, Account, random_bytes
+
+client = Client("client-name")
+etebase = Account.login(client, "username", "password")
+
+# Save the key somewhere safe (e.g. the OS's key store)
+encryption_key = random_bytes(32)
+stored_session = etebase.save(encryption_key)
+
+# later on...
+etebase = Account.restore(client, stored_session, encryption_key)
 ```
 
 </TabItem>

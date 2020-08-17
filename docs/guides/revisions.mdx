@@ -41,6 +41,33 @@ const collectionRevisions = await itemManager.itemRevisions(collection.item);
 ```
 
 </TabItem>
+<TabItem value="py">
+
+```python
+item = item_mgr.create(
+    {
+        "type": "file",
+    },
+    b"First draft"
+)
+item_mgr.batch([item])
+
+item.content = b"Second draft"
+item_mgr.batch([item])
+
+revisions = item_mgr.item_revisions(item)
+assert(len(list(revisions.data)) == 1)
+
+# Revisions are normal items so we can use them as such
+content = list(revisions.data)[0].content
+assert(content == b"First draft")
+
+
+# Collections are just items, so for collection revisions:
+col_revisions = item_mgr.item_revisions(collection.item)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -63,6 +90,24 @@ while (true) {
     break;
   }
 }
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+item_mgr = col_mgr.get_item_manager(collection)
+item = ...
+
+iterator = None
+done = False
+while not done:
+    fetch_options = FetchOptions().iterator(iterator).limit(30)
+    revisions = item_mgr.item_revisions(item, fetch_options)
+    iterator = revisions.iterator
+    done = revisions.done
+
+    process_outgoing_revisions(revisions.data)
 ```
 
 </TabItem>
