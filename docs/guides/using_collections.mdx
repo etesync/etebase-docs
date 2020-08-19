@@ -55,6 +55,55 @@ col_mgr.upload(collection)
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+import com.etebase.client.*;
+
+Client client = Client.create(httpClient, null);
+Account etebase = Account.login(client, "username", "password");
+
+CollectionManager colMgr = etebase.getCollectionManager();
+
+// Create, encrypt and upload a new collection
+CollectionMetadata collectionMetadata = new CollectionMetadata(
+    "cyberdyne.calendar",
+    "Holidays"
+);
+collectionMetadata.setDescription("My holiday calendar");
+collectionMetadata.setColor("#23aabbff");
+Collection collection = colMgr.create(
+    collectionMetadata,
+    "") // Empty content
+);
+
+colMgr.upload(collection);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+import com.etebase.client.*
+
+val client = Client.create(httpClient, null)
+val etebase = Account.login(client, "username", "password")
+
+val colMgr = etebase.collectionManager
+
+// Create, encrypt and upload a new collection
+val collectionMetadata = CollectionMetadata("cyberdyne.calendar", "Holidays")
+collectionMetadata.description = "My holiday calendar"
+collectionMetadata.color = "#23aabbff"
+val collection = colMgr.create(
+    collectionMetadata,
+    "" // Empty content
+)
+
+colMgr.upload(collection)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -98,6 +147,46 @@ collections = col_mgr.list()
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+import com.etebase.client.*;
+
+Account etebase = Account.login(...);
+
+CollectionManager colMgr = etebase.getCollectionManager();
+CollectionListResponse collections = colMgr.list();
+/*
+Collections:
+{
+  data: Collection[], // Returned array of collections
+  stoken: string, // The sync token for this fetch
+  ... // More fields we'll cover later
+}
+*/
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+import com.etebase.client.*
+
+val etebase = Account.login(...)
+
+val colMgr = etebase.collectionManager
+val collections = colMgr.list()
+/*
+Collections:
+{
+  data: Collection[], // Returned array of collections
+  stoken: string, // The sync token for this fetch
+  ... // More fields we'll cover later
+}
+*/
+```
+
+</TabItem>
 </CodeTabs>
 
 The number of returned collections is limited by default, and you can control this limit by passing a different limit parameter as we'll see in the next example:
@@ -119,6 +208,30 @@ etebase = Account.login(...)
 
 col_mgr = etebase.get_collection_manager()
 collections = col_mgr.list(FetchOptions().limit(50))
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+import com.etebase.client.*;
+
+Account etebase = Account.login(...);
+
+CollectionManager colMgr = etebase.getCollectionManager();
+CollectionListResponse collections = colMgr.list(new FetchOptions().limit(50));
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+import com.etebase.client.*
+
+val etebase = Account.login(...)
+
+val colMgr = etebase.collectionManager
+val collections = colMgr.list(FetchOptions().limit(50))
 ```
 
 </TabItem>
@@ -145,6 +258,26 @@ stoken = "..."  # An stoken we got previously e.g. collections.stoken
 
 col_mgr = etebase.get_collection_manager()
 collections = col_mgr.list(FetchOptions().stoken(stoken))
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+String stoken = "..."; // An stoken we got previously e.g. collections.stoken
+
+CollectionManager colMgr = etebase.getCollectionManager();
+CollectionListResponse collections = colMgr.list(new FetchOptions().stoken(stoken));
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val stoken = "..." // An stoken we got previously e.g. collections.stoken
+
+val colMgr = etebase.collectionManager
+val collections = colMgr.list(FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -175,10 +308,6 @@ while (true) {
 <TabItem value="py">
 
 ```python
-etebase = Account.login(...)
-
-col_mgr = etebase.get_collection_manager()
-
 stoken = None
 done = False
 while not done:
@@ -187,6 +316,36 @@ while not done:
     done = collections.done
 
     process_new_collections(collections.data)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+String stoken = null;
+boolean done = false;
+while (!done) {
+    CollectionListResponse collections = colMgr.list(new FetchOptions().stoken(stoken).limit(30));
+    stoken = collections.getStoken();
+    done = collections.getDone();
+
+    process_new_collections(collections.getData());
+}
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+var stoken: String? = null
+var done = false
+while (!done) {
+    val collections = colMgr.list(FetchOptions().stoken(stoken).limit(30))
+    stoken = collections.stoken
+    done = collections.done
+
+    process_new_collections(collections.data)
+}
 ```
 
 </TabItem>
@@ -211,12 +370,30 @@ const collection = await collectionManager.fetch(collectionUid, { stoken });
 <TabItem value="py">
 
 ```python
-col_mgr = etebase.get_collection_manager()
-
 collection = col_mgr.fetch(collection_uid)
 
 # Can optionally pass stoken to only return the collection if changed:
 collection = col_mgr.fetch(collection_uid, FetchOptions().stoken(stoken))
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Collection collection = colMgr.fetch(collectionUid);
+
+// Can optionally pass stoken to only return the collection if changed:
+Collection collection = colMgr.fetch(colluctionUid, new FetchOptions().stoken(stoken));
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val collection = colMgr.fetch(collectionUid);
+
+// Can optionally pass stoken to only return the collection if changed:
+val collection = colMgr.fetch(colluctionUid, FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -237,9 +414,7 @@ const stoken = "..."; // An stoken we got previously
 
 const collections = await collectionManager.list({ stoken });
 
-/*
-collections.removedMemberships is either undefined or a list of removed uids.
-*/
+// collections.removedMemberships is either undefined or a list of removed uids.
 ```
 
 </TabItem>
@@ -251,6 +426,28 @@ stoken = "..."  # An stoken we got previously e.g. collections.stoken
 collections = col_mgr.list(FetchOptions().stoken(stoken))
 
 # collections.removed_memberships is an iterator of removed uids
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+String stoken = "..."; // An stoken we got previously e.g. collections.stoken
+
+CollectionListResponse collections = colMgr.list(new FetchOptions().stoken(stoken));
+
+// collections.removedMemberships is either empty or a list of removed uids.
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val stoken = "..." // An stoken we got previously e.g. collections.stoken
+
+val collections = colMgr.list(FetchOptions().stoken(stoken))
+
+// collections.removedMemberships is either empty or a list of removed uids.
 ```
 
 </TabItem>
@@ -284,6 +481,28 @@ col_mgr.upload(collection)
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+CollectionMetadata collectionMeta = collection.getMeta();
+collectionMeta.setName("Name");
+collection.setMeta(collectionMeta);
+
+colMgr.upload(collection);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val collectionMeta = collection.meta
+collectionMeta.name = "Name"
+collection.meta = collectionMeta
+
+colMgr.upload(collection)
+```
+
+</TabItem>
 </CodeTabs>
 
 Deleting is even easier:
@@ -304,6 +523,24 @@ await collectionManager.upload(collection);
 collection.delete()
 
 col_mgr.upload(collection)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+collection.delete();
+
+colMgr.upload(collection);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+collection.delete()
+
+colMgr.upload(collection)
 ```
 
 </TabItem>
@@ -353,6 +590,7 @@ await collectionManager.upload(collection);
 # -> On device A:
 collection = col_mgr.fetch(collection_uid)
 
+
 # -> On device B:
 collection = col_mgr.fetch(collection_uid)
 meta = collection.meta
@@ -371,6 +609,62 @@ collection.meta = meta
 col_mgr.transaction(collection)
 # Will succeed
 col_mgr.upload(collection)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+// -> On device A:
+Collection collection = colMgr.fetch(collectionUid);
+
+
+// -> On device B:
+Collection collection = colMgr.fetch(collectionUid);
+CollectionMetadata meta = collection.getMeta();
+meta.setName("New name");
+collection.setMeta(meta);
+
+colMgr.upload(collection);
+
+
+// -> On device A (using the previously saved collection)
+CollectionMetadata meta = collection.getMeta();
+meta.setName("Another name");
+collection.setMeta(meta);
+
+// Will fail
+colMgr.transaction(collection);
+// Will succeed
+colMgr.upload(collection);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+// -> On device A:
+val collection = colMgr.fetch(collectionUid)
+
+
+// -> On device B:
+val collection = colMgr.fetch(collectionUid)
+val meta = collection.getMeta()
+meta.name = "New name"
+collection.meta = meta
+
+colMgr.upload(collection)
+
+
+// -> On device A (using the previously saved collection)
+val meta = collection.getMeta()
+meta.name = "Another name"
+collection.meta = meta
+
+// Will fail
+colMgr.transaction(collection)
+// Will succeed
+colMgr.upload(collection)
 ```
 
 </TabItem>
@@ -440,6 +734,64 @@ col_mgr.upload(collection)
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+// -> On device A:
+Collection collection = colMgr.fetch(collectionUid);
+String stoken = collection.stoken
+
+
+// -> On device B:
+Collection collection = colMgr.fetch(collectionUid);
+ItemManager itemMgr = colMgr.getItemManager(collection);
+// Add a new item to tho collection (redacted for simplicity)
+itemMgr.batch(...)
+
+
+// -> On device A (using the previously saved collection)
+CollectionMetadata meta = collection.getMeta();
+meta.setName("Another name");
+collection.setMeta(meta);
+
+// Will both fail
+colMgr.transaction(collection, new FetchOptions().stoken(stoken));
+colMgr.upload(collection, new FetchOptions().stoken(stoken));
+// Will both succeed
+colMgr.transaction(collection);
+colMgr.upload(collection);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+// -> On device A:
+val collection = colMgr.fetch(collectionUid)
+val stoken = collection.stoken
+
+
+// -> On device B:
+val collection = colMgr.fetch(collectionUid)
+val itemMgr = colMgr.getItemManager(collection)
+// Add a new item to tho collection (redacted for simplicity)
+itemMgr.batch(...)
+
+
+// -> On device A (using the previously saved collection)
+val meta = collection.getMeta()
+meta.name = "Another name"
+collection.meta = meta
+
+// Will both fail
+colMgr.transaction(collection, FetchOptions().stoken(stoken))
+colMgr.upload(collection, FetchOptions().stoken(stoken))
+// Will both succeed
+colMgr.transaction(collection)
+colMgr.upload(collection)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -477,6 +829,36 @@ collection.content.decode()
 collection.content = b"Some bytes"
 # Set the content to a string
 collection.content = "Some bytes".encode()
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+// The Java API returns `byte[]` by default
+collection.getContent();
+// Try decoding the binary data to a UTF-8 string and return that
+collection.getContentString();
+
+// Sets the content to a binary blob
+collection.setContent("Bla".getBytes("UTF-8"));
+// Sets the content to a string
+collection.setContent("Hello");
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+// The Java API returns `byte[]` by default
+collection.content
+// Try decoding the binary data to a UTF-8 string and return that
+collection.contentString
+
+// Sets the content to a binary blob
+collection.content = "Bla".toByteArray()
+// Sets the content to a string
+collection.content = "Hello"
 ```
 
 </TabItem>

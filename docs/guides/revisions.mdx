@@ -68,6 +68,54 @@ col_revisions = item_mgr.item_revisions(collection.item)
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+ItemMetadata meta = new ItemMetadata();
+meta.setType("file");
+Item item = itemManager.create(meta, "First draft");
+itemManager.batch(new Item[] {item});
+
+item.setContent("Second draft");
+itemManager.batch(new Item[] {item});
+
+ItemRevisionsListResponse revisions = itemManager.itemRevisions(item);
+assert(revisions.getData().length == 1);
+
+// Revisions are normal items so we can use them as such
+String content = revisions.getData()[0].getContentString();
+assert(content === "First draft");
+
+
+// Collections are just items, so for collection revisions:
+ItemRevisionsListResponse collectionRevisions = itemManager.itemRevisions(collection.getItem());
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val meta = new ItemMetadata()
+meta.setType("file")
+val item = itemManager.create(meta, "First draft")
+itemManager.batch(arrayOf(item))
+
+item.content = "Second draft"
+itemManager.batch(arrayOf(item))
+
+val revisions = itemManager.itemRevisions(item)
+assert(revisions.data.length == 1)
+
+// Revisions are normal items so we can use them as such
+val content = revisions.data[0].contentString
+assert(content === "First draft")
+
+
+// Collections are just items, so for collection revisions:
+val collectionRevisions = itemManager.itemRevisions(collection.item)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -107,7 +155,37 @@ while not done:
     iterator = revisions.iterator
     done = revisions.done
 
-    process_outgoing_revisions(revisions.data)
+    process_revisions(revisions.data)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+String iterator = null;
+boolean done = false;
+while (!done) {
+    ItemListResponse revisions = itemManager.itemRevisions(new FetchOptions().iterator(iterator).limit(30));
+    iterator = revisions.getIterator();
+    done = revisions.getDone();
+
+    processRevisions(revisions.getData());
+}
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+var iterator: String? = null
+var done = false
+while (!done) {
+    val revisions = itemManager.itemRevisions(item, FetchOptions().iterator(iterator).limit(30))
+    iterator = revisions.iterator
+    done = revisions.done
+
+    processRevisions(revisions.data)
+}
 ```
 
 </TabItem>

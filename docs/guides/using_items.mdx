@@ -56,6 +56,55 @@ col_mgr.upload(collection)
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+import com.etebase.client.*;
+
+Client client = Client.create(httpClient, null);
+Account etebase = Account.login(client, "username", "password");
+
+CollectionManager colMgr = etebase.getCollectionManager();
+
+// Create, encrypt and upload a new collection
+CollectionMetadata collectionMetadata = new CollectionMetadata(
+    "cyberdyne.calendar",
+    "Holidays"
+);
+collectionMetadata.setDescription("My holiday calendar");
+collectionMetadata.setColor("#23aabbff");
+Collection collection = colMgr.create(
+    collectionMetadata,
+    "") // Empty content
+);
+
+colMgr.upload(collection);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+import com.etebase.client.*
+
+val client = Client.create(httpClient, null)
+val etebase = Account.login(client, "username", "password")
+
+val colMgr = etebase.collectionManager
+
+// Create, encrypt and upload a new collection
+val collectionMetadata = CollectionMetadata("cyberdyne.calendar", "Holidays")
+collectionMetadata.description = "My holiday calendar"
+collectionMetadata.color = "#23aabbff"
+val collection = colMgr.create(
+    collectionMetadata,
+    "" // Empty content
+)
+
+colMgr.upload(collection)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -110,6 +159,44 @@ item_mgr.batch([item])
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+CollectionManager colMgr = ...;
+Collection collection = ...;
+
+// Similar to how we have collection manager
+ItemManager itemManager = colMgr.getItemManager(collection);
+
+// Create, encrypt and upload a new item
+ItemMetadata meta = new ItemMetadata();
+meta.setType("file");
+meta.setName("note.txt");
+meta.setMtime((new Date()).getTime());
+Item item = itemManager.create(meta, "My secret note");
+itemManager.batch(new Item[] {item});
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val colMgr = ...
+val collection = ...
+
+// Similar to how we have collection manager
+val itemManager = colMgr.getItemManager(collection)
+
+// Create, encrypt and upload a new item
+val meta = ItemMetadata()
+meta.type = "file"
+meta.name = "note.txt"
+meta.mtime = Date().getTime()
+val item = itemManager.create(meta, "My secret note")
+itemManager.batch(arrayOf(item))
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -141,12 +228,43 @@ Items:
 ```python
 item_mgr = col_mgr.get_item_manager(collection)
 items = item_mgr.list()
-
 # {
 #   data: iter(etebase.Item), // Returned iterator of items
 #   stoken: string, // The sync token for this fetch
 #   ... // More fields we'll cover later
 # }
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ItemManager itemManager = colMgr.getItemManager(collection);
+ItemListResponse items = itemManager.list();
+/*
+Items:
+{
+  data: Item[], // Returned array of items
+  stoken: string, // The sync token for this fetch
+  ... // More fields we'll cover later
+}
+*/
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val itemManager = colMgr.getItemManager(collection)
+val items = itemManager.list()
+/*
+Ites:
+{
+  data: Item[], // Returned array of items
+  stoken: string, // The sync token for this fetch
+  ... // More fields we'll cover later
+}
+*/
 ```
 
 </TabItem>
@@ -167,6 +285,22 @@ const items = await itemManager.list({ limit: 50 });
 ```python
 item_mgr = col_mgr.get_item_manager(collection)
 items = item_mgr.list(FetchOptions().limit(50))
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ItemManager itemManager = colMgr.getItemManager(collection);
+ItemListResponse items = itemManager.list(new FetchOptions().limit(50));
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val itemManager = colMgr.getItemManager(collection)
+val items = itemManager.list(FetchOptions().limit(50))
 ```
 
 </TabItem>
@@ -192,6 +326,24 @@ const items = await itemManager.list({ stoken });
 stoken = "..."  # An stoken we got previously e.g. collections.stoken
 
 items = item_mgr.list(FetchOptions().stoken(stoken))
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+String stoken = "..."; // An stoken we got previously (items.stoken)
+
+ItemListResponse items = itemManager.list(new FetchOptions().stoken(stoken));
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val stoken = "..." // An stoken we got previously (items.stoken)
+
+val items = itemManager.list(FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -233,6 +385,36 @@ while not done:
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+String stoken = null;
+boolean done = false;
+while (!done) {
+    ItemListResponse items = itemManager.list(new FetchOptions().stoken(stoken).limit(30));
+    stoken = items.getStoken();
+    done = items.getDone();
+
+    process_new_items(items.getData());
+}
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+var stoken: String? = null
+var done = false
+while (!done) {
+    val items = itemManager.list(FetchOptions().stoken(stoken).limit(30))
+    stoken = items.stoken
+    done = items.done
+
+    process_new_items(items.data)
+}
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -258,6 +440,26 @@ item = item_mgr.fetch(item_uid)
 
 # Can optionally pass stoken to only return the items if changed:
 item = item_mgr.fetch(collection_uid, FetchOptions().stoken(stoken))
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Item item = itemManager.fetch(itemUid);
+
+// Can optionally pass stoken to only return the item if changed:
+Item item = itemManager.fetch(colluctionUid, new FetchOptions().stoken(stoken));
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val item = itemManager.fetch(itemUid);
+
+// Can optionally pass stoken to only return the item if changed:
+val item = itemManager.fetch(colluctionUid, FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -291,6 +493,30 @@ collection = col_mgr.fetch_updates(to_fetch, FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+Item[] to_fetch = new Item[] {item1, item2, item3};
+ItemListResponse items = itemManager.fetchUpdates(to_fetch);
+
+// Can optionally pass stoken to only return the item if changed:
+FetchOptions fetchOptions = new FetchOptions().stoken(stoken);
+ItemListResponse items = itemManager.fetchUpdates(to_fetch, fetch_options);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val to_fetch = arrayOf(item1, item2, item3)
+val items = itemManager.fetchUpdates(to_fetch)
+
+// Can optionally pass stoken to only return the item if changed:
+val fetchOptions = FetchOptions().stoken(stoken)
+val items = itemManager.fetchUpdates(to_fetch, fetch_options)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -317,6 +543,28 @@ item_mgr.batch([item])
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+ItemMetadata itemMeta = item.getMeta();
+itemMeta.setName("Name");
+item.setMeta(itemMeta);
+
+itemManager.batch(new Item[] {item});
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val itemMeta = item.meta
+itemMeta.name = "Name"
+item.meta = itemMeta
+
+itemManager.batch(arrayOf(item))
+```
+
+</TabItem>
 </CodeTabs>
 
 Deleting is even easier:
@@ -340,6 +588,24 @@ item_mgr.batch([item])
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+item.delete();
+
+itemManager.batch(new Item[] {item});
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+item.delete()
+
+itemManager.batch(arrayOf(item))
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -359,6 +625,20 @@ await itemManager.batch([item1, item2, item3, ...]);
 
 ```python
 item_mgr.batch([item1, item2, item3, ...])
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+itemManager.batch(new Item[] {item1, item2, item3, ...});
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+itemManager.batch(arrayOf(item1, item2, item3, ...))
 ```
 
 </TabItem>
@@ -426,6 +706,58 @@ item_mgr.transaction([item2])
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+// -> On device A:
+Item item1 = itemManager.fetch(itemUid1);
+Item item2 = itemManager.fetch(itemUid2);
+
+
+// -> On device B:
+Item item1 = itemManager.fetch(itemUid1);
+item1.setContent("Something else for item1")
+itemManager.batch(new Item[] {item1});
+
+
+// -> On device A (using the previously saved collection)
+item2.setContent("New content for item 2");
+
+// Will fail because item1 changed on device B
+itemManager.transaction(new Item[] {item1, item2});
+// Will succeed
+itemManager.batch(new Item[] {item1, item2});
+// Will succeed because item2 hasn't changed on device B
+itemManager.transaction(new Item[] {item2});
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+// -> On device A:
+val item1 = itemManager.fetch(itemUid1)
+val item2 = itemManager.fetch(itemUid2)
+
+
+// -> On device B:
+val item1 = itemManager.fetch(itemUid1)
+item1.content = "Something else for item1"
+itemManager.batch(arrayOf(item1))
+
+
+// -> On device A (using the previously saved collection)
+item2.content = "New content for item 2"
+
+// Will fail because item1 changed on device B
+itemManager.transaction(arrayOf(item1, item2))
+// Will succeed
+itemManager.batch(arrayOf(item1, item2))
+// Will succeed because item2 hasn't changed on device B
+itemManager.transaction(arrayOf(item2))
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -489,6 +821,62 @@ item_mgr.batch([item])
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+// -> On device A:
+String stoken = collection.stoken
+Item item1 = itemManager.fetch(itemUid1);
+
+
+// -> On device B:
+Item anotherItem = itemManager.fetch(anotherItemUid);
+anotherItem.setContent("content for another item")
+itemManager.batch(new Item[] {anotherItem});
+
+
+// -> On device A (using the previously saved collection)
+item.setContent("new secret content")
+
+// Will both fail
+FetchOptions fetchOptions = new FetchOptions().stoken(stoken);
+itemManager.transaction(new Item[] {item}, null, fetchOptions);
+itemManager.batch(new Item[] {item}, null, fetchOptions);
+
+// Will both succeed
+itemManager.transaction(new Item[] {item});
+itemManager.batch(new Item[] {item});
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+// -> On device A:
+val stoken = collection.stoken
+val item1 = itemManager.fetch(itemUid1)
+
+
+// -> On device B:
+val anotherItem = itemManager.fetch(anotherItemUid)
+anotherItem.content = "content for another item"
+itemManager.batch(arrayOf(anotherItem))
+
+
+// -> On device A (using the previously saved collection)
+item.content = "new secret content"
+
+// Will both fail
+val fetchOptions = FetchOptions().stoken(stoken)
+itemManager.transaction(arrayOf(item), null, fetchOptions)
+itemManager.batch(arrayOf(item), null, fetchOptions)
+
+// Will both succeed
+itemManager.transaction(arrayOf(item))
+itemManager.batch(arrayOf(item))
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -519,7 +907,6 @@ await itemManager.transaction([item2], [item1]);
 await itemManager.batch([item2], [item1]);
 
 // Can even use the item in both the list and deps in batch
-await item1.setContent("new secret content for item 1");
 // Will fail because item1 changed on device B
 await itemManager.batch([item1, item2], [item1]);
 ```
@@ -547,9 +934,62 @@ item_mgr.transaction([item2], [item1])
 item_mgr.batch([item2], [item1])
 
 # Can even use the item in both the list and deps in batch
-item1.content = b"new secret content for item 1"
 # Will fail because item1 changed on device B
 item_mgr.batch([item1, item2], [item1])
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+// -> On device A:
+Item item1 = itemManager.fetch(itemUid1);
+Item item2 = itemManager.fetch(itemUid2);
+
+
+// -> On device B:
+Item item1 = itemManager.fetch(itemUid1);
+item1.setContent("Something else for item1")
+itemManager.batch(new Item[] {item1});
+
+
+// -> On device A (using the previously saved collection)
+item2.setContent("New content for item 2");
+
+// Will both fail because item1 changed
+itemManager.transaction(new Item[] {item2}, new Item[] {item1});
+itemManager.batch(new Item[] {item2}, new Item[] {item1});
+
+// Can even use the item in both the list and deps in batch
+// Will fail because item1 changed on device B
+await itemManager.batch(new Item[] {item1, item2}, new Item[] {item1});
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+// -> On device A:
+val item1 = itemManager.fetch(itemUid1)
+val item2 = itemManager.fetch(itemUid2)
+
+
+// -> On device B:
+val item1 = itemManager.fetch(itemUid1)
+item1.content = "Something else for item1"
+itemManager.batch(arrayOf(item1))
+
+
+// -> On device A (using the previously saved collection)
+item2.content = "New content for item 2"
+
+// Will both fail because item1 changed
+itemManager.transaction(arrayOf(item2), arrayOf(item1));
+itemManager.batch(arrayOf(item2), arrayOf(item1));
+
+// Can even use the item in both the list and deps in batch
+// Will fail because item1 changed on device B
+await itemManager.batch(arrayOf(item1, item2), arrayOf(item1));
 ```
 
 </TabItem>
@@ -605,6 +1045,48 @@ item_mgr.batch([col_item, item1]);
 # In addition, these are true:
 assert(collection.meta == col_item.meta)
 assert(collection.content == col_item.content)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Collection collection = ...;
+Item item1 = ...;
+Item item2 = ...;
+
+// Get the item out of the collection
+Item colItem = collection.getItem();
+
+// The collection item can then be used like any other item:
+itemManager.transaction(new Item[] {colItem, item1}, new Item[] {item2});
+itemManager.transaction(new Item[] {item1, item2}, new Item[] {colItem});
+itemManager.batch(new Item[] {colItem, item1});
+
+// In addition, these are true:
+assert (collection.getMetaRaw() == colItem.getMetaRaw());
+assert (collection.getContent() == colItem.getContent());
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val collection = ...
+val item1 = ...
+val item2 = ...
+
+// Get the item out of the collection
+var colItem = collection.item
+
+// The collection item can then be used like any other item:
+itemManager.transaction(arrayOf(colItem, item1), arrayOf(item2)
+itemManager.transaction(arrayOf(item1, item2), arrayOf(colItem))
+itemManager.batch(arrayOf(colItem, item1))
+
+// In addition, these are true:
+assert(collection.metaRaw == colItem.metaRaw)
+assert(collection.content == colItem.content)
 ```
 
 </TabItem>
@@ -691,6 +1173,36 @@ item.content.decode()
 item.content = b"Some bytes"
 # Set the content to a string
 item.content = "Some bytes".encode()
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+// The Java API returns `byte[]` by default
+item.getContent();
+// Try decoding the binary data to a UTF-8 string and return that
+item.getContentString();
+
+// Sets the content to a binary blob
+item.setContent("Bla".getBytes("UTF-8"));
+// Sets the content to a string
+item.setContent("Hello");
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+// The Java API returns `byte[]` by default
+item.content
+// Try decoding the binary data to a UTF-8 string and return that
+item.contentString
+
+// Sets the content to a binary blob
+item.content = "Bla".toByteArray()
+// Sets the content to a string
+item.content = "Hello"
 ```
 
 </TabItem>

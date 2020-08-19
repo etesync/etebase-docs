@@ -38,6 +38,34 @@ etebase = Account.signup(client, user, "password")
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+import com.etebase.client.*;
+import okhttp3.OkHttpClient;
+
+OkHttpClient httpClient =  new OkHttpClient.Builder().build();
+
+User user = new User("username", "text@example.com");
+Client client = Client.create(httpClient, null);
+Account etebase = Account.signup(client, user, "password");
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+import com.etebase.client.*
+import okhttp3.OkHttpClient;
+
+val httpClient: OkHttpClient = Builder().build()
+
+val user = User("username", "text@example.com")
+val client = Client.create(httpClient, null)
+val etebase = Account.signup(client, user, "password")
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -63,6 +91,32 @@ etebase = Account.login(client, "username", "password")
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+import com.etebase.client.*;
+import okhttp3.OkHttpClient;
+
+OkHttpClient httpClient =  new OkHttpClient.Builder().build();
+
+Client client = Client.create(httpClient, null);
+Account etebase = Account.login(client, "username", "password");
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+import com.etebase.client.*
+import okhttp3.OkHttpClient;
+
+val httpClient: OkHttpClient = Builder().build()
+
+val client = Client.create(httpClient, null)
+val etebase = Account.login(client, "username", "password")
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -81,6 +135,20 @@ await etebase.changePassword("new password");
 <TabItem value="py">
 
 ```python
+etebase.changePassword("new password")
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+etebase.changePassword("new password");
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
 etebase.changePassword("new password")
 ```
 
@@ -120,6 +188,36 @@ etebase = Account.restore(client, stored_session, None)
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+import com.etebase.client.*;
+
+Client client = Client.create(httpClient, null);
+Account etebase = Account.login(client, "username", "password");
+
+String storedSession = etebase.save(null);
+
+// later on...
+Account etebase = Account.restore(client, storedSession, null);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+import com.etebase.client.*
+
+val client = Client.create(httpClient, null)
+val etebase = Account.login(client, "username", "password")
+
+val storedSession = etebase.save(null)
+
+// later on...
+val etebase = Account.restore(client, storedSession, null)
+```
+
+</TabItem>
 </CodeTabs>
 
 ### Encrypting the stored session
@@ -156,6 +254,40 @@ stored_session = etebase.save(encryption_key)
 
 # later on...
 etebase = Account.restore(client, stored_session, encryption_key)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+import com.etebase.client.*;
+
+Client client = Client.create(httpClient, null);
+Account etebase = Account.login(client, "username", "password");
+
+// Save the key somewhere safe (e.g. the OS's key store)
+byte[] encryptionKey = Utils.randomBytes(32);
+String storedSession = etebase.save(encryptionKey);
+
+// later on...
+Account etebase = Account.restore(client, storedSession, encryptionKey);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+import com.etebase.client.*
+
+val client = Client.create(httpClient, null)
+val etebase = Account.login(client, "username", "password")
+
+// Save the key somewhere safe (e.g. the OS's key store)
+val encryptionKey = Utils.randomBytes(32)
+val storedSession = etebase.save(encryptionKey)
+
+// later on...
+val etebase = Account.restore(client, storedSession, encryptionKey)
 ```
 
 </TabItem>

@@ -48,6 +48,32 @@ pip install etebase
 ```
 
 </TabItem>
+<TabItem value="java">
+
+To install Etebase on Android:
+
+```groovy title="app/build.gradle"
+dependencies {
+    // ... rest of the deps
+    def etebaseVersion = '0.1.0'
+    implementation "com.etebase:client:$etebaseVersion@aar"
+}
+```
+
+</TabItem>
+<TabItem value="kt">
+
+To install Etebase on Android:
+
+```groovy title="app/build.gradle"
+dependencies {
+    // ... rest of the deps
+    def etebaseVersion = '0.1.0'
+    implementation "com.etebase:client:$etebaseVersion@aar"
+}
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -70,6 +96,24 @@ Etebase.Account.login(...);
 from etebase import Account
 
 Account.login(...)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+import com.etebase.client.Account;
+
+Account etebase = Account.login(...)
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+import com.etebase.client.Account
+
+val etebase = Account.login(...)
 ```
 
 </TabItem>

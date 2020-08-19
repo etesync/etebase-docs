@@ -43,6 +43,28 @@ invitation_manager.pubkey
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+Account etebase = Account.login(...);
+CollectionInvitationManager invitationManager = etebase.getInvitationManager();
+
+// You can now share your pubkey
+byte[] myPubkey = invitationManager.getPubkey();
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val etebase = Account.login(...)
+val invitationManager = etebase.invitationManager
+
+// You can now share your pubkey
+val myPubkey = invitationManager.pubkey
+```
+
+</TabItem>
 </CodeTabs>
 
 ### Pretty-print the public key
@@ -76,7 +98,34 @@ from etebase import pretty_fingerprint
 fingerprint = pretty_fingerprint(my_pubkey)
 
 print(fingerprint)
-/* Output:
+# Output:
+# 59015   06339   15209   34335
+# 33325   43829   22169   46131
+# 39378   39949   54591   49756
+# 29874   56290   38212   30949
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+String prettyFingerprint = Utils.getPrettyFingerprint(myPubkey);
+
+/* prettyFingerprint:
+59015   06339   15209   34335
+33325   43829   22169   46131
+39378   39949   54591   49756
+29874   56290   38212   30949
+*/
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val prettyFingerprint = Utils.getPrettyFingerprint(myPubkey)
+
+/* prettyFingerprint:
 59015   06339   15209   34335
 33325   43829   22169   46131
 39378   39949   54591   49756
@@ -128,9 +177,41 @@ invitation_manager.invite(collection, "username2", user2.pubkey, "ro")
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+CollectionInvitationManager invitationManager = etebase.getInvitationManager();
+
+// Fetch their public key
+UserProfile user2 = invitationManager.fetchUserProfile("username2");
+
+// Verify user2.pubkey is indeed the pubkey you expect.
+// This is done in a secure channel (e.g. encrypted chat or in person)
+
+// Assuming the pubkey is as expected, send the invitation
+invitationManager.invite(collection, "username2", user2.getPubkey(), "ro");
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val invitationManager = etebase.invitationManager
+
+// Fetch their public key
+val user2 = invitationManager.fetchUserProfile("username2")
+
+// Verify user2.pubkey is indeed the pubkey you expect.
+// This is done in a secure channel (e.g. encrypted chat or in person)
+
+// Assuming the pubkey is as expected, send the invitation
+invitationManager.invite(collection, "username2", user2.pubkey, "ro")
+```
+
+</TabItem>
 </CodeTabs>
 
-As you can see from the example above, when inviting a user you also set the wanted access level. Allowed values are: `Admin`, `ReadWrite`, and `ReadOnly`.
+As you can see from the example above, when inviting a user you also set the wanted access level. Allowed values are: `Admin ("adm")`, `ReadWrite ("rw")`, and `ReadOnly ("ro")`.
 
 
 ## Responding to invitations
@@ -164,6 +245,7 @@ await invitationManager.reject(invitation);
 
 ```python
 # login as user2
+etebase = Account.login(client, "username2", "password")
 invitation_manager = etebase.get_invitation_manager()
 
 # List pending invitations
@@ -179,6 +261,50 @@ const fromPubkey = invitation.fromPubkey;
 invitation_manager.accept(invitation)
 # or reject the invitation:
 invitation_manager.reject(invitation)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+// login as user2
+Account etebase = Account.login("username2", "password");
+CollectionInvitationManager invitationManager = etebase.getInvitationManager();
+
+// List pending invitations
+InvitationListResponse invitations = invitationManager.listIncoming();
+SignedInvitation invitation = invitations.getData()[0]; // get first invitation
+
+// Verify the sender's pubkey is indeed the pubkey you expect.
+// This is done in a secure channel (e.g. encrypted chat or in person)
+byte[] fromPubkey = invitation.getFromPubkey();
+
+// We can now either accept
+invitationManager.accept(invitation);
+// or reject the invitation:
+invitationManager.reject(invitation);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+// login as user2
+val etebase = Account.login("username2", "password")
+val invitationManager = etebase.invitationManager
+
+// List pending invitations
+val invitations = invitationManager.listIncoming()
+val invitation = invitations.data[0] // get first invitation
+
+// Verify the sender's pubkey is indeed the pubkey you expect.
+// This is done in a secure channel (e.g. encrypted chat or in person)
+val fromPubkey = invitation.fromPubkey
+
+// We can now either accept
+invitationManager.accept(invitation)
+// or reject the invitation:
+invitationManager.reject(invitation)
 ```
 
 </TabItem>
@@ -207,6 +333,24 @@ member_manager.leave()
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+CollectionMemberManager memberManager = colMgr.getMemberManager(collection);
+
+memberManager.leave();
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val memberManager = colMgr.getMemberManager(collection)
+
+memberManager.leave()
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -225,7 +369,7 @@ const memberManager = collectionManager.getMemberManager(collection);
 const members = await memberManager.list();
 
 // Print the users and their access levels
-for (const member of members) {
+for (const member of members.data) {
   console.log(member.username, member.accessLevel);
 }
 ```
@@ -241,6 +385,34 @@ members = member_manager.list()
 # Print the users and their access levels
 for member in members.data:
     print(member.username, member.access_level)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+CollectionMemberManager memberManager = colMgr.getMemberManager(collection);
+
+MemberListResponse members = memberManager.list();
+
+// Print the users and their access levels
+for (CollectionMember member: members.getData()) {
+    System.out.println(member.getUsername(), member.getAccessLevel());
+}
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val memberManager = colMgr.getMemberManager(collection)
+
+val members = memberManager.list()
+
+// Print the users and their access levels
+for (member in members.data) {
+    System.out.println(member.username, member.accessLevel)
+}
 ```
 
 </TabItem>
@@ -270,6 +442,26 @@ member_manager.modify_access_level("username2", new_access_level)
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+CollectionMemberManager memberManager = colMgr.getMemberManager(collection);
+
+String newAccessLevel = "rw";
+memberManager.modifyAccessLevel("username2", newAccessLevel);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val memberManager = colMgr.getMemberManager(collection)
+
+val newAccessLevel = "rw"
+memberManager.modifyAccessLevel("username2", newAccessLevel)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -291,6 +483,24 @@ await memberManager.remove("username2");
 member_manager = col_mgr.get_member_manager(collection)
 
 member_manager.remove("username2")
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+CollectionMemberManager memberManager = colMgr.getMemberManager(collection);
+
+memberManager.remove("username2");
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val memberManager = colMgr.getMemberManager(collection)
+
+memberManager.remove("username2")
 ```
 
 </TabItem>
@@ -336,6 +546,36 @@ while not done:
     done = invitations.done
 
     process_outgoing_invitations(invitations.data)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+String iterator = null;
+boolean done = false;
+while (!done) {
+    InvitationListResponse invitations = itemManager.listOutgoing(new FetchOptions().iterator(iterator).limit(30));
+    iterator = invitations.getIterator();
+    done = invitations.getDone();
+
+    processOutgoingInvitations(invitations.getData());
+}
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+var iterator: String? = null
+var done = false
+while (!done) {
+    val invitations = itemManager.listOutgoing(item, FetchOptions().iterator(iterator).limit(30))
+    iterator = invitations.iterator
+    done = invitations.done
+
+    processOutgoingInvitations(invitations.data)
+}
 ```
 
 </TabItem>

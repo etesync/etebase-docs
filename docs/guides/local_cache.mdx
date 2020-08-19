@@ -56,6 +56,38 @@ collection.content = b"New content"
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+// Create a collection
+Collection collection = colMgr.create(...);
+
+// The cache blob is just a Uint8Array that can be saved for later use
+byte[] cacheBlob = colMgr.cacheSave(collection);
+
+// Later on we can load the object back
+Collection collection = colMgr.cacheLoad(cacheBlob);
+// And use it like any other object:
+collection.setContent("New content");
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+// Create a collection
+val collection = colMgr.create(...)
+
+// The cache blob is just a Uint8Array that can be saved for later use
+val cacheBlob = colMgr.cacheSave(collection)
+
+// Later on we can load the object back
+val collection = colMgr.cacheLoad(cacheBlob)
+// And use it like any other object:
+collection.content = "New content"
+```
+
+</TabItem>
 </CodeTabs>
 
 ### As Base64 encoded string
@@ -92,6 +124,38 @@ cache_b64 = Base64Url.to_base64(col_mgr.cache_save(collection))
 collection = col_mgr.cache_load(Base64Url.from_base64(cache_blob))
 # And use it like any other object:
 collection.content = b"New content"
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+// Create a collection
+Collection collection = colMgr.create(...);
+
+// The cache blob is just a Uint8Array that can be saved for later use
+String cacheB64 = Utils.toBase64(colMgr.cacheSave(collection));
+
+// Later on we can load the object back
+Collection collection = colMgr.cacheLoad(Utils.fromBase64(cacheB64));
+// And use it like any other object:
+collection.setContent("New content");
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+// Create a collection
+val collection = colMgr.create(...)
+
+// The cache blob is just a Uint8Array that can be saved for later use
+val cacheB64  = Utils.toBase64(colMgr.cacheSave(collection))
+
+// Later on we can load the object back
+val collection = colMgr.cacheLoad(Utils.fromBase64(cacheB64))
+// And use it like any other object:
+collection.content = "New content"
 ```
 
 </TabItem>
@@ -133,6 +197,38 @@ item.content = b"New content"
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+// Create an item
+Item item = itemManager.create(...);
+
+// The cache blob is just a Uint8Array that can be saved for later use
+byte[] cacheBlob = itemManager.cacheSave(item);
+
+// Later on we can load the object back
+Item item = itemManager.cacheLoad(cacheBlob);
+// And use it like any other object:
+item.setContent("New content");
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+// Create an item
+val item = itemManager.create(...)
+
+// The cache blob is just a Uint8Array that can be saved for later use
+val cacheBlob = itemManager.cacheSave(item)
+
+// Later on we can load the object back
+val item = itemManager.cacheLoad(cacheBlob)
+// And use it like any other object:
+item.content = "New content"
+```
+
+</TabItem>
 </CodeTabs>
 
 ### As Base64 encoded string
@@ -169,6 +265,38 @@ cache_b64 = Base64Url.to_base64(item_mgr.cache_save(item))
 item = item_mgr.cache_load(Base64Url.from_base64(cache_blob))
 # And use it like any other object:
 item.content = b"New content"
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+// Create an item
+Item item = itemManager.create(...);
+
+// The cache blob is just a Uint8Array that can be saved for later use
+String cacheB64 = Utils.toBase64(itemManager.cacheSave(item));
+
+// Later on we can load the object back
+Item item = itemManager.cacheLoad(Utils.fromBase64(cacheB64));
+// And use it like any other object:
+item.setContent("New content");
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+// Create an item
+val item = itemManager.create(...)
+
+// The cache blob is just a Uint8Array that can be saved for later use
+val cacheB64  = Utils.toBase64(itemManager.cacheSave(item))
+
+// Later on we can load the object back
+val item = itemManager.cacheLoad(Utils.fromBase64(cacheB64))
+// And use it like any other object:
+item.content = "New content"
 ```
 
 </TabItem>
