@@ -72,10 +72,7 @@ CollectionMetadata collectionMetadata = new CollectionMetadata(
 );
 collectionMetadata.setDescription("My holiday calendar");
 collectionMetadata.setColor("#23aabbff");
-Collection collection = colMgr.create(
-    collectionMetadata,
-    "") // Empty content
-);
+Collection collection = colMgr.create(collectionMetadata, "");
 
 colMgr.upload(collection);
 ```
@@ -95,10 +92,7 @@ val colMgr = etebase.collectionManager
 val collectionMetadata = CollectionMetadata("cyberdyne.calendar", "Holidays")
 collectionMetadata.description = "My holiday calendar"
 collectionMetadata.color = "#23aabbff"
-val collection = colMgr.create(
-    collectionMetadata,
-    "" // Empty content
-)
+val collection = colMgr.create(collectionMetadata, "")
 
 colMgr.upload(collection)
 ```
