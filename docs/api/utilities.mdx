@@ -39,6 +39,32 @@ decoded = Base64Url.from_base64(b64encoded);
 ```
 
 </TabItem>
+<TabItem value="java">
+
+```java
+import com.etebase.client.Utils;
+
+byte[] binaryData = "test".getBytes("UTF-8");
+
+String b64encoded = Utils.toBase64(binaryData);
+byte[] decoded = Utils.fromBase64(b64encoded);
+// decoded is equal to binaryData
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+import com.etebase.client.Utils
+
+val binaryData = "test".toByteArray()
+
+val b64encoded = Utils.toBase64(binaryData)
+val decoded = Utils.fromBase64(b64encoded)
+// decoded is equal to binaryData
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -67,6 +93,26 @@ from etebase import random_bytes
 
 # Generate 32 random bytes
 random_data = random_bytes(32)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+import com.etebase.client.Utils;
+
+// Generate 32 random bytes
+byte[] randomData = Utils.randomBytes(32);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+import com.etebase.client.Utils
+
+// Generate 32 random bytes
+val randomData = Utils.randomBytes(32)
 ```
 
 </TabItem>
