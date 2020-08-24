@@ -182,6 +182,47 @@ etebase_account_change_password(account, "new password");
 </CodeTabs>
 
 
+## Logout
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+await etebase.logout();
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+etebase.logout()
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+etebase.logout();
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+etebase.logout()
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+etebase_account_logout(account);
+```
+
+</TabItem>
+</CodeTabs>
+
+
 ## Session save and restore
 
 Most apps can't, or don't want the user to enter their passwords every time they are opened, that's why Etebase supports saving and restoring sessions.
