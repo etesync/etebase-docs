@@ -66,6 +66,16 @@ val etebase = Account.signup(client, user, "password")
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+const char *server_url = etebase_get_default_server_url();
+EtebaseClient *client = etebase_client_new("client-name", server_url);
+EtebaseUser *user = etebase_user_new("username", "test@example.com");
+EtebaseAccount *etebase = etebase_account_signup(client, user, "password");
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -117,6 +127,15 @@ val etebase = Account.login(client, "username", "password")
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+const char *server_url = etebase_get_default_server_url();
+EtebaseClient *client = etebase_client_new("client-name", server_url);
+EtebaseAccount *etebase = etebase_account_login(client, "username", "password");
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -135,7 +154,7 @@ await etebase.changePassword("new password");
 <TabItem value="py">
 
 ```python
-etebase.changePassword("new password")
+etebase.change_password("new password")
 ```
 
 </TabItem>
@@ -153,7 +172,15 @@ etebase.changePassword("new password")
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+etebase_account_change_password(account, "new password");
+```
+
+</TabItem>
 </CodeTabs>
+
 
 ## Session save and restore
 
@@ -215,6 +242,21 @@ val storedSession = etebase.save(null)
 
 // later on...
 val etebase = Account.restore(client, storedSession, null)
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+const char *server_url = etebase_get_default_server_url();
+EtebaseClient *client = etebase_client_new("client-name", server_url);
+EtebaseAccount *etebase = etebase_account_login(client, "username", "password");
+
+char *stored_session = etebase_account_save(etebase, NULL, 0);
+
+// later on...
+EtebaseAccount *etebase = etebase_account_restore(client, stored_session, NULL, 0);
+free(stored_session);
 ```
 
 </TabItem>
@@ -288,6 +330,24 @@ val storedSession = etebase.save(encryptionKey)
 
 // later on...
 val etebase = Account.restore(client, storedSession, encryptionKey)
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+const char *server_url = etebase_get_default_server_url();
+EtebaseClient *client = etebase_client_new("client-name", server_url);
+EtebaseAccount *etebase = etebase_account_login(client, "username", "password");
+
+// Save the key somewhere safe (e.g. the OS's key store)
+char encryption_key[32];
+etebase_utils_randombytes(encryption_key, sizeof(encryption_key));
+char *stored_session = etebase_account_save(etebase,encryption_key, sizeof(encryption_key));
+
+// later on...
+EtebaseAccount *etebase = etebase_account_restore(client, stored_session, encryption_key, sizeof(encryption_key));
+free(stored_session);
 ```
 
 </TabItem>

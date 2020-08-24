@@ -74,6 +74,11 @@ dependencies {
 ```
 
 </TabItem>
+<TabItem value="c">
+
+To use the C library please get it from your distributions package manager (where available) or build the library from source.
+
+</TabItem>
 </CodeTabs>
 
 
@@ -114,6 +119,15 @@ Account etebase = Account.login(...)
 import com.etebase.client.Account
 
 val etebase = Account.login(...)
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+#include <etesync.h>
+
+EtebaseAccount *account = etebase_account_login(...);
 ```
 
 </TabItem>

@@ -98,6 +98,29 @@ colMgr.upload(collection)
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+const char *server_url = etebase_get_default_server_url();
+EtebaseClient *client = etebase_client_new("client-name", server_url);
+EtebaseAccount *etebase = etebase_account_login(client, "username", "password");
+
+// Create, encrypt and upload a new collection
+EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
+EtebaseCollectionMetadata *col_meta = etebase_collection_metadata_new("cyberdyne.calendar", "Holidays");
+etebase_collection_metadata_set_description(col_meta, "My holidy calendar");
+etebase_collection_metadata_set_color(col_meta, "#23aabbff");
+EtebaseCollection *col = etebase_collection_manager_create(col_mgr, col_meta, "", 0);
+etebase_collection_metadata_destroy(col_meta);
+
+etebase_collection_manager_upload(col_mgr, col, NULL);
+
+// Cleanup
+etebase_collection_destroy(col);
+etebase_collection_manager_destroy(col_mgr);
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -181,6 +204,28 @@ Collections:
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+EtebaseAccount *etebase = etebase_account_login(...);
+
+EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
+EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, NULL);
+/*
+Collections:
+{
+  etebase_collection_list_response_get_data(): EtebaseCollection[] // Returnd array of collections
+  etebase_collection_list_response_get_stoken(): const char * // The sync token for this fetch
+  ... // More fields we'll cover later
+}
+*/
+
+// Cleanup
+etebase_collection_list_response_destroy(col_list);
+etebase_collection_manager_destroy(col_mgr);
+```
+
+</TabItem>
 </CodeTabs>
 
 The number of returned collections is limited by default, and you can control this limit by passing a different limit parameter as we'll see in the next example:
@@ -229,6 +274,23 @@ val collections = colMgr.list(FetchOptions().limit(50))
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+EtebaseAccount *etebase = etebase_account_login(...);
+
+EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
+EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+etebase_fetch_options_set_limit(fetch_options, 50);
+EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, NULL);
+
+// Cleanup
+etebase_fetch_options_destroy(fetch_options);
+etebase_collection_list_response_destroy(col_list);
+etebase_collection_manager_destroy(col_mgr);
+```
+
+</TabItem>
 </CodeTabs>
 
 ### Only fetch recent changes
@@ -272,6 +334,23 @@ val stoken = "..." // An stoken we got previously e.g. collections.stoken
 
 val colMgr = etebase.collectionManager
 val collections = colMgr.list(FetchOptions().stoken(stoken))
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+const char *stoken = "..."; // An stoken we got previously e.g. collections.stoken
+
+EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
+EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+etebase_fetch_options_set_stoken(fetch_options, stoken);
+EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, NULL);
+
+// Cleanup
+etebase_fetch_options_destroy(fetch_options);
+etebase_collection_list_response_destroy(col_list);
+etebase_collection_manager_destroy(col_mgr);
 ```
 
 </TabItem>
@@ -343,6 +422,39 @@ while (!done) {
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+char *stoken = NULL;
+bool done = 0;
+while (!done) {
+    EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+    etebase_fetch_options_set_stoken(fetch_options, stoken);
+    etebase_fetch_options_set_limit(fetch_options, 30);
+    EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, fetch_options);
+
+    if (stoken) {
+        free(stoken);
+    }
+    stoken = strdup(etebase_collection_list_response_get_stoken(col_list));
+    done = etebase_collection_list_response_is_done(col_list);
+
+    uintptr_t data_len = etebase_collection_list_response_get_data_length(col_list);
+    const EtebaseCollection *data[data_len];
+    fail_if(etebase_collection_list_response_get_data(col_list, data));
+
+    process_new_collections(data, data_len);
+
+    etebase_fetch_options_destroy(fetch_options);
+    etebase_collection_list_response_destroy(col_list);
+}
+
+if (stoken) {
+    free(stoken);
+}
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -388,6 +500,19 @@ val collection = colMgr.fetch(collectionUid);
 
 // Can optionally pass stoken to only return the collection if changed:
 val collection = colMgr.fetch(colluctionUid, FetchOptions().stoken(stoken))
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+EtebaseCollection *col = etebase_collection_manager_fetch(col_mgr, col_uid, NULL);
+
+// Can optionally pass stoken to only return the collection if changed:
+EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+etebase_fetch_options_set_stoken(fetch_options, stoken);
+EtebaseCollection *col = etebase_collection_manager_fetch(col_mgr, col_uid, fetch_options);
+etebase_fetch_options_destroy(fetch_options);
 ```
 
 </TabItem>
@@ -445,6 +570,20 @@ val collections = colMgr.list(FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+const char *stoken = "..."; // An stoken we got previously e.g. collections.stoken
+
+EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+etebase_fetch_options_set_stoken(fetch_options, stoken);
+EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, fetch_options);
+etebase_fetch_options_destroy(fetch_options);
+
+// etebase_collection_list_response_get_removed_memberships() is either empty or a list of removed uids.
+```
+
+</TabItem>
 </CodeTabs>
 
 *Note:* because membership removals are not signed, it's good practice to show an indication to the user before removing the local copy.
@@ -497,6 +636,18 @@ colMgr.upload(collection)
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+EtebaseCollectionMetadata *col_meta = etebase_collection_get_meta(col);
+etebase_collection_metadata_set_name(col_meta, "Name");
+etebase_collection_set_meta(col, col_meta);
+etebase_collection_metadata_destroy(col_meta);
+
+etebase_collection_manager_upload(col_mgr, col, NULL);
+```
+
+</TabItem>
 </CodeTabs>
 
 Deleting is even easier:
@@ -535,6 +686,15 @@ colMgr.upload(collection);
 collection.delete()
 
 colMgr.upload(collection)
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+etebase_collection_delete(col);
+
+etebase_collection_manager_upload(col_mgr, col, NULL);
 ```
 
 </TabItem>
@@ -662,6 +822,40 @@ colMgr.upload(collection)
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+// -> On device A:
+EtebaseCollection *col = etebase_collection_manager_fetch(col_mgr, col_uid, NULL);
+
+
+// -> On device B:
+EtebaseCollection *col = etebase_collection_manager_fetch(col_mgr, col_uid, NULL);
+EtebaseCollectionMetadata *col_meta = etebase_collection_get_meta(col);
+etebase_collection_metadata_set_name(col_meta, "New name");
+etebase_collection_set_meta(col, col_meta);
+etebase_collection_metadata_destroy(col_meta);
+
+etebase_collection_manager_upload(col_mgr, col, NULL);
+
+etebase_collection_destroy(col);
+
+
+// -> On device A (using the previously saved collection)
+EtebaseCollectionMetadata *col_meta = etebase_collection_get_meta(col);
+etebase_collection_metadata_set_name(col_meta, "Another name");
+etebase_collection_set_meta(col, col_meta);
+etebase_collection_metadata_destroy(col_meta);
+
+// Will fail
+etebase_collection_manager_transaction(col_mgr, col, NULL);
+// Will succeed
+etebase_collection_manager_upload(col_mgr, col, NULL);
+
+etebase_collection_destroy(col);
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -786,6 +980,46 @@ colMgr.upload(collection)
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+// -> On device A:
+EtebaseCollection *col = etebase_collection_manager_fetch(col_mgr, col_uid, NULL);
+const char *stoken = etebase_collection_get_stoken(col);
+
+{
+    // -> On device B:
+    EtebaseCollection *col = etebase_collection_manager_fetch(col_mgr, col_uid, NULL);
+    EtebaseItemManager *item_mgr = etebase_collection_manager_get_item_manager(col_mgr, col);
+    etebase_item_manager_batch(...);
+
+    etebase_item_manager_destroy(item_mgr);
+    etebase_collection_destroy(col);
+}
+
+// -> On device A (using the previously saved collection)
+EtebaseCollectionMetadata *col_meta = etebase_collection_get_meta(col);
+etebase_collection_metadata_set_name(col_meta, "Another name");
+etebase_collection_set_meta(col, col_meta);
+etebase_collection_metadata_destroy(col_meta);
+
+EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+etebase_fetch_options_set_stoken(fetch_options, stoken);
+
+// Will both fail
+etebase_collection_manager_transaction(col_mgr, col, fetch_options);
+etebase_collection_manager_upload(col_mgr, col, fetch_options);
+
+etebase_fetch_options_destroy(fetch_options);
+
+// Will both succeed
+etebase_collection_manager_transaction(col_mgr, col, NULL);
+etebase_collection_manager_upload(col_mgr, col, NULL);
+
+etebase_collection_destroy(col);
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -853,6 +1087,40 @@ collection.contentString
 collection.content = "Bla".toByteArray()
 // Sets the content to a string
 collection.content = "Hello"
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+// The C API always works on binary data,
+// This means content is *not* NULL terminated!
+
+// It's generally fastest to just try to get the content into a buffer
+// if we think it's likely to be under a certain size.
+char tmp[500];
+intptr_t len = etebase_collection_get_content(col, tmp, sizeof(tmp));
+
+if (len < 0) {
+    // Error
+} else if (len > sizeof(tmp)) {
+    // This means we should allocate a buffer of size len to fetch into
+    char *tmp2 = malloc(len);
+    etebase_collection_get_content(col, tmp2, len);
+    // Do something with tmp2
+    free(tmp2);
+}
+
+// As said above, content is not null terminated.
+// To get the content as a null terminated string:
+char tmp[500];
+intptr_t len = etebase_collection_get_content(col, tmp, sizeof(tmp));
+
+if (len < 0) {
+    // Error
+} else {
+    tmp[len] = 0;
+}
 ```
 
 </TabItem>

@@ -88,6 +88,25 @@ collection.content = "New content"
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+// Create a collection
+EtebaseCollection *col = etebase_collection_manager_create(...);
+
+// The cache blob is just a Uint8Array that can be saved for later use
+uintptr_t cache_size;
+void *cache_blob = etebase_collection_manager_cache_save(col_mgr, col, &cache_size);
+
+// Later on we can load the object back
+EtebaseCollection *col = etebase_collection_manager_cache_load(col_mgr, cache_blob, cache_size)
+// And use it like any other object:
+etebase_collection_get_uid(col);
+
+free(cache_blob);
+```
+
+</TabItem>
 </CodeTabs>
 
 ### As Base64 encoded string
@@ -150,12 +169,36 @@ collection.setContent("New content");
 val collection = colMgr.create(...)
 
 // The cache blob is just a Uint8Array that can be saved for later use
-val cacheB64  = Utils.toBase64(colMgr.cacheSave(collection))
+val cacheB64 = Utils.toBase64(colMgr.cacheSave(collection))
 
 // Later on we can load the object back
 val collection = colMgr.cacheLoad(Utils.fromBase64(cacheB64))
 // And use it like any other object:
 collection.content = "New content"
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+// Create a collection
+EtebaseCollection *col = etebase_collection_manager_create(...);
+
+// The cache blob is just a Uint8Array that can be saved for later use
+uintptr_t cache_size;
+void *cache_blob = etebase_collection_manager_cache_save(col_mgr, col, &cache_size);
+char cache_b64[ETEBASE_UTILS_TO_BASE64_MAX_LEN(cache_size)];
+etebase_utils_to_base64(cache_blob, cache_size, cache_64, sizeof(cache_64));
+
+// Later on we can load the object back
+char decoded[ETEBASE_UTILS_FROM_BASE64_MAX_LEN(strlen(cache_64))];
+uintptr_t decoded_len = 0;
+etebase_utils_from_base64(cache_64, decoded, sizeof(decoded), &decoded_len);
+EtebaseCollection *col = etebase_collection_manager_cache_load(col_mgr, decoded, decoded_len)
+// And use it like any other object:
+etebase_collection_get_uid(col);
+
+free(cache_blob);
 ```
 
 </TabItem>
@@ -229,6 +272,25 @@ item.content = "New content"
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+// Create a item
+EtebaseItem *item = etebase_item_manager_create(...);
+
+// The cache blob is just a Uint8Array that can be saved for later use
+uintptr_t cache_size;
+void *cache_blob = etebase_item_manager_cache_save(item_mgr, item, &cache_size);
+
+// Later on we can load the object back
+EtebaseItem *item = etebase_item_manager_cache_load(item_mgr, cache_blob, cache_size)
+// And use it like any other object:
+etebase_item_get_uid(item);
+
+free(cache_blob);
+```
+
+</TabItem>
 </CodeTabs>
 
 ### As Base64 encoded string
@@ -291,12 +353,36 @@ item.setContent("New content");
 val item = itemManager.create(...)
 
 // The cache blob is just a Uint8Array that can be saved for later use
-val cacheB64  = Utils.toBase64(itemManager.cacheSave(item))
+val cacheB64 = Utils.toBase64(itemManager.cacheSave(item))
 
 // Later on we can load the object back
 val item = itemManager.cacheLoad(Utils.fromBase64(cacheB64))
 // And use it like any other object:
 item.content = "New content"
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+// Create a item
+EtebaseItem *item = etebase_item_manager_create(...);
+
+// The cache blob is just a Uint8Array that can be saved for later use
+uintptr_t cache_size;
+void *cache_blob = etebase_item_manager_cache_save(item_mgr, item, &cache_size);
+char cache_b64[ETEBASE_UTILS_TO_BASE64_MAX_LEN(cache_size)];
+etebase_utils_to_base64(cache_blob, cache_size, cache_64, sizeof(cache_64));
+
+// Later on we can load the object back
+char decoded[ETEBASE_UTILS_FROM_BASE64_MAX_LEN(strlen(cache_64))];
+uintptr_t decoded_len = 0;
+etebase_utils_from_base64(cache_64, decoded, sizeof(decoded), &decoded_len);
+EtebaseItem *item = etebase_item_manager_cache_load(item_mgr, decoded, decoded_len)
+// And use it like any other object:
+etebase_item_get_uid(item);
+
+free(cache_blob);
 ```
 
 </TabItem>

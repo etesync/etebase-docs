@@ -29,10 +29,10 @@ item.setContent("Second draft");
 await itemManager.batch([item]);
 
 const revisions = await itemManager.itemRevisions(item);
-assert(revisions.data.length === 1);
+assert(revisions.data.length === 2);
 
 // Revisions are normal items so we can use them as such
-const content = await revisions.data[0].getContent();
+const content = await revisions.data[1].getContent();
 assert(content === "First draft");
 
 
@@ -56,10 +56,10 @@ item.content = b"Second draft"
 item_mgr.batch([item])
 
 revisions = item_mgr.item_revisions(item)
-assert(len(list(revisions.data)) == 1)
+assert(len(list(revisions.data)) == 2)
 
 # Revisions are normal items so we can use them as such
-content = list(revisions.data)[0].content
+content = list(revisions.data)[1].content
 assert(content == b"First draft")
 
 
@@ -80,10 +80,10 @@ item.setContent("Second draft");
 itemManager.batch(new Item[] {item});
 
 ItemRevisionsListResponse revisions = itemManager.itemRevisions(item);
-assert(revisions.getData().length == 1);
+assert(revisions.getData().length == 2);
 
 // Revisions are normal items so we can use them as such
-String content = revisions.getData()[0].getContentString();
+String content = revisions.getData()[1].getContentString();
 assert(content === "First draft");
 
 
@@ -104,15 +104,56 @@ item.content = "Second draft"
 itemManager.batch(arrayOf(item))
 
 val revisions = itemManager.itemRevisions(item)
-assert(revisions.data.length == 1)
+assert(revisions.data.length == 2)
 
 // Revisions are normal items so we can use them as such
-val content = revisions.data[0].contentString
+val content = revisions.data[1].contentString
 assert(content === "First draft")
 
 
 // Collections are just items, so for collection revisions:
 val collectionRevisions = itemManager.itemRevisions(collection.item)
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+EtebaseItemMetadata *item_meta = etebase_item_metadata_new();
+etebase_item_metadata_set_item_type(item_meta, "file");
+const char item_content[] = "First draft";
+EtebaseItem *item = etebase_item_manager_create(item_mgr, item_meta, item_content, strlen(item_content));
+etebase_item_metadata_destroy(item_meta);
+
+const EtebaseItem *items[] = { item };
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+
+{
+    const char tmp[] = "Second draft";
+    etebase_item_set_content(item, tmp, strlen(tmp));
+
+    const EtebaseItem *items[] = { item };
+    etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+}
+
+EtebaseItemRevisionsListResponse *revisions = etebase_item_manager_item_revisions(item_mgr, item, NULL);
+
+uintptr_t list_len = etebase_item_revisions_list_response_get_data_length(revisions);
+assert_int_eq(1, list_len);
+
+{
+    // Revisions are normal items so we can use them as such
+    const EtebaseItem *list_items[list_len];
+    etebase_item_revisions_list_response_get_data(revisions, list_items);
+    char content2[100];
+    intptr_t content2_size = etebase_item_get_content(list_items[0], &content2, sizeof(content2));
+    content2[content2_size] = 0;
+    // This is true: content2 == "First draft"
+}
+
+// Collections are just items, so for collection revisions:
+EtebaseItem *col_item = etebase_collection_as_item(col);
+EtebaseItemRevisionsListResponse *revisions = etebase_item_manager_item_revisions(item_mgr, col_item, NULL);
 ```
 
 </TabItem>
@@ -185,6 +226,39 @@ while (!done) {
     done = revisions.done
 
     processRevisions(revisions.data)
+}
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+char *iterator = NULL;
+bool done = 0;
+while (!done) {
+    EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+    etebase_fetch_options_set_iterator(fetch_options, iterator);
+    etebase_fetch_options_set_limit(fetch_options, 30);
+    EtebaseItemRevisionsListResponse *revisions = etebase_item_manager_list(item_mgr, fetch_options);
+
+    if (iterator) {
+        free(iterator);
+    }
+    iterator = strdup(etebase_item_revisions_list_response_get_iterator(revisions));
+    done = etebase_item_revisions_list_response_is_done(revisions);
+
+    uintptr_t data_len = etebase_item_revisions_list_response_get_data_length(revisions);
+    const EtebaseItem *data[data_len];
+    etebase_item_revisions_list_response_get_data(revisions, data);
+
+    process_revisions(data, data_len);
+
+    etebase_fetch_options_destroy(fetch_options);
+    etebase_item_revisions_list_response_destroy(revisions);
+}
+
+if (iterator) {
+    free(iterator);
 }
 ```
 

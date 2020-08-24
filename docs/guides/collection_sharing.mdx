@@ -65,6 +65,21 @@ val myPubkey = invitationManager.pubkey
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+EtebaseAccount *etebase = etebase_account_login(...);
+
+EtebaseCollectionInvitationManager *invitation_manager = etebase_account_get_invitation_manager(etebase);
+
+// You can now share your pubkey
+const char *my_pubkey = etebase_invitation_manager_get_pubkey(invitation_manager);
+uintptr_t pubkey_size = etebase_invitation_manager_get_pubkey_size(invitation_manager);
+
+etebase_invitation_manager_destroy(invitation_manager);
+```
+
+</TabItem>
 </CodeTabs>
 
 ### Pretty-print the public key
@@ -124,6 +139,21 @@ String prettyFingerprint = Utils.getPrettyFingerprint(myPubkey);
 
 ```kotlin
 val prettyFingerprint = Utils.getPrettyFingerprint(myPubkey)
+
+/* prettyFingerprint:
+59015   06339   15209   34335
+33325   43829   22169   46131
+39378   39949   54591   49756
+29874   56290   38212   30949
+*/
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+char pretty[ETEBASE_UTILS_PRETTY_FINGERPRINT_SIZE];
+etebase_utils_pretty_fingerprint(my_pubkey, my_pubkey_size, pretty);
 
 /* prettyFingerprint:
 59015   06339   15209   34335
@@ -206,6 +236,27 @@ val user2 = invitationManager.fetchUserProfile("username2")
 
 // Assuming the pubkey is as expected, send the invitation
 invitationManager.invite(collection, "username2", user2.pubkey, "ro")
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+EtebaseCollectionInvitationManager *invitation_manager = etebase_account_get_invitation_manager(etebase);
+
+// Fetch their public key
+EtebaseUserProfile *user2 = etebase_invitation_manager_fetch_user_profile(invitation_manager, "username2");
+
+// Verify user2.pubkey is indeed the pubkey you expect.
+// This is done in a secure channel (e.g. encrypted chat or in person)
+
+// Assuming the pubkey is as expected, send the invitation
+etebase_invitation_manager_invite(invitation_manager, col, "username2",
+        etebase_user_profile_get_pubkey(user2), etebase_user_profile_get_pubkey_size(user2),
+        ETEBASE_COLLECTION_ACCESS_LEVEL_READ_ONLY);
+
+etebase_user_profile_destroy(user2);
+etebase_invitation_manager_destroy(invitation_manager);
 ```
 
 </TabItem>
@@ -308,6 +359,37 @@ invitationManager.reject(invitation)
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+// login as user2
+EtebaseAccount *etebase = etebase_account_login(client, "username2", "password");
+EtebaseCollectionInvitationManager *invitation_manager = etebase_account_get_invitation_manager(etebase);
+
+// List pending invitations
+EtebaseInvitationListResponse *invitations = etebase_invitation_manager_list_incoming(invitation_manager, NULL);
+
+uintptr_t data_len = etebase_invitation_list_response_get_data_length(invitations);
+const EtebaseSignedInvitation *data[data_len];
+etebase_invitation_list_response_get_data(invitations, data);
+
+const EtebaseSignedInvitation *invitation = data[0];
+
+// Verify the sender's pubkey is indeed the pubkey you expect.
+// This is done in a secure channel (e.g. encrypted chat or in person)
+const void *from_pubkey = etebase_signed_invitation_get_from_pubkey(invitation);
+
+// We can now either accept
+etebase_invitation_manager_accept(invitation_manager, invitation);
+// or reject the invitation:
+etebase_invitation_manager_reject(invitation_manager, invitation);
+
+etebase_invitation_list_response_destroy(invitations);
+
+etebase_invitation_manager_destroy(invitation_manager);
+```
+
+</TabItem>
 </CodeTabs>
 
 ## Leaving collections
@@ -348,6 +430,17 @@ memberManager.leave();
 val memberManager = colMgr.getMemberManager(collection)
 
 memberManager.leave()
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+EtebaseCollectionMemberManager *member_manager = etebase_collection_manager_get_member_manager(col_mgr, col);
+
+etebase_collection_member_manager_leave(member_manager);
+
+etebase_collection_member_manager_destroy(member_manager);
 ```
 
 </TabItem>
@@ -416,6 +509,28 @@ for (member in members.data) {
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+EtebaseCollectionMemberManager *member_manager = etebase_collection_manager_get_member_manager(col_mgr, col);
+
+EtebaseMemberListResponse *members = etebase_collection_member_manager_list(member_manager, NULL);
+
+uintptr_t data_len = etebase_member_list_response_get_data_length(members);
+const EtebaseCollectionMember *data[data_len];
+etebase_member_list_response_get_data(members, data);
+
+// Print the users and their access levels
+for (int i = 0 ; i < data_len ; i++) {
+    const EtebaseCollectionMember *member = data[i];
+    printf("%s\n", etebase_collection_member_get_username(member));
+}
+
+etebase_member_list_response_destroy(members);
+etebase_collection_member_manager_destroy(member_manager);
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -462,6 +577,17 @@ memberManager.modifyAccessLevel("username2", newAccessLevel)
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+EtebaseCollectionMemberManager *member_manager = etebase_collection_manager_get_member_manager(col_mgr, col);
+
+etebase_collection_member_manager_modify_access_level(member_manager, "username2", ETEBASE_COLLECTION_ACCESS_LEVEL_READ_WRITE);
+
+etebase_collection_member_manager_destroy(member_manager);
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -501,6 +627,17 @@ memberManager.remove("username2");
 val memberManager = colMgr.getMemberManager(collection)
 
 memberManager.remove("username2")
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+EtebaseCollectionMemberManager *member_manager = etebase_collection_manager_get_member_manager(col_mgr, col);
+
+etebase_collection_member_manager_remove(member_manager, "username2");
+
+etebase_collection_member_manager_destroy(member_manager);
 ```
 
 </TabItem>
@@ -575,6 +712,40 @@ while (!done) {
     done = invitations.done
 
     processOutgoingInvitations(invitations.data)
+}
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+char *iterator = NULL;
+bool done = 0;
+while (!done) {
+    EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+    etebase_fetch_options_set_iterator(fetch_options, iterator);
+    etebase_fetch_options_set_limit(fetch_options, 30);
+    EtebaseInvitationListResponse *invitations = etebase_invitation_manager_list_outgoing(invitation_manager, fetch_options);
+
+    if (iterator) {
+        free(iterator);
+    }
+    iterator = strdup(etebase_invitation_list_response_get_iterator(invitations));
+    done = etebase_invitation_list_response_is_done(invitations);
+
+    uintptr_t data_len =
+        etebase_invitation_list_response_get_data_length(invitations);
+    const EtebaseSignedInvitation *data[data_len];
+    etebase_invitation_list_response_get_data(invitations, data);
+
+    process_revisions(data, data_len);
+
+    etebase_fetch_options_destroy(fetch_options);
+    etebase_invitation_list_response_destroy(invitations);
+}
+
+if (iterator) {
+    free(iterator);
 }
 ```
 

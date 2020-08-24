@@ -99,6 +99,29 @@ colMgr.upload(collection)
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+const char *server_url = etebase_get_default_server_url();
+EtebaseClient *client = etebase_client_new("client-name", server_url);
+EtebaseAccount *etebase = etebase_account_login(client, "username", "password");
+
+// Create, encrypt and upload a new collection
+EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
+EtebaseCollectionMetadata *col_meta = etebase_collection_metadata_new("cyberdyne.calendar", "Holidays");
+etebase_collection_metadata_set_description(col_meta, "My holidy calendar");
+etebase_collection_metadata_set_color(col_meta, "#23aabbff");
+EtebaseCollection *col = etebase_collection_manager_create(col_mgr, col_meta, "", 0);
+etebase_collection_metadata_destroy(col_meta);
+
+etebase_collection_manager_upload(col_mgr, col, NULL);
+
+// Cleanup
+etebase_collection_destroy(col);
+etebase_collection_manager_destroy(col_mgr);
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -191,6 +214,35 @@ itemManager.batch(arrayOf(item))
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+EtebaseCollectionManager *col_mgr = ...;
+EtebaseCollection *col = ...;
+
+// Similar to how we have collection manager
+EtebaseItemManager *item_mgr = etebase_collection_manager_get_item_manager(col_mgr, col);
+
+// Create, encrypt and upload a new item
+EtebaseItemMetadata *item_meta = etebase_item_metadata_new();
+etebase_item_metadata_set_item_type(item_meta, "file");
+etebase_item_metadata_set_name(item_meta, "note.txt");
+time_t now = time(NULL);
+if (now == (time_t)(-1)) {
+    // Error
+}
+etebase_item_metadata_set_mtime(item_meta, &now);
+const char item_content[] = "My secret note";
+EtebaseItem *item = etebase_item_manager_create(item_mgr, item_meta, item_content, strlen(item_content));
+
+const EtebaseItem *items[] = { item };
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+
+etebase_item_destroy(item);
+etebase_item_manager_destroy(item_mgr);
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -262,6 +314,26 @@ Items:
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+EtebaseItemManager *item_mgr = etebase_collection_manager_get_item_manager(col_mgr, col);
+EtebaseItemListResponse *item_list = etebase_item_manager_list(item_mgr, NULL);
+/*
+Items:
+{
+  etebase_item_list_response_get_data(): EtebaseItem[] // Returnd array of items
+  etebase_item_list_response_get_stoken(): const char * // The sync token for this fetch
+  ... // More fields we'll cover later
+}
+*/
+
+// Cleanup
+etebase_item_list_response_destroy(item_list);
+etebase_item_manager_destroy(item_mgr);
+```
+
+</TabItem>
 </CodeTabs>
 
 The number of returned items is limited by default, and you can control this limit by passing a different limit parameter as we'll see in the next example:
@@ -298,6 +370,21 @@ val items = itemManager.list(FetchOptions().limit(50))
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+EtebaseItemManager *item_mgr = etebase_collection_manager_get_item_manager(col_mgr, col);
+EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+etebase_fetch_options_set_limit(fetch_options, 50);
+EtebaseItemListResponse *col_list = etebase_item_manager_list(item_mgr, NULL);
+
+// Cleanup
+etebase_fetch_options_destroy(fetch_options);
+etebase_item_list_response_destroy(col_list);
+etebase_item_manager_destroy(col_mgr);
+```
+
+</TabItem>
 </CodeTabs>
 
 ### Only fetch recent changes
@@ -317,7 +404,7 @@ const items = await itemManager.list({ stoken });
 <TabItem value="py">
 
 ```python
-stoken = "..."  # An stoken we got previously e.g. collections.stoken
+stoken = "..."  # An stoken we got previously e.g. items.stoken
 
 items = item_mgr.list(FetchOptions().stoken(stoken))
 ```
@@ -338,6 +425,23 @@ ItemListResponse items = itemManager.list(new FetchOptions().stoken(stoken));
 val stoken = "..." // An stoken we got previously (items.stoken)
 
 val items = itemManager.list(FetchOptions().stoken(stoken))
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+const char *stoken = "..."; // An stoken we got previously e.g. items.stoken
+
+EtebaseItemManager *item_mgr = etebase_collection_manager_get_item_manager(col_mgr, col);
+EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+etebase_fetch_options_set_stoken(fetch_options, stoken);
+EtebaseItemListResponse *col_list = etebase_item_manager_list(item_mgr, NULL);
+
+// Cleanup
+etebase_fetch_options_destroy(fetch_options);
+etebase_item_list_response_destroy(col_list);
+etebase_item_manager_destroy(col_mgr);
 ```
 
 </TabItem>
@@ -409,6 +513,39 @@ while (!done) {
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+char *stoken = NULL;
+bool done = 0;
+while (!done) {
+    EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+    etebase_fetch_options_set_stoken(fetch_options, stoken);
+    etebase_fetch_options_set_limit(fetch_options, 30);
+    EtebaseItemListResponse *item_list = etebase_item_manager_list(item_mgr, fetch_options);
+
+    if (stoken) {
+        free(stoken);
+    }
+    stoken = strdup(etebase_item_list_response_get_stoken(item_list));
+    done = etebase_item_list_response_is_done(item_list);
+
+    uintptr_t data_len = etebase_item_list_response_get_data_length(item_list);
+    const EtebaseItem *data[data_len];
+    etebase_item_list_response_get_data(item_list, data);
+
+    process_new_items(data, data_len);
+
+    etebase_fetch_options_destroy(fetch_options);
+    etebase_item_list_response_destroy(item_list);
+}
+
+if (stoken) {
+    free(stoken);
+}
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -454,6 +591,19 @@ val item = itemManager.fetch(itemUid);
 
 // Can optionally pass stoken to only return the item if changed:
 val item = itemManager.fetch(colluctionUid, FetchOptions().stoken(stoken))
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+EtebaseItem *item = etebase_item_manager_fetch(item_mgr, item_uid, NULL);
+
+// Can optionally pass stoken to only return the item if changed:
+EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+etebase_fetch_options_set_stoken(fetch_options, stoken);
+EtebaseItem *item = etebase_item_manager_fetch(item_mgr, item_uid, fetch_options);
+etebase_fetch_options_destroy(fetch_options);
 ```
 
 </TabItem>
@@ -511,6 +661,27 @@ val items = itemManager.fetchUpdates(to_fetch, fetch_options)
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+const EtebaseItem *items[] = { item1, item2, item3 };
+EtebaseItemListResponse *item_list = etebase_item_manager_fetch_updates(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
+
+// Cleanup
+etebase_item_list_response_destroy(item_list);
+
+
+// Can optionally pass stoken to only return the item if changed:
+EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+etebase_fetch_options_set_stoken(fetch_options, stoken);
+EtebaseItemListResponse *item_list = etebase_item_manager_fetch_updates(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), fetch_options);
+
+// Cleanup
+etebase_fetch_options_destroy(fetch_options);
+etebase_item_list_response_destroy(item_list);
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -559,6 +730,19 @@ itemManager.batch(arrayOf(item))
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+EtebaseItemMetadata *item_meta = etebase_item_get_meta(item);
+etebase_item_metadata_set_name(item_meta, "Name");
+etebase_item_set_meta(item, item_meta);
+etebase_item_metadata_destroy(item_meta);
+
+const EtebaseItem *items[] = { item };
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+```
+
+</TabItem>
 </CodeTabs>
 
 Deleting is even easier:
@@ -600,6 +784,16 @@ itemManager.batch(arrayOf(item))
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+etebase_item_delete(item);
+
+const EtebaseItem *items[] = { item };
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -636,6 +830,14 @@ itemManager.batch(arrayOf(item1, item2, item3, ...))
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+const EtebaseItem *items[] = { item1, item2, item3, ... };
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -663,6 +865,7 @@ await itemManager.batch([item1]);
 
 
 // -> On device A (using the previously saved item)
+await item1.setContent("new content for item 1");
 await item2.setContent("new content for item 2");
 
 // Will fail because item1 changed on device B
@@ -689,6 +892,7 @@ item_mgr.batch([item1])
 
 
 # -> On device A (using the previously saved item)
+item1.content = b"new content for item 1"
 item2.content = b"new content for item 2"
 
 # Will fail because item1 changed on device B
@@ -710,11 +914,12 @@ Item item2 = itemManager.fetch(itemUid2);
 
 // -> On device B:
 Item item1 = itemManager.fetch(itemUid1);
-item1.setContent("Something else for item1")
+item1.setContent("Something else for item 1")
 itemManager.batch(new Item[] {item1});
 
 
-// -> On device A (using the previously saved collection)
+// -> On device A (using the previously saved item)
+item1.setContent("New content for item 1");
 item2.setContent("New content for item 2");
 
 // Will fail because item1 changed on device B
@@ -736,11 +941,12 @@ val item2 = itemManager.fetch(itemUid2)
 
 // -> On device B:
 val item1 = itemManager.fetch(itemUid1)
-item1.content = "Something else for item1"
+item1.content = "Something else for item 1"
 itemManager.batch(arrayOf(item1))
 
 
-// -> On device A (using the previously saved collection)
+// -> On device A (using the previously saved item)
+item1.content = "New content for item 1"
 item2.content = "New content for item 2"
 
 // Will fail because item1 changed on device B
@@ -749,6 +955,44 @@ itemManager.transaction(arrayOf(item1, item2))
 itemManager.batch(arrayOf(item1, item2))
 // Will succeed because item2 hasn't changed on device B
 itemManager.transaction(arrayOf(item2))
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+// -> On device A:
+EtebaseItem *item1 = etebase_item_manager_fetch(item_mgr, item1_uid, NULL);
+EtebaseItem *item2 = etebase_item_manager_fetch(item_mgr, item2_uid, NULL);
+
+// -> On device B:
+EtebaseItem *item1 = etebase_item_manager_fetch(item_mgr, item1_uid, NULL);
+const char tmp[] = "Something else for item 1";
+etebase_item_set_content(item1, tmp, strlen(tmp));
+
+const EtebaseItem *items[] = { item1 };
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+
+etebase_item_destroy(item1);
+
+
+// -> On device A (using the previously saved item)
+const char tmp[] = "New content for item 1";
+etebase_item_set_content(item1, tmp, strlen(tmp));
+const char tmp2[] = "New content for item 2";
+etebase_item_set_content(item2, tmp2, strlen(tmp2));
+
+// Will fail because item1 changed on device B
+const EtebaseItem *items[] = { item1, item2 };
+etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+// Will succeed
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+// Will succeed because item2 hasn't changed on device B
+const EtebaseItem *items2[] = { item2 };
+etebase_item_manager_transaction(item_mgr, items2, ETEBASE_UTILS_C_ARRAY_LEN(items2), NULL, 0, NULL);
+
+etebase_item_destroy(item2);
+etebase_item_destroy(item1);
 ```
 
 </TabItem>
@@ -765,7 +1009,7 @@ Like with collections, transactions will only fail if the items themselves have 
 ```js
 // -> On device A:
 const stoken = collection.stoken;
-const item1 = await.itemManager.fetch(itemUid1);
+const item = await.itemManager.fetch(itemUid);
 
 
 // -> On device B:
@@ -792,7 +1036,7 @@ await itemManager.batch([item]);
 ```python
 # -> On device A:
 stoken = collection.stoken
-item1 = item_mgr.fetch(item_uid1)
+item = item_mgr.fetch(item_uid)
 
 
 # -> On device B:
@@ -820,7 +1064,7 @@ item_mgr.batch([item])
 ```java
 // -> On device A:
 String stoken = collection.stoken
-Item item1 = itemManager.fetch(itemUid1);
+Item item = itemManager.fetch(itemUid);
 
 
 // -> On device B:
@@ -829,7 +1073,7 @@ anotherItem.setContent("content for another item")
 itemManager.batch(new Item[] {anotherItem});
 
 
-// -> On device A (using the previously saved collection)
+// -> On device A (using the previously saved item and stoken)
 item.setContent("new secret content")
 
 // Will both fail
@@ -848,7 +1092,7 @@ itemManager.batch(new Item[] {item});
 ```kotlin
 // -> On device A:
 val stoken = collection.stoken
-val item1 = itemManager.fetch(itemUid1)
+val item = itemManager.fetch(itemUid)
 
 
 // -> On device B:
@@ -857,7 +1101,7 @@ anotherItem.content = "content for another item"
 itemManager.batch(arrayOf(anotherItem))
 
 
-// -> On device A (using the previously saved collection)
+// -> On device A (using the previously saved item and stoken)
 item.content = "new secret content"
 
 // Will both fail
@@ -868,6 +1112,48 @@ itemManager.batch(arrayOf(item), null, fetchOptions)
 // Will both succeed
 itemManager.transaction(arrayOf(item))
 itemManager.batch(arrayOf(item))
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+// -> On device A:
+EtebaseItem *item = etebase_item_manager_fetch(item_mgr, item_uid, NULL);
+const char *stoken = etebase_collection_get_stoken(col);
+
+{
+    // -> On device B:
+    EtebaseItem *another_item = etebase_item_manager_fetch(item_mgr, another_item_uid, NULL);
+    const char tmp[] = "content for another item";
+    etebase_item_set_content(item1, tmp, strlen(tmp));
+
+    const EtebaseItem *items[] = { another_item };
+    etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+
+    etebase_item_destroy(another_item);
+}
+
+
+// -> On device A (using the previously saved item and stoken)
+const char tmp[] = "new secret content";
+etebase_item_set_content(item, tmp, strlen(tmp));
+
+
+// Will both fail
+EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+etebase_fetch_options_set_stoken(fetch_options, stoken);
+const EtebaseItem *items[] = { item };
+etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, fetch_options);
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, fetch_options);
+
+etebase_fetch_options_destroy(fetch_options);
+
+// Will both succeed
+etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+
+etebase_item_destroy(item);
 ```
 
 </TabItem>
@@ -987,6 +1273,46 @@ itemManager.batch(arrayOf(item1, item2), arrayOf(item1));
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+// -> On device A:
+EtebaseItem *item1 = etebase_item_manager_fetch(item_mgr, item1_uid, NULL);
+EtebaseItem *item2 = etebase_item_manager_fetch(item_mgr, item2_uid, NULL);
+
+
+// -> On device B:
+EtebaseItem *item1 = etebase_item_manager_fetch(item_mgr, item1_uid, NULL);
+const char tmp[] = "Something else for item 1";
+etebase_item_set_content(item1, tmp, strlen(tmp));
+
+const EtebaseItem *items[] = { item1 };
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+
+etebase_item_destroy(item1);
+
+
+// -> On device A (using the previously saved collection)
+const char tmp2[] = "New content for item 2";
+etebase_item_set_content(item2, tmp2, strlen(tmp2));
+
+// Will both fail because item1 changed
+const EtebaseItem *items[] = { item2 };
+const EtebaseItem *deps[] = { item1 };
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
+etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
+
+// Can even use the item in both the list and deps in batch
+// Will fail because item1 changed on device B
+const EtebaseItem *items[] = { item1, item2 };
+const EtebaseItem *deps[] = { item1 };
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
+
+etebase_item_destroy(item2);
+etebase_item_destroy(item1);
+```
+
+</TabItem>
 </CodeTabs>
 
 ### Treating collections as items
@@ -1084,6 +1410,30 @@ assert(collection.content == colItem.content)
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+// Get the item out of the collection
+EtebaseItem *col_item = etebase_collection_as_item(col);
+
+// The collection item can then be used like any other item:
+const EtebaseItem *items[] = { col_item, item1 };
+const EtebaseItem *deps[] = { item2 };
+etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items),
+            deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
+const EtebaseItem *items[] = { item1, item2 };
+const EtebaseItem *deps[] = { col_item };
+etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items),
+            deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
+const EtebaseItem *items[] = { col_item, item1 };
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+
+// In addition, these are true:
+// etebase_collection_get_meta_raw(col, ...) == etebase_item_get_meta_raw(col_item, ...)
+// etebase_collection_get_content(col, ...) == etebase_item_get_content(col_item, ...)
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -1128,6 +1478,71 @@ col_item = item_mgr.fetch(collection.uid);
 
 # Or fetch updates of the collection along with other items:
 items = item_mgr.fetch_updates([collection.item, item1]);
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ItemManager itemManager = colMgr.getItemManager(collection);
+
+ItemListResponse items = itemManager.list(new FetchOptions().with_collection(true));
+
+// Assuming the collection is the first item returned:
+Item colItem = items.getData()[0];
+assert (colItem.uid === collection.uid);
+
+// You can also fetch collection items based on UID:
+Item colItem = itemManager.fetch(collection.uid);
+
+// Or fetch updates of the collection along with other items:
+ItemListResponse items = itemManager.fetchUpdates(new Item[] { collection.getItem(), item1 });
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val itemManager = colMgr.getItemManager(collection)
+
+val items = itemManager.list(FetchOptions().with_collection(true))
+
+// Assuming the collection is the first item returned:
+val colItem = items.getData()[0]
+assert(colItem.uid === collection.uid)
+
+// You can also fetch collection items based on UID:
+val colItem = itemManager.fetch(collection.uid)
+
+// Or fetch updates of the collection along with other items:
+val items = itemManager.fetchUpdates(arrayOf(collection.getItem(), item1))
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+EtebaseItemManager *item_mgr = etebase_collection_manager_get_item_manager(col_mgr, col);
+
+EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
+etebase_fetch_options_set_with_collection(fetch_options, true);
+etebase_fetch_options_set_limit(fetch_options, 1);
+EtebaseItemListResponse *item_list = etebase_item_manager_list(item_mgr, fetch_options);
+etebase_fetch_options_destroy(fetch_options);
+
+// Assuming the collection is the first item returned:
+const EtebaseItem *list_items[1];
+etebase_item_list_response_get_data(item_list, list_items);
+EtebaseItem *col_item = list_items[0];
+// This is true:
+// etebase_item_get_uid(item) == etebase_collection_get_uid(col)
+
+// You can also fetch collection items based on UID:
+EtebaseItem *col_item = etebase_item_manager_fetch(item_mgr, col_uid, NULL);
+
+// Or fetch updates of the collection along with other items:
+const EtebaseItem *items[] = { col_item, item1 };
+EtebaseItemListResponse *item_list = etebase_item_manager_fetch_updates(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 ```
 
 </TabItem>
@@ -1197,6 +1612,40 @@ item.contentString
 item.content = "Bla".toByteArray()
 // Sets the content to a string
 item.content = "Hello"
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+// The C API always works on binary data,
+// This means content is *not* NULL terminated!
+
+// It's generally fastest to just try to get the content into a buffer
+// if we think it's likely to be under a certain size.
+char tmp[500];
+intptr_t len = etebase_item_get_content(item, tmp, sizeof(tmp));
+
+if (len < 0) {
+    // Error
+} else if (len > sizeof(tmp)) {
+    // This means we should allocate a buffer of size len to fetch into
+    char *tmp2 = malloc(len);
+    etebase_item_get_content(item, tmp2, len);
+    // Do something with tmp2
+    free(tmp2);
+}
+
+// As said above, content is not null terminated.
+// To get the content as a null terminated string:
+char tmp[500];
+intptr_t len = etebase_item_get_content(item, tmp, sizeof(tmp));
+
+if (len < 0) {
+    // Error
+} else {
+    tmp[len] = 0;
+}
 ```
 
 </TabItem>

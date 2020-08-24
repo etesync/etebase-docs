@@ -65,6 +65,21 @@ val decoded = Utils.fromBase64(b64encoded)
 ```
 
 </TabItem>
+<TabItem value="c">
+
+```c
+const char *text = "Test";
+// We use +1 because we want to also encode the \0
+char encoded[ETEBASE_UTILS_TO_BASE64_MAX_LEN(strlen(text) + 1)];
+etebase_utils_to_base64(text, strlen(text) + 1, encoded, sizeof(encoded));
+
+char decoded[ETEBASE_UTILS_FROM_BASE64_MAX_LEN(strlen(encoded))];
+uintptr_t decoded_len = 0;
+etebase_utils_from_base64(encoded, decoded, sizeof(decoded), &decoded_len);
+// decode is equal to text
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -113,6 +128,15 @@ import com.etebase.client.Utils
 
 // Generate 32 random bytes
 val randomData = Utils.randomBytes(32)
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+// Generate 32 random bytes
+char buf[32];
+etebase_utils_randombytes(buf, sizeof(buf));
 ```
 
 </TabItem>

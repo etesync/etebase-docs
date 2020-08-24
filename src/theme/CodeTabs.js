@@ -12,6 +12,7 @@ export default function CodeTabs({ children }) {
             { label: 'Python', value: 'py', },
             { label: 'Java', value: 'java', },
             { label: 'Kotlin', value: 'kt', },
+            { label: 'C/C++', value: 'c', },
           ]
         }>
 
