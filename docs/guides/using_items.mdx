@@ -956,7 +956,7 @@ itemManager.batch(new Item[] {item2}, new Item[] {item1});
 
 // Can even use the item in both the list and deps in batch
 // Will fail because item1 changed on device B
-await itemManager.batch(new Item[] {item1, item2}, new Item[] {item1});
+itemManager.batch(new Item[] {item1, item2}, new Item[] {item1});
 ```
 
 </TabItem>
@@ -983,7 +983,7 @@ itemManager.batch(arrayOf(item2), arrayOf(item1));
 
 // Can even use the item in both the list and deps in batch
 // Will fail because item1 changed on device B
-await itemManager.batch(arrayOf(item1, item2), arrayOf(item1));
+itemManager.batch(arrayOf(item1, item2), arrayOf(item1));
 ```
 
 </TabItem>
