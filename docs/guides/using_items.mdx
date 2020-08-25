@@ -1376,7 +1376,7 @@ Item item1 = ...;
 Item item2 = ...;
 
 // Get the item out of the collection
-Item colItem = collection.getItem();
+Item colItem = collection.asItem();
 
 // The collection item can then be used like any other item:
 itemManager.transaction(new Item[] {colItem, item1}, new Item[] {item2});
@@ -1397,7 +1397,7 @@ val item1 = ...
 val item2 = ...
 
 // Get the item out of the collection
-var colItem = collection.item
+var colItem = collection.asItem()
 
 // The collection item can then be used like any other item:
 itemManager.transaction(arrayOf(colItem, item1), arrayOf(item2)
@@ -1496,7 +1496,7 @@ assert (colItem.uid === collection.uid);
 Item colItem = itemManager.fetch(collection.uid);
 
 // Or fetch updates of the collection along with other items:
-ItemListResponse items = itemManager.fetchUpdates(new Item[] { collection.getItem(), item1 });
+ItemListResponse items = itemManager.fetchUpdates(new Item[] { collection.asItem(), item1 });
 ```
 
 </TabItem>
@@ -1515,7 +1515,7 @@ assert(colItem.uid === collection.uid)
 val colItem = itemManager.fetch(collection.uid)
 
 // Or fetch updates of the collection along with other items:
-val items = itemManager.fetchUpdates(arrayOf(collection.getItem(), item1))
+val items = itemManager.fetchUpdates(arrayOf(collection.asItem(), item1))
 ```
 
 </TabItem>
