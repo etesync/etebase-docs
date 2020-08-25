@@ -236,7 +236,7 @@ const char item_content[] = "My secret note";
 EtebaseItem *item = etebase_item_manager_create(item_mgr, item_meta, item_content, strlen(item_content));
 
 const EtebaseItem *items[] = { item };
-etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 
 etebase_item_destroy(item);
 etebase_item_manager_destroy(item_mgr);
@@ -739,7 +739,7 @@ etebase_item_set_meta(item, item_meta);
 etebase_item_metadata_destroy(item_meta);
 
 const EtebaseItem *items[] = { item };
-etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 ```
 
 </TabItem>
@@ -790,7 +790,7 @@ itemManager.batch(arrayOf(item))
 etebase_item_delete(item);
 
 const EtebaseItem *items[] = { item };
-etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 ```
 
 </TabItem>
@@ -834,7 +834,7 @@ itemManager.batch(arrayOf(item1, item2, item3, ...))
 
 ```c
 const EtebaseItem *items[] = { item1, item2, item3, ... };
-etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 ```
 
 </TabItem>
@@ -971,7 +971,7 @@ const char tmp[] = "Something else for item 1";
 etebase_item_set_content(item1, tmp, strlen(tmp));
 
 const EtebaseItem *items[] = { item1 };
-etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 
 etebase_item_destroy(item1);
 
@@ -984,12 +984,12 @@ etebase_item_set_content(item2, tmp2, strlen(tmp2));
 
 // Will fail because item1 changed on device B
 const EtebaseItem *items[] = { item1, item2 };
-etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 // Will succeed
-etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 // Will succeed because item2 hasn't changed on device B
 const EtebaseItem *items2[] = { item2 };
-etebase_item_manager_transaction(item_mgr, items2, ETEBASE_UTILS_C_ARRAY_LEN(items2), NULL, 0, NULL);
+etebase_item_manager_transaction(item_mgr, items2, ETEBASE_UTILS_C_ARRAY_LEN(items2), NULL);
 
 etebase_item_destroy(item2);
 etebase_item_destroy(item1);
@@ -1129,7 +1129,7 @@ const char *stoken = etebase_collection_get_stoken(col);
     etebase_item_set_content(item1, tmp, strlen(tmp));
 
     const EtebaseItem *items[] = { another_item };
-    etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+    etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 
     etebase_item_destroy(another_item);
 }
@@ -1144,14 +1144,14 @@ etebase_item_set_content(item, tmp, strlen(tmp));
 EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
 etebase_fetch_options_set_stoken(fetch_options, stoken);
 const EtebaseItem *items[] = { item };
-etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, fetch_options);
-etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, fetch_options);
+etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), fetch_options);
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), fetch_options);
 
 etebase_fetch_options_destroy(fetch_options);
 
 // Will both succeed
-etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
-etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 
 etebase_item_destroy(item);
 ```
@@ -1287,7 +1287,7 @@ const char tmp[] = "Something else for item 1";
 etebase_item_set_content(item1, tmp, strlen(tmp));
 
 const EtebaseItem *items[] = { item1 };
-etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 
 etebase_item_destroy(item1);
 
@@ -1299,14 +1299,14 @@ etebase_item_set_content(item2, tmp2, strlen(tmp2));
 // Will both fail because item1 changed
 const EtebaseItem *items[] = { item2 };
 const EtebaseItem *deps[] = { item1 };
-etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
-etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
+etebase_item_manager_batch_deps(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
+etebase_item_manager_transaction_deps(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
 
 // Can even use the item in both the list and deps in batch
 // Will fail because item1 changed on device B
 const EtebaseItem *items[] = { item1, item2 };
 const EtebaseItem *deps[] = { item1 };
-etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
+etebase_item_manager_batch_deps(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
 
 etebase_item_destroy(item2);
 etebase_item_destroy(item1);
@@ -1419,14 +1419,14 @@ EtebaseItem *col_item = etebase_collection_as_item(col);
 // The collection item can then be used like any other item:
 const EtebaseItem *items[] = { col_item, item1 };
 const EtebaseItem *deps[] = { item2 };
-etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items),
+etebase_item_manager_transaction_deps(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items),
             deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
 const EtebaseItem *items[] = { item1, item2 };
 const EtebaseItem *deps[] = { col_item };
-etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items),
+etebase_item_manager_transaction_deps(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items),
             deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
 const EtebaseItem *items[] = { col_item, item1 };
-etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL, 0, NULL);
+etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 
 // In addition, these are true:
 // etebase_collection_get_meta_raw(col, ...) == etebase_item_get_meta_raw(col_item, ...)
