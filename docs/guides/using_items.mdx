@@ -491,7 +491,7 @@ boolean done = false;
 while (!done) {
     ItemListResponse items = itemManager.list(new FetchOptions().stoken(stoken).limit(30));
     stoken = items.getStoken();
-    done = items.getDone();
+    done = items.isDone();
 
     process_new_items(items.getData());
 }
@@ -506,7 +506,7 @@ var done = false
 while (!done) {
     val items = itemManager.list(FetchOptions().stoken(stoken).limit(30))
     stoken = items.stoken
-    done = items.done
+    done = items.isDone
 
     process_new_items(items.data)
 }

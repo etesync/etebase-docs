@@ -694,7 +694,7 @@ boolean done = false;
 while (!done) {
     InvitationListResponse invitations = itemManager.listOutgoing(new FetchOptions().iterator(iterator).limit(30));
     iterator = invitations.getIterator();
-    done = invitations.getDone();
+    done = invitations.isDone();
 
     processOutgoingInvitations(invitations.getData());
 }
@@ -709,7 +709,7 @@ var done = false
 while (!done) {
     val invitations = itemManager.listOutgoing(item, FetchOptions().iterator(iterator).limit(30))
     iterator = invitations.iterator
-    done = invitations.done
+    done = invitations.isDone
 
     processOutgoingInvitations(invitations.data)
 }

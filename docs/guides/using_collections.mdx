@@ -400,7 +400,7 @@ boolean done = false;
 while (!done) {
     CollectionListResponse collections = colMgr.list(new FetchOptions().stoken(stoken).limit(30));
     stoken = collections.getStoken();
-    done = collections.getDone();
+    done = collections.isDone();
 
     process_new_collections(collections.getData());
 }
@@ -415,7 +415,7 @@ var done = false
 while (!done) {
     val collections = colMgr.list(FetchOptions().stoken(stoken).limit(30))
     stoken = collections.stoken
-    done = collections.done
+    done = collections.isDone
 
     process_new_collections(collections.data)
 }

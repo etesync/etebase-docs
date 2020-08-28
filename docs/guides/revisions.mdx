@@ -208,7 +208,7 @@ boolean done = false;
 while (!done) {
     ItemListResponse revisions = itemManager.itemRevisions(new FetchOptions().iterator(iterator).limit(30));
     iterator = revisions.getIterator();
-    done = revisions.getDone();
+    done = revisions.isDone();
 
     processRevisions(revisions.getData());
 }
@@ -223,7 +223,7 @@ var done = false
 while (!done) {
     val revisions = itemManager.itemRevisions(item, FetchOptions().iterator(iterator).limit(30))
     iterator = revisions.iterator
-    done = revisions.done
+    done = revisions.isDone
 
     processRevisions(revisions.data)
 }
