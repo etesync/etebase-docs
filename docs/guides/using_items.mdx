@@ -640,7 +640,7 @@ collection = col_mgr.fetch_updates(to_fetch, FetchOptions().stoken(stoken))
 <TabItem value="java">
 
 ```java
-Item[] to_fetch = new Item[] {item1, item2, item3};
+Item[] toFetch = new Item[] {item1, item2, item3};
 ItemListResponse items = itemManager.fetchUpdates(to_fetch);
 
 // Can optionally pass stoken to only return the item if changed:
@@ -652,7 +652,7 @@ ItemListResponse items = itemManager.fetchUpdates(to_fetch, fetch_options);
 <TabItem value="kt">
 
 ```kotlin
-val to_fetch = arrayOf(item1, item2, item3)
+val toFetch = arrayOf(item1, item2, item3)
 val items = itemManager.fetchUpdates(to_fetch)
 
 // Can optionally pass stoken to only return the item if changed:
