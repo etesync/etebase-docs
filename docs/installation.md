@@ -125,7 +125,7 @@ val etebase = Account.login(...)
 <TabItem value="c">
 
 ```c
-#include <etesync.h>
+#include <etebase.h>
 
 EtebaseAccount *account = etebase_account_login(...);
 ```
