@@ -75,7 +75,7 @@ A dictionary of arbitrary objects for extra, developer specific data. It's the s
 
 ### Content
 
-The content of the item can be whatever you want. Internally it's treated like a blob of data. In most cases you will just store your raw data here, but in some cases, such as when representing an hierarchical structure (such as directories), it's better to conform to the standard Etebase way of doing it.
+The content of the collection can be whatever you want. Internally it's treated like a blob of data. In most cases you will just store your raw data here, but in some cases, such as when representing an hierarchical structure (such as directories), it's better to conform to the standard Etebase way of doing it.
 
 ### Sync token (`stoken`)
 

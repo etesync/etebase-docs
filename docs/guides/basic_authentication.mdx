@@ -17,7 +17,7 @@ Luckily they can be avoided almost entirely for most use-cases. Pleaes take a lo
 
 ## Signup
 
-Sign up is just one easy call which returns an instance of the etebase client.
+Sign up is just one easy call which returns an instance of the main etebase class.
 
 <CodeTabs>
 <TabItem value="js">
@@ -81,7 +81,7 @@ EtebaseAccount *etebase = etebase_account_signup(client, user, "password");
 
 ## Login
 
-Login is too just one easy call which returns an instance of the etebase client.
+Login is too just one easy call which returns an instance of the main etebase class.
 
 <CodeTabs>
 <TabItem value="js">
@@ -141,7 +141,7 @@ EtebaseAccount *etebase = etebase_account_login(client, "username", "password");
 
 ## Change password
 
-Unlike signup and login, changing password requires an already set up client.
+Unlike signup and login, changing password requires an already set up etebase object.
 
 <CodeTabs>
 <TabItem value="js">
