@@ -203,7 +203,7 @@ user2 = invitation_manager.fetch_user_profile("username2");
 # This is done in a secure channel (e.g. encrypted chat or in person)
 
 # Assuming the pubkey is as expected, send the invitation
-invitation_manager.invite(collection, "username2", user2.pubkey, "ro")
+invitation_manager.invite(collection, "username2", user2.pubkey, CollectionAccessLevel.ReadOnly)
 ```
 
 </TabItem>
@@ -219,7 +219,7 @@ UserProfile user2 = invitationManager.fetchUserProfile("username2");
 // This is done in a secure channel (e.g. encrypted chat or in person)
 
 // Assuming the pubkey is as expected, send the invitation
-invitationManager.invite(collection, "username2", user2.getPubkey(), "ro");
+invitationManager.invite(collection, "username2", user2.getPubkey(), CollectionAccessLevel.ReadOnly);
 ```
 
 </TabItem>
@@ -235,7 +235,7 @@ val user2 = invitationManager.fetchUserProfile("username2")
 // This is done in a secure channel (e.g. encrypted chat or in person)
 
 // Assuming the pubkey is as expected, send the invitation
-invitationManager.invite(collection, "username2", user2.pubkey, "ro")
+invitationManager.invite(collection, "username2", user2.pubkey, CollectionAccessLevel.ReadOnly)
 ```
 
 </TabItem>
@@ -262,7 +262,7 @@ etebase_invitation_manager_destroy(invitation_manager);
 </TabItem>
 </CodeTabs>
 
-As you can see from the example above, when inviting a user you also set the wanted access level. Allowed values are: `Admin ("adm")`, `ReadWrite ("rw")`, and `ReadOnly ("ro")`.
+As you can see from the example above, when inviting a user you also set the wanted access level. Allowed values are: `Admin`, `ReadWrite`, and `ReadOnly`.
 
 
 ## Responding to invitations
@@ -552,7 +552,7 @@ await memberManager.modifyAccessLevel("username2", newAccessLevel);
 ```python
 member_manager = col_mgr.get_member_manager(collection)
 
-new_access_level = "rw"
+new_access_level = CollectionAccessLevel.ReadWrite
 member_manager.modify_access_level("username2", new_access_level)
 ```
 
@@ -562,7 +562,7 @@ member_manager.modify_access_level("username2", new_access_level)
 ```java
 CollectionMemberManager memberManager = colMgr.getMemberManager(collection);
 
-String newAccessLevel = "rw";
+CollectionAccessLevel newAccessLevel = CollectionAccessLevel.ReadWrite;
 memberManager.modifyAccessLevel("username2", newAccessLevel);
 ```
 
@@ -572,7 +572,7 @@ memberManager.modifyAccessLevel("username2", newAccessLevel);
 ```kotlin
 val memberManager = colMgr.getMemberManager(collection)
 
-val newAccessLevel = "rw"
+val newAccessLevel = CollectionAccessLevel.ReadWrite
 memberManager.modifyAccessLevel("username2", newAccessLevel)
 ```
 
