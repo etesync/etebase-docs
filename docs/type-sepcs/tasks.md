@@ -25,7 +25,7 @@ If the type is empty, it indicates a task item. New types may be added in the fu
 
 This is exactly the same as the UID inside the task itself, and is used for quick lookup.
 
-### mtime: optional
+### mtime: milliseconds since epoch
 
 When was this item last modified. Useful for sorting based on modification time.
 
