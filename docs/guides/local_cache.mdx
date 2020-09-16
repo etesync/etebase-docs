@@ -31,10 +31,10 @@ Storing and loading from cache is quite easy and is almost exactly the same for 
 const collection = await collectionManager.create(...);
 
 // The cache blob is just a Uint8Array that can be saved for later use
-const cacheBlob = await collectionManager.cacheSave(collection);
+const cacheBlob = collectionManager.cacheSave(collection);
 
 // Later on we can load the object back
-const collection = await collectionManager.cacheLoad(cacheBlob);
+const collection = collectionManager.cacheLoad(cacheBlob);
 // And use it like any other object:
 await collection.setContent("New content");
 ```
@@ -119,10 +119,10 @@ free(cache_blob);
 const collection = await collectionManager.create(...);
 
 // The cache blob is just a Uint8Array that can be saved for later use
-const cacheB64 = Etebase.toBase64(await collectionManager.cacheSave(collection));
+const cacheB64 = Etebase.toBase64(collectionManager.cacheSave(collection));
 
 // Later on we can load the object back
-const collection = await collectionManager.cacheLoad(Etebase.fromBase64(cacheB64));
+const collection = collectionManager.cacheLoad(Etebase.fromBase64(cacheB64));
 // And use it like any other object:
 await collection.setContent("New content");
 ```
@@ -215,10 +215,10 @@ free(cache_blob);
 const item = await itemManager.create(...);
 
 // The cache blob is just a Uint8Array that can be saved for later use
-const cacheBlob = await itemManager.cacheSave(item);
+const cacheBlob = itemManager.cacheSave(item);
 
 // Later on we can load the object back
-const item = await itemManager.cacheLoad(cacheBlob);
+const item = itemManager.cacheLoad(cacheBlob);
 // And use it like any other object:
 await item.setContent("New content");
 ```
@@ -303,10 +303,10 @@ free(cache_blob);
 const item = await itemManager.create(...);
 
 // The cache blob is just a Uint8Array that can be saved for later use
-const cacheB64 = Etebase.toBase64(await itemManager.cacheSave(item));
+const cacheB64 = Etebase.toBase64(itemManager.cacheSave(item));
 
 // Later on we can load the object back
-const item = await itemManager.cacheLoad(Etebase.fromBase64(cacheB64));
+const item = itemManager.cacheLoad(Etebase.fromBase64(cacheB64));
 // And use it like any other object:
 await item.setContent("New content");
 ```
