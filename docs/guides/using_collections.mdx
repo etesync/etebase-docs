@@ -282,7 +282,7 @@ EtebaseAccount *etebase = etebase_account_login(...);
 EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
 EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
 etebase_fetch_options_set_limit(fetch_options, 50);
-EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, NULL);
+EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, fetch_options);
 
 // Cleanup
 etebase_fetch_options_destroy(fetch_options);

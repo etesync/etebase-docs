@@ -376,7 +376,7 @@ val items = itemManager.list(FetchOptions().limit(50))
 EtebaseItemManager *item_mgr = etebase_collection_manager_get_item_manager(col_mgr, col);
 EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
 etebase_fetch_options_set_limit(fetch_options, 50);
-EtebaseItemListResponse *col_list = etebase_item_manager_list(item_mgr, NULL);
+EtebaseItemListResponse *col_list = etebase_item_manager_list(item_mgr, fetch_options);
 
 // Cleanup
 etebase_fetch_options_destroy(fetch_options);
