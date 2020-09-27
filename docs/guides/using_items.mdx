@@ -231,6 +231,7 @@ time_t now = time(NULL);
 if (now == (time_t)(-1)) {
     // Error
 }
+now *= 1000;
 etebase_item_metadata_set_mtime(item_meta, &now);
 const char item_content[] = "My secret note";
 EtebaseItem *item = etebase_item_manager_create(item_mgr, item_meta, item_content, strlen(item_content));
