@@ -580,7 +580,10 @@ etebase_fetch_options_set_stoken(fetch_options, stoken);
 EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, fetch_options);
 etebase_fetch_options_destroy(fetch_options);
 
-// etebase_collection_list_response_get_removed_memberships() is either empty or a list of removed uids.
+uintptr_t removed_len = etebase_collection_list_response_get_removed_memberships_length(col_list);
+const EtebaseRemovedCollection *removed[removed_len];
+fail_if(etebase_collection_list_response_get_removed_memberships(col_list, removed));
+// removed is either empty or a list of removed collections
 ```
 
 </TabItem>
