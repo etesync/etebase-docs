@@ -188,12 +188,12 @@ EtebaseCollection *col = etebase_collection_manager_create(...);
 uintptr_t cache_size;
 void *cache_blob = etebase_collection_manager_cache_save(col_mgr, col, &cache_size);
 char cache_b64[ETEBASE_UTILS_TO_BASE64_MAX_LEN(cache_size)];
-etebase_utils_to_base64(cache_blob, cache_size, cache_64, sizeof(cache_64));
+etebase_utils_to_base64(cache_blob, cache_size, cache_b64, sizeof(cache_b64));
 
 // Later on we can load the object back
-char decoded[ETEBASE_UTILS_FROM_BASE64_MAX_LEN(strlen(cache_64))];
+char decoded[ETEBASE_UTILS_FROM_BASE64_MAX_LEN(strlen(cache_b64))];
 uintptr_t decoded_len = 0;
-etebase_utils_from_base64(cache_64, decoded, sizeof(decoded), &decoded_len);
+etebase_utils_from_base64(cache_b64, decoded, sizeof(decoded), &decoded_len);
 EtebaseCollection *col = etebase_collection_manager_cache_load(col_mgr, decoded, decoded_len)
 // And use it like any other object:
 etebase_collection_get_uid(col);
@@ -372,12 +372,12 @@ EtebaseItem *item = etebase_item_manager_create(...);
 uintptr_t cache_size;
 void *cache_blob = etebase_item_manager_cache_save(item_mgr, item, &cache_size);
 char cache_b64[ETEBASE_UTILS_TO_BASE64_MAX_LEN(cache_size)];
-etebase_utils_to_base64(cache_blob, cache_size, cache_64, sizeof(cache_64));
+etebase_utils_to_base64(cache_blob, cache_size, cache_b64, sizeof(cache_b64));
 
 // Later on we can load the object back
-char decoded[ETEBASE_UTILS_FROM_BASE64_MAX_LEN(strlen(cache_64))];
+char decoded[ETEBASE_UTILS_FROM_BASE64_MAX_LEN(strlen(cache_b64))];
 uintptr_t decoded_len = 0;
-etebase_utils_from_base64(cache_64, decoded, sizeof(decoded), &decoded_len);
+etebase_utils_from_base64(cache_b64, decoded, sizeof(decoded), &decoded_len);
 EtebaseItem *item = etebase_item_manager_cache_load(item_mgr, decoded, decoded_len)
 // And use it like any other object:
 etebase_item_get_uid(item);
