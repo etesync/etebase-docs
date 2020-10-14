@@ -10,22 +10,34 @@ This collection type only supports the `VTODO` iCalendar type (calendar tasks), 
 
 ## Collection
 
-### type: `etebase.vtodo`
+### Collection type: `etebase.vtodo`
 
 This is the type indicating it's an iCalendar task collection.
+
+### Metadata
+
+#### name: string
+
+The user visible name of the task list.
+
+#### mtime: milliseconds since epoch
+
+When was this collection last modified.
 
 
 ## Item
 
-### type: leave empty
+### Metadata
+
+#### type: leave empty
 
 If the type is empty, it indicates a task item. New types may be added in the future.
 
-### name: the UID of the task item
+#### name: the UID of the task item
 
 This is exactly the same as the UID inside the task itself, and is used for quick lookup.
 
-### mtime: milliseconds since epoch
+#### mtime: milliseconds since epoch
 
 When was this item last modified. Useful for sorting based on modification time.
 

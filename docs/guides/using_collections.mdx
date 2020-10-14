@@ -18,9 +18,8 @@ const etebase = await Etebase.Account.login("username", "password");
 const collectionManager = etebase.getCollectionManager();
 
 // Create, encrypt and upload a new collection
-const collection = await collectionManager.create(
+const collection = await collectionManager.create("cyberdyne.calendar",
   {
-    type: "cyberdyne.calendar",
     name: "Holidays",
     description: "My holiday calendar",
     color: "#23aabbff",
@@ -42,9 +41,8 @@ etebase = Account.login(client, "username", "password")
 col_mgr = etebase.get_collection_manager()
 
 # Create, encrypt and upload a new collection
-collection = col_mgr.create(
+collection = col_mgr.create("cyberdyne.calendar",
     {
-        "type": "cyberdyne.calendar",
         "name": "Holidays",
         "description": "My holiday calendar",
         "color": "#23aabbff",
@@ -66,13 +64,11 @@ Account etebase = Account.login(client, "username", "password");
 CollectionManager colMgr = etebase.getCollectionManager();
 
 // Create, encrypt and upload a new collection
-CollectionMetadata collectionMetadata = new CollectionMetadata(
-    "cyberdyne.calendar",
-    "Holidays"
-);
+ItemMetadata collectionMetadata = new ItemMetadata()
+collectionMetadata.setName("Holidays");
 collectionMetadata.setDescription("My holiday calendar");
 collectionMetadata.setColor("#23aabbff");
-Collection collection = colMgr.create(collectionMetadata, "");
+Collection collection = colMgr.create("cyberdyne.calendar", collectionMetadata, "");
 
 colMgr.upload(collection);
 ```
@@ -89,10 +85,11 @@ val etebase = Account.login(client, "username", "password")
 val colMgr = etebase.collectionManager
 
 // Create, encrypt and upload a new collection
-val collectionMetadata = CollectionMetadata("cyberdyne.calendar", "Holidays")
+val collectionMetadata = ItemMetadata()
+collectionMetadata.name = "Holidays"
 collectionMetadata.description = "My holiday calendar"
 collectionMetadata.color = "#23aabbff"
-val collection = colMgr.create(collectionMetadata, "")
+val collection = colMgr.create("cyberdyne.calendar", collectionMetadata, "")
 
 colMgr.upload(collection)
 ```
@@ -107,10 +104,11 @@ EtebaseAccount *etebase = etebase_account_login(client, "username", "password");
 
 // Create, encrypt and upload a new collection
 EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
-EtebaseCollectionMetadata *col_meta = etebase_collection_metadata_new("cyberdyne.calendar", "Holidays");
+EtebaseItemMetadata *col_meta = etebase_collection_metadata_new();
+etebase_collection_metadata_set_name(col_meta, "Holidays");
 etebase_collection_metadata_set_description(col_meta, "My holidy calendar");
 etebase_collection_metadata_set_color(col_meta, "#23aabbff");
-EtebaseCollection *col = etebase_collection_manager_create(col_mgr, col_meta, "", 0);
+EtebaseCollection *col = etebase_collection_manager_create("cyberdyne.calendar", col_mgr, col_meta, "", 0);
 etebase_collection_metadata_destroy(col_meta);
 
 etebase_collection_manager_upload(col_mgr, col, NULL);
@@ -137,7 +135,7 @@ Fetching the list of collections is easy, and is the first step in any Etebase a
 const etebase = await Etebase.Account.login("username", "password");
 const collectionManager = etebase.getCollectionManager();
 
-const collections = await collectionManager.list();
+const collections = await collectionManager.list("cyberdyne.calendar");
 /*
 Collections:
 {
@@ -155,7 +153,7 @@ Collections:
 etebase = Account.login(...)
 
 col_mgr = etebase.get_collection_manager()
-collections = col_mgr.list()
+collections = col_mgr.list("cyberdyne.calendar")
 # {
 #   data: iter(etebase.Collection),  # Returned iterator of collections
 #   stoken: string,  # The sync token for this fetch
@@ -172,7 +170,7 @@ import com.etebase.client.*;
 Account etebase = Account.login(...);
 
 CollectionManager colMgr = etebase.getCollectionManager();
-CollectionListResponse collections = colMgr.list();
+CollectionListResponse collections = colMgr.list("cyberdyne.calendar");
 /*
 Collections:
 {
@@ -192,7 +190,7 @@ import com.etebase.client.*
 val etebase = Account.login(...)
 
 val colMgr = etebase.collectionManager
-val collections = colMgr.list()
+val collections = colMgr.list("cyberdyne.calendar")
 /*
 Collections:
 {
@@ -210,7 +208,7 @@ Collections:
 EtebaseAccount *etebase = etebase_account_login(...);
 
 EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
-EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, NULL);
+EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, "cyberdyne.calendar", NULL);
 /*
 Collections:
 {
@@ -234,7 +232,7 @@ The number of returned collections is limited by default, and you can control th
 <TabItem value="js">
 
 ```js
-const collections = await collectionManager.list({ limit: 50 });
+const collections = await collectionManager.list("cyberdyne.calendar", { limit: 50 });
 ```
 
 </TabItem>
@@ -246,7 +244,7 @@ from etebase import FetchOptions
 etebase = Account.login(...)
 
 col_mgr = etebase.get_collection_manager()
-collections = col_mgr.list(FetchOptions().limit(50))
+collections = col_mgr.list("cyberdyne.calendar", FetchOptions().limit(50))
 ```
 
 </TabItem>
@@ -258,7 +256,7 @@ import com.etebase.client.*;
 Account etebase = Account.login(...);
 
 CollectionManager colMgr = etebase.getCollectionManager();
-CollectionListResponse collections = colMgr.list(new FetchOptions().limit(50));
+CollectionListResponse collections = colMgr.list("cyberdyne.calendar", new FetchOptions().limit(50));
 ```
 
 </TabItem>
@@ -270,7 +268,7 @@ import com.etebase.client.*
 val etebase = Account.login(...)
 
 val colMgr = etebase.collectionManager
-val collections = colMgr.list(FetchOptions().limit(50))
+val collections = colMgr.list("cyberdyne.calendar", FetchOptions().limit(50))
 ```
 
 </TabItem>
@@ -282,7 +280,7 @@ EtebaseAccount *etebase = etebase_account_login(...);
 EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
 EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
 etebase_fetch_options_set_limit(fetch_options, 50);
-EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, fetch_options);
+EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, "cyberdyne.calendar", fetch_options);
 
 // Cleanup
 etebase_fetch_options_destroy(fetch_options);
@@ -303,7 +301,7 @@ We can use the `stoken` we have gotten in previous fetches to only return change
 ```js
 const stoken = "..."; // An stoken we got previously e.g. collections.stoken
 
-const collections = await collectionManager.list({ stoken });
+const collections = await collectionManager.list("cyberdyne.calendar", { stoken });
 ```
 
 </TabItem>
@@ -313,7 +311,7 @@ const collections = await collectionManager.list({ stoken });
 stoken = "..."  # An stoken we got previously e.g. collections.stoken
 
 col_mgr = etebase.get_collection_manager()
-collections = col_mgr.list(FetchOptions().stoken(stoken))
+collections = col_mgr.list("cyberdyne.calendar", FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -323,7 +321,7 @@ collections = col_mgr.list(FetchOptions().stoken(stoken))
 String stoken = "..."; // An stoken we got previously e.g. collections.stoken
 
 CollectionManager colMgr = etebase.getCollectionManager();
-CollectionListResponse collections = colMgr.list(new FetchOptions().stoken(stoken));
+CollectionListResponse collections = colMgr.list("cyberdyne.calendar", new FetchOptions().stoken(stoken));
 ```
 
 </TabItem>
@@ -333,7 +331,7 @@ CollectionListResponse collections = colMgr.list(new FetchOptions().stoken(stoke
 val stoken = "..." // An stoken we got previously e.g. collections.stoken
 
 val colMgr = etebase.collectionManager
-val collections = colMgr.list(FetchOptions().stoken(stoken))
+val collections = colMgr.list("cyberdyne.calendar", FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -345,7 +343,7 @@ const char *stoken = "..."; // An stoken we got previously e.g. collections.stok
 EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
 EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
 etebase_fetch_options_set_stoken(fetch_options, stoken);
-EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, NULL);
+EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, "cyberdyne.calendar", fetch_options);
 
 // Cleanup
 etebase_fetch_options_destroy(fetch_options);
@@ -366,7 +364,7 @@ We can use a combination of limit and stoken to fetch the changes in chunks rath
 ```js
 let stoken = null;
 while (true) {
-  const collections = await collectionManager.list({ stoken, limit: 30 });
+  const collections = await collectionManager.list("cyberdyne.calendar", { stoken, limit: 30 });
   stoken = collections.stoken;
 
   processNewCollections(collections.data);
@@ -384,7 +382,7 @@ while (true) {
 stoken = None
 done = False
 while not done:
-    collections = col_mgr.list(FetchOptions().stoken(stoken).limit(30))
+    collections = col_mgr.list("cyberdyne.calendar", FetchOptions().stoken(stoken).limit(30))
     stoken = collections.stoken
     done = collections.done
 
@@ -398,7 +396,7 @@ while not done:
 String stoken = null;
 boolean done = false;
 while (!done) {
-    CollectionListResponse collections = colMgr.list(new FetchOptions().stoken(stoken).limit(30));
+    CollectionListResponse collections = colMgr.list("cyberdyne.calendar", new FetchOptions().stoken(stoken).limit(30));
     stoken = collections.getStoken();
     done = collections.isDone();
 
@@ -413,7 +411,7 @@ while (!done) {
 var stoken: String? = null
 var done = false
 while (!done) {
-    val collections = colMgr.list(FetchOptions().stoken(stoken).limit(30))
+    val collections = colMgr.list("cyberdyne.calendar", FetchOptions().stoken(stoken).limit(30))
     stoken = collections.stoken
     done = collections.isDone
 
@@ -431,7 +429,7 @@ while (!done) {
     EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
     etebase_fetch_options_set_stoken(fetch_options, stoken);
     etebase_fetch_options_set_limit(fetch_options, 30);
-    EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, fetch_options);
+    EtebaseCollectionListResponse *col_list = etebase_collection_manager_list("cyberdyne.calendar", col_mgr, fetch_options);
 
     if (stoken) {
         free(stoken);
@@ -531,7 +529,7 @@ However, when a user loses access to a collection it's not marked as deleted. In
 ```js
 const stoken = "..."; // An stoken we got previously
 
-const collections = await collectionManager.list({ stoken });
+const collections = await collectionManager.list("cyberdyne.calendar", { stoken });
 
 // collections.removedMemberships is either undefined or a list of removed uids.
 ```
@@ -542,7 +540,7 @@ const collections = await collectionManager.list({ stoken });
 ```python
 stoken = "..."  # An stoken we got previously e.g. collections.stoken
 
-collections = col_mgr.list(FetchOptions().stoken(stoken))
+collections = col_mgr.list("cyberdyne.calendar", FetchOptions().stoken(stoken))
 
 # collections.removed_memberships is an iterator of removed uids
 ```
@@ -553,7 +551,7 @@ collections = col_mgr.list(FetchOptions().stoken(stoken))
 ```java
 String stoken = "..."; // An stoken we got previously e.g. collections.stoken
 
-CollectionListResponse collections = colMgr.list(new FetchOptions().stoken(stoken));
+CollectionListResponse collections = colMgr.list("cyberdyne.calendar", new FetchOptions().stoken(stoken));
 
 // collections.removedMemberships is either empty or a list of removed uids.
 ```
@@ -564,7 +562,7 @@ CollectionListResponse collections = colMgr.list(new FetchOptions().stoken(stoke
 ```kotlin
 val stoken = "..." // An stoken we got previously e.g. collections.stoken
 
-val collections = colMgr.list(FetchOptions().stoken(stoken))
+val collections = colMgr.list("cyberdyne.calendar", FetchOptions().stoken(stoken))
 
 // collections.removedMemberships is either empty or a list of removed uids.
 ```
@@ -577,7 +575,7 @@ const char *stoken = "..."; // An stoken we got previously e.g. collections.stok
 
 EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
 etebase_fetch_options_set_stoken(fetch_options, stoken);
-EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, fetch_options);
+EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, "cyberdyne.calendar", fetch_options);
 etebase_fetch_options_destroy(fetch_options);
 
 uintptr_t removed_len = etebase_collection_list_response_get_removed_memberships_length(col_list);
@@ -620,7 +618,7 @@ col_mgr.upload(collection)
 <TabItem value="java">
 
 ```java
-CollectionMetadata collectionMeta = collection.getMeta();
+ItemMetadata collectionMeta = collection.getMeta();
 collectionMeta.setName("Name");
 collection.setMeta(collectionMeta);
 
@@ -642,7 +640,7 @@ colMgr.upload(collection)
 <TabItem value="c">
 
 ```c
-EtebaseCollectionMetadata *col_meta = etebase_collection_get_meta(col);
+EtebaseItemMetadata *col_meta = etebase_collection_get_meta(col);
 etebase_collection_metadata_set_name(col_meta, "Name");
 etebase_collection_set_meta(col, col_meta);
 etebase_collection_metadata_destroy(col_meta);
@@ -778,7 +776,7 @@ Collection collection = colMgr.fetch(collectionUid);
 
 // -> On device B:
 Collection collection = colMgr.fetch(collectionUid);
-CollectionMetadata meta = collection.getMeta();
+ItemMetadata meta = collection.getMeta();
 meta.setName("New name");
 collection.setMeta(meta);
 
@@ -786,7 +784,7 @@ colMgr.upload(collection);
 
 
 // -> On device A (using the previously saved collection)
-CollectionMetadata meta = collection.getMeta();
+ItemMetadata meta = collection.getMeta();
 meta.setName("Another name");
 collection.setMeta(meta);
 
@@ -834,7 +832,7 @@ EtebaseCollection *col = etebase_collection_manager_fetch(col_mgr, col_uid, NULL
 
 // -> On device B:
 EtebaseCollection *col = etebase_collection_manager_fetch(col_mgr, col_uid, NULL);
-EtebaseCollectionMetadata *col_meta = etebase_collection_get_meta(col);
+EtebaseItemMetadata *col_meta = etebase_collection_get_meta(col);
 etebase_collection_metadata_set_name(col_meta, "New name");
 etebase_collection_set_meta(col, col_meta);
 etebase_collection_metadata_destroy(col_meta);
@@ -845,7 +843,7 @@ etebase_collection_destroy(col);
 
 
 // -> On device A (using the previously saved collection)
-EtebaseCollectionMetadata *col_meta = etebase_collection_get_meta(col);
+EtebaseItemMetadata *col_meta = etebase_collection_get_meta(col);
 etebase_collection_metadata_set_name(col_meta, "Another name");
 etebase_collection_set_meta(col, col_meta);
 etebase_collection_metadata_destroy(col_meta);
@@ -941,7 +939,7 @@ itemMgr.batch(...)
 
 
 // -> On device A (using the previously saved collection)
-CollectionMetadata meta = collection.getMeta();
+ItemMetadata meta = collection.getMeta();
 meta.setName("Another name");
 collection.setMeta(meta);
 
@@ -1001,7 +999,7 @@ const char *stoken = etebase_collection_get_stoken(col);
 }
 
 // -> On device A (using the previously saved collection)
-EtebaseCollectionMetadata *col_meta = etebase_collection_get_meta(col);
+EtebaseItemMetadata *col_meta = etebase_collection_get_meta(col);
 etebase_collection_metadata_set_name(col_meta, "Another name");
 etebase_collection_set_meta(col, col_meta);
 etebase_collection_metadata_destroy(col_meta);

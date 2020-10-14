@@ -20,9 +20,8 @@ This section assumes you already have a collection created and uploaded. We alre
 ```js
 const etebase = await Etebase.Account.login("username", "password");
 const collectionManager = etebase.getCollectionManager();
-const collection = await collectionManager.create(
+const collection = await collectionManager.create("cyberdyne.files",
   {
-    type: "cyberdyne.files",
     name: "My files",
     description: "A collection of files of different types",
   },
@@ -43,9 +42,8 @@ etebase = Account.login(client, "username", "password")
 col_mgr = etebase.get_collection_manager()
 
 # Create, encrypt and upload a new collection
-collection = col_mgr.create(
+collection = col_mgr.create("cyberdyne.calendar",
     {
-        "type": "cyberdyne.calendar",
         "name": "Holidays",
         "description": "My holiday calendar",
         "color": "#23aabbff",
@@ -67,13 +65,11 @@ Account etebase = Account.login(client, "username", "password");
 CollectionManager colMgr = etebase.getCollectionManager();
 
 // Create, encrypt and upload a new collection
-CollectionMetadata collectionMetadata = new CollectionMetadata(
-    "cyberdyne.calendar",
-    "Holidays"
-);
+ItemMetadata collectionMetadata = new ItemMetadata();
+collectionMetadata.setName("Holidays");
 collectionMetadata.setDescription("My holiday calendar");
 collectionMetadata.setColor("#23aabbff");
-Collection collection = colMgr.create(collectionMetadata, "");
+Collection collection = colMgr.create("cyberdyne.calendar", collectionMetadata, "");
 
 colMgr.upload(collection);
 ```
@@ -90,10 +86,10 @@ val etebase = Account.login(client, "username", "password")
 val colMgr = etebase.collectionManager
 
 // Create, encrypt and upload a new collection
-val collectionMetadata = CollectionMetadata("cyberdyne.calendar", "Holidays")
+collectionMetadata.name = "Holidays"
 collectionMetadata.description = "My holiday calendar"
 collectionMetadata.color = "#23aabbff"
-val collection = colMgr.create(collectionMetadata, "")
+val collection = colMgr.create("cyberdyne.calendar", collectionMetadata, "")
 
 colMgr.upload(collection)
 ```
@@ -108,10 +104,11 @@ EtebaseAccount *etebase = etebase_account_login(client, "username", "password");
 
 // Create, encrypt and upload a new collection
 EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
-EtebaseCollectionMetadata *col_meta = etebase_collection_metadata_new("cyberdyne.calendar", "Holidays");
+EtebaseItemMetadata *col_meta = etebase_collection_metadata_new();
+etebase_collection_metadata_set_name(col_meta, "Holidays");
 etebase_collection_metadata_set_description(col_meta, "My holidy calendar");
 etebase_collection_metadata_set_color(col_meta, "#23aabbff");
-EtebaseCollection *col = etebase_collection_manager_create(col_mgr, col_meta, "", 0);
+EtebaseCollection *col = etebase_collection_manager_create(col_mgr, "cyberdyne.calendar", col_meta, "", 0);
 etebase_collection_metadata_destroy(col_meta);
 
 etebase_collection_manager_upload(col_mgr, col, NULL);

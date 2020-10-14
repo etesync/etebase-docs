@@ -10,22 +10,34 @@ This collection type only supports the `VEVENT` iCalendar type (calendar events)
 
 ## Collection
 
-### type: `etebase.vevent`
+### Collection type: `etebase.vevent`
 
 This is the type indicating it's an iCalendar event collection.
+
+### Metadata
+
+#### name: string
+
+The user visible name of the calendar.
+
+#### mtime: milliseconds since epoch
+
+When was this collection last modified.
 
 
 ## Item
 
-### type: leave empty
+### Metadata
+
+#### type: leave empty
 
 If the type is empty, it indicates a event item. New types may be added in the future.
 
-### name: the UID of the event item
+#### name: the UID of the event item
 
 This is exactly the same as the UID inside the event itself, and is used for quick lookup.
 
-### mtime: milliseconds since epoch
+#### mtime: milliseconds since epoch
 
 When was this item last modified. Useful for sorting based on modification time.
 
