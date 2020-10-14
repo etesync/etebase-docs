@@ -393,3 +393,64 @@ free(stored_session);
 
 </TabItem>
 </CodeTabs>
+
+
+## Checking custom server URL
+
+The login and signup operations above automatically check whether the URL passed is pointing to a valid Etebase server. However, some applications need to know if the URL is pointing to a valid server before asking for credentials. This function does exactly that.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const isEtebase = await Etebase.Account.isEtebaseServer("https://example.com");
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+from etebase import Client, Account
+
+client = Client("client-name", "https://example.com")
+is_etebase = Account.is_etebase_server(client)
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+import com.etebase.client.*;
+import okhttp3.OkHttpClient;
+
+OkHttpClient httpClient =  new OkHttpClient.Builder().build();
+
+Client client = Client.create(httpClient, "https://example.com");
+boolean isEtebase = Account.isEtebaseServer(client);
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+import com.etebase.client.*
+import okhttp3.OkHttpClient;
+
+val httpClient: OkHttpClient = Builder().build()
+
+val client = Client.create(httpClient, "https://example.com")
+val isEtebase = Account.isEtebaseServer(client)
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+EtebaseClient *client = etebase_client_new("client-name", "https://example.com");
+
+// Returns 0 if client is pointing an etebase server, 1 if not, -1 on error
+int32_t is_etebase = etebase_account_check_etebase_server(client);
+```
+
+</TabItem>
+</CodeTabs>
