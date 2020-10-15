@@ -55,8 +55,8 @@ To install Etebase on Android:
 ```groovy title="app/build.gradle"
 dependencies {
     // ... rest of the deps
-    def etebaseVersion = '0.1.1'  // IMPORTANT: replace with the latest etebase version
-    implementation "com.etebase:client:$etebaseVersion@aar"
+    def etebaseVersion = '2.1.0'  // IMPORTANT: replace with the latest etebase version
+    implementation "com.etebase:client:$etebaseVersion"
 }
 ```
 
@@ -68,8 +68,8 @@ To install Etebase on Android:
 ```groovy title="app/build.gradle"
 dependencies {
     // ... rest of the deps
-    def etebaseVersion = '0.1.1'  // IMPORTANT: replace with the latest etebase version
-    implementation "com.etebase:client:$etebaseVersion@aar"
+    def etebaseVersion = '2.1.0'  // IMPORTANT: replace with the latest etebase version
+    implementation "com.etebase:client:$etebaseVersion"
 }
 ```
 
