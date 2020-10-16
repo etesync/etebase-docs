@@ -17,7 +17,7 @@ Items have two different areas where data is stored, one for metadata and one fo
 
 ### Metadata
 
-The metadata of items consists of the following fields (all are optional):
+The metadata of items consists of the following fields (all are optional). You can additionally extend the type to include whatever fields you would like.
 
 #### `type: string`
 
@@ -60,7 +60,7 @@ In addition to creating your own types, you can also use [existing types](type-s
 
 ### Metadata
 
-Collections can be used interchangeably with items, so all of the fields here are [the same](#metadata), with the exception of `name` which unlike for items, should be set for collections.
+Collections can be used interchangeably with items so they use the same `ItemMetadata` type. This means that all of the fields here are [the same as for items](#metadata), with the exception of `name` which unlike for items, should be set for collections.
 
 #### `name: string`
 
