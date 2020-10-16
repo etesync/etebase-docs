@@ -291,6 +291,52 @@ etebase_collection_manager_destroy(col_mgr);
 </TabItem>
 </CodeTabs>
 
+You can also fetch multiple collection types at the same time:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const collections = await collectionManager.list(["cyberdyne.calendar", "cyberdyne.tasks"]);
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+collections = col_mgr.list(["cyberdyne.calendar", "cyberdyne.tasks"])
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+CollectionListResponse collections = colMgr.list(new String[] {"cyberdyne.calendar", "cyberdyne.calendar"});
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val collections = colMgr.list(arrayOf("cyberdyne.calendar", "cyberdyne.calendar"))
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+const char *col_types[] = {"cyberdyne.calendar", "cyberdyne.calendar"};
+
+EtebaseCollectionListResponse *col_list = etebase_collection_manager_list_multi(
+    col_mgr, col_types, ETEBASE_UTILS_C_ARRAY_LEN(col_types), NULL);
+
+// Cleanup
+etebase_collection_list_response_destroy(col_list);
+```
+
+</TabItem>
+</CodeTabs>
+
 ### Only fetch recent changes
 
 We can use the `stoken` we have gotten in previous fetches to only return changed collections. A collection is considered changed if either it or any of its items have changed.
