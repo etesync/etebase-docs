@@ -10,6 +10,8 @@ This section assumes you have already read [the overview](../overview) and under
 
 ## Creating collections
 
+When creating collections, you need to pass the collection type as the first parameter, followed by the metadata and the content.
+
 <CodeTabs>
 <TabItem value="js">
 
@@ -241,9 +243,6 @@ const collections = await collectionManager.list("cyberdyne.calendar", { limit: 
 ```python
 from etebase import FetchOptions
 
-etebase = Account.login(...)
-
-col_mgr = etebase.get_collection_manager()
 collections = col_mgr.list("cyberdyne.calendar", FetchOptions().limit(50))
 ```
 
@@ -253,9 +252,6 @@ collections = col_mgr.list("cyberdyne.calendar", FetchOptions().limit(50))
 ```java
 import com.etebase.client.*;
 
-Account etebase = Account.login(...);
-
-CollectionManager colMgr = etebase.getCollectionManager();
 CollectionListResponse collections = colMgr.list("cyberdyne.calendar", new FetchOptions().limit(50));
 ```
 
@@ -265,9 +261,6 @@ CollectionListResponse collections = colMgr.list("cyberdyne.calendar", new Fetch
 ```kotlin
 import com.etebase.client.*
 
-val etebase = Account.login(...)
-
-val colMgr = etebase.collectionManager
 val collections = colMgr.list("cyberdyne.calendar", FetchOptions().limit(50))
 ```
 
@@ -275,9 +268,6 @@ val collections = colMgr.list("cyberdyne.calendar", FetchOptions().limit(50))
 <TabItem value="c">
 
 ```c
-EtebaseAccount *etebase = etebase_account_login(...);
-
-EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
 EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
 etebase_fetch_options_set_limit(fetch_options, 50);
 EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mgr, "cyberdyne.calendar", fetch_options);
@@ -285,7 +275,6 @@ EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mg
 // Cleanup
 etebase_fetch_options_destroy(fetch_options);
 etebase_collection_list_response_destroy(col_list);
-etebase_collection_manager_destroy(col_mgr);
 ```
 
 </TabItem>
