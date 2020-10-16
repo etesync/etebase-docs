@@ -112,8 +112,6 @@ module.exports = {
       {
         docs: {
           routeBasePath: '/',
-          // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: 'introduction',
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl:
             'https://github.com/etesync/etebase-docs/edit/master/',
