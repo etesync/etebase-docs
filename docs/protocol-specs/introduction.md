@@ -46,6 +46,17 @@ Etebase uses the [libsodium `box` functions](https://libsodium.gitbook.io/doc/pu
 For digital signatures, Etebase uses the [libsodium `sign` functions](https://libsodium.gitbook.io/doc/public-key_cryptography/public-key_signatures) which in turn use `Ed25519`.
 
 
+### [Deterministic Encryption](https://en.wikipedia.org/wiki/Deterministic_encryption)
+
+Etebase uses deterministic encryption for efficient manipulation of collection types.
+For the implementation Etebase uses the same algorithms as with [symmetric encryption](#symmetric-encryption), with the main difference that the `nonce` is generated using a keyed hash of the content (using a specifically derived key). This makes it so each clear text is encrypted to the same ciphertext without sacrificing security.
+
+
+### [Zero-Knowledge Proof](https://en.wikipedia.org/wiki/Zero-knowledge_proof)
+
+Etebase uses a mechanism based on digital signatures for zero-knowledge proof in the authentication.
+
+
 ## Additional Technologies
 
 As mentioned above the Etebase protocol uses HTTP (with TLS) and a REST API for transport. It also uses the [MessagePack (MsgPack)](https://msgpack.org/) serialization format for all data serializations, both within the library and when communicating with the server. Additionally, when needed to serialize binary data to strings, Etebase uses [non-padded Base64 URL](https://en.wikipedia.org/wiki/Base64#URL_applications).

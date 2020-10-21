@@ -2,7 +2,9 @@
 title: Authentication
 ---
 
-Etebase uses a [challenge-response](https://en.wikipedia.org/wiki/Challenge%E2%80%93response_authentication) protocol for authentication. The client asks the server for an authentication challenge using the `authentication/login_challenge/` HTTP endpoint, and then responds with a signed message to prove it posses the authentication private key.
+Etebase uses a [challenge-response](https://en.wikipedia.org/wiki/Challenge%E2%80%93response_authentication) zero-knowledge proof for authentication. The client asks the server for an authentication challenge using the `authentication/login_challenge/` HTTP endpoint, and then responds with a signed message to prove it posses the authentication private key.
+
+This makes it possible for Etebase clients to authenticate in a secure manner without needing to send the server any secret information. This ensures that even if the connection was eavesdropped, or the server compromised, an attacker wouldn't be able to impersonate the user, login as them, or gain access to any secret information.
 
 
 ## Signup
