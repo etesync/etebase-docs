@@ -23,6 +23,13 @@ module.exports = {
         'type-sepcs/calendar',
         'type-sepcs/tasks',
       ],
+      'Protocol Specifications': [
+        'protocol-specs/introduction',
+        'protocol-specs/authentication',
+        'protocol-specs/collections',
+        'protocol-specs/items',
+        'protocol-specs/invitations',
+      ],
     },
   ],
 };
