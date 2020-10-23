@@ -40,6 +40,19 @@ You now need to import it at the top of your project (e.g. `index.js`) like so:
 import 'react-native-etebase';
 ```
 
+
+### On the web (without a bundler)
+
+```shell
+yarn add etebase
+```
+
+The UMD bundle is then available at `node_modules/etebase/dist/umd/Etebase.js`. You can use it like this:
+
+```html
+<script src="path/to/Etebase.js"></script>
+```
+
 </TabItem>
 <TabItem value="py">
 
