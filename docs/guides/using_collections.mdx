@@ -632,8 +632,8 @@ Modifying collections is easy, it's just a matter of changing them and uploading
 <TabItem value="js">
 
 ```js
-const meta = await collection.getMeta();
-await collection.setMeta({ ...meta, name: "New name" });
+const meta = collection.getMeta();
+collection.setMeta({ ...meta, name: "New name" });
 
 await collectionManager.upload(collection);
 ```
@@ -692,7 +692,7 @@ Deleting is even easier:
 <TabItem value="js">
 
 ```js
-await collection.delete();
+collection.delete();
 
 await collectionManager.upload(collection);
 ```
@@ -757,15 +757,15 @@ const collection = await collectionManager.fetch(collectionUid);
 
 // -> On device B:
 const collection = await collectionManager.fetch(collectionUid);
-const meta = await collection.getMeta();
-await collection.setMeta({ ...meta, name: "New name" });
+const meta = collection.getMeta();
+collection.setMeta({ ...meta, name: "New name" });
 
 await collectionManager.upload(collection);
 
 
 // -> On device A (using the previously saved collection)
-const meta = await collection.getMeta();
-await collection.setMeta({ ...meta, name: "Another name" });
+const meta = collection.getMeta();
+collection.setMeta({ ...meta, name: "Another name" });
 
 // Will fail
 await collectionManager.trannaction(collection);
@@ -917,8 +917,8 @@ await itemManager.batch(...);
 
 // -> On device A (using the previously saved collection)
 const stoken = collection.stoken;
-const meta = await collection.getMeta();
-await collection.setMeta({ ...meta, name: "Another name" });
+const meta = collection.getMeta();
+collection.setMeta({ ...meta, name: "Another name" });
 
 // Will both fail
 await collectionManager.trannaction(collection, { stoken });

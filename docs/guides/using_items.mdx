@@ -749,7 +749,7 @@ Deleting is even easier:
 <TabItem value="js">
 
 ```js
-await item.delete();
+item.delete();
 
 await itemManager.batch([item]);
 ```
@@ -1340,7 +1340,7 @@ await itemManager.transaction([item1, item2], [colItem]);
 await itemManager.batch([colItem, item1]);
 
 // In addition, these are true:
-assert((await collection.getMeta()) === (await colItem.getMeta()));
+assert(collection.getMeta() === colItem.getMeta());
 assert((await collection.getContent()) === (await colItem.getContent()));
 ```
 
