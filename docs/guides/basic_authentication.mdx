@@ -23,7 +23,8 @@ Sign up is just one easy call which returns an instance of the main etebase clas
 <TabItem value="js">
 
 ```js
-const etebase = await Etebase.Account.signup("username", "password");
+// serverUrl can be obtained from the dashboard (or omitted for default)
+const etebase = await Etebase.Account.signup("username", "password", serverUrl);
 ```
 
 </TabItem>
@@ -32,7 +33,8 @@ const etebase = await Etebase.Account.signup("username", "password");
 ```python
 from etebase import Client, Account, User
 
-client = Client("client-name")
+# server_url can be obtained from the dashboard (or omitted for default)
+client = Client("client-name", server_url)
 user = User("username", "test@example.com")
 etebase = Account.signup(client, user, "password")
 ```
@@ -47,7 +49,8 @@ import okhttp3.OkHttpClient;
 OkHttpClient httpClient =  new OkHttpClient.Builder().build();
 
 User user = new User("username", "text@example.com");
-Client client = Client.create(httpClient, null);
+// serverUrl can obtained from the dashboard (or null for default)
+Client client = Client.create(httpClient, serverUrl);
 Account etebase = Account.signup(client, user, "password");
 ```
 
@@ -61,7 +64,8 @@ import okhttp3.OkHttpClient;
 val httpClient: OkHttpClient = Builder().build()
 
 val user = User("username", "text@example.com")
-val client = Client.create(httpClient, null)
+// serverUrl can obtained from the dashboard (or null for default)
+val client = Client.create(httpClient, serverUrl)
 val etebase = Account.signup(client, user, "password")
 ```
 
@@ -69,6 +73,7 @@ val etebase = Account.signup(client, user, "password")
 <TabItem value="c">
 
 ```c
+// Your personal server url can be obtained from the dashboard
 const char *server_url = etebase_get_default_server_url();
 EtebaseClient *client = etebase_client_new("client-name", server_url);
 EtebaseUser *user = etebase_user_new("username", "test@example.com");
@@ -87,7 +92,8 @@ Login is too just one easy call which returns an instance of the main etebase cl
 <TabItem value="js">
 
 ```js
-const etebase = await Etebase.Account.login("username", "password");
+// serverUrl can be obtained from the dashboard (or omitted for default)
+const etebase = await Etebase.Account.login("username", "password", serverUrl);
 ```
 
 </TabItem>
@@ -96,7 +102,8 @@ const etebase = await Etebase.Account.login("username", "password");
 ```python
 from etebase import Client, Account
 
-client = Client("client-name")
+# server_url can be obtained from the dashboard (or omitted for default)
+client = Client("client-name", server_url)
 etebase = Account.login(client, "username", "password")
 ```
 
@@ -109,7 +116,8 @@ import okhttp3.OkHttpClient;
 
 OkHttpClient httpClient =  new OkHttpClient.Builder().build();
 
-Client client = Client.create(httpClient, null);
+// serverUrl can obtained from the dashboard (or null for default)
+Client client = Client.create(httpClient, serverUrl);
 Account etebase = Account.login(client, "username", "password");
 ```
 
@@ -122,7 +130,8 @@ import okhttp3.OkHttpClient;
 
 val httpClient: OkHttpClient = Builder().build()
 
-val client = Client.create(httpClient, null)
+// serverUrl can obtained from the dashboard (or null for default)
+val client = Client.create(httpClient, serverUrl)
 val etebase = Account.login(client, "username", "password")
 ```
 
@@ -130,6 +139,7 @@ val etebase = Account.login(client, "username", "password")
 <TabItem value="c">
 
 ```c
+// Your personal server url can be obtained from the dashboard
 const char *server_url = etebase_get_default_server_url();
 EtebaseClient *client = etebase_client_new("client-name", server_url);
 EtebaseAccount *etebase = etebase_account_login(client, "username", "password");
@@ -233,7 +243,7 @@ Saving and restoring a session is as simple as:
 <TabItem value="js">
 
 ```js
-const etebase = await Etebase.Account.login("username", "password");
+const etebase = await Etebase.Account.login("username", "password", serverUrl);
 const savedSession = await etebase.save();
 
 // Later on...
@@ -246,7 +256,7 @@ const etebase = await Etebase.Account.restore(savedSession);
 ```python
 from etebase import Client, Account
 
-client = Client("client-name")
+client = Client("client-name", server_url)
 etebase = Account.login(client, "username", "password")
 
 stored_session = etebase.save(None)
@@ -261,7 +271,7 @@ etebase = Account.restore(client, stored_session, None)
 ```java
 import com.etebase.client.*;
 
-Client client = Client.create(httpClient, null);
+Client client = Client.create(httpClient, serverUrl);
 Account etebase = Account.login(client, "username", "password");
 
 String storedSession = etebase.save(null);
@@ -276,7 +286,7 @@ Account etebase = Account.restore(client, storedSession, null);
 ```kotlin
 import com.etebase.client.*
 
-val client = Client.create(httpClient, null)
+val client = Client.create(httpClient, serverUrl)
 val etebase = Account.login(client, "username", "password")
 
 val storedSession = etebase.save(null)
@@ -395,7 +405,7 @@ free(stored_session);
 </CodeTabs>
 
 
-## Checking custom server URL
+## Checking custom server URLs
 
 The login and signup operations above automatically check whether the URL passed is pointing to a valid Etebase server. However, some applications need to know if the URL is pointing to a valid server before asking for credentials. This function does exactly that.
 
