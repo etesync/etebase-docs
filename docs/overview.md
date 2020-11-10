@@ -57,6 +57,8 @@ Collections are a collection of items. Like items, they also have their own meta
 
 In addition to the above, collections can also be shared with other users and have associated access control. If you think of items as the equivalent of [inodes](https://en.wikipedia.org/wiki/Inode), then collections are the equivalent of filesystems.
 
+Most applications will only use one collection type and only one or a potentially few collections.
+
 ### Collection type
 
 Collection types are immutable and are set when an item is created. They describe the type of data that's within the collection, and enable more efficient handling of different data types.
