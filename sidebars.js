@@ -5,6 +5,7 @@ module.exports = {
       'Getting Started': [
         'installation',
         'overview',
+        'quickstart',
       ],
       Guides: [
         'guides/basic_authentication',
