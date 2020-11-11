@@ -28,15 +28,29 @@ Etebase uses [Argon2id](https://en.wikipedia.org/wiki/Argon2) for deriving secur
 
 It is an order of magnitudes better than alternatives such as [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2) which should not be used for such purpose.
 
+Used in the rest of this document as follows:
+- Deriving from a password: `pwhash(password: str, salt: [u8]): [u8]`.
+- Deriving from a key: `kdf(key: [u8], salt: [u8]): [u8]`
+
 
 ### [Hashing](https://en.wikipedia.org/wiki/Cryptographic_hash_function) and [MAC](https://en.wikipedia.org/wiki/Key_stretching)
 
 Hashing is and MACs are a common primitive for any cryptographic library. Etebase uses the fast and hard-to-misuse [BLAKE2b](https://en.wikipedia.org/wiki/BLAKE_(hash_function)#BLAKE2).
 
+Used in the rest of this document as follows:
+- MAC: `mac(key: [u8], content: [u8]): [u8]`
+- Hash: `hash(content: [u8]): [u8]`
+
 
 ### [Symmetric Encryption](https://en.wikipedia.org/wiki/Symmetric-key_algorithm)
 
 Etebase uses [XChaCha20Poly1305](https://en.wikipedia.org/wiki/Salsa20#XChaCha) for symmetrically encrypting data which is defined in [this IETF document](https://tools.ietf.org/html/draft-arciszewski-xchacha-00). It's a popular [AEAD](https://en.wikipedia.org/wiki/Authenticated_encryption#Authenticated_encryption_with_associated_data_(AEAD)) construction that is fast, secure, and hard to misuse.
+
+Used in the rest of this document as follows:
+- Encrypt: `encrypt(key: [u8], content: [u8], ad?: [u8]): [u8]`
+- Decrypt: `decrypt(key: [u8], content: [u8], ad?: [u8]): [u8]`
+
+Where the `ad` parameter is optional additional data to verify.
 
 
 ### [Asymmetric Encryption](https://en.wikipedia.org/wiki/Public-key_cryptography)
@@ -45,12 +59,18 @@ Etebase uses the [libsodium `box` functions](https://libsodium.gitbook.io/doc/pu
 
 For digital signatures, Etebase uses the [libsodium `sign` functions](https://libsodium.gitbook.io/doc/public-key_cryptography/public-key_signatures) which in turn use `Ed25519`.
 
+Used in the rest of this document as follows:
+- Sign: `sign(keypair: [u8], content: [u8]): [u8]`
+
 
 ### [Deterministic Encryption](https://en.wikipedia.org/wiki/Deterministic_encryption)
 
 Etebase uses deterministic encryption for efficient manipulation of collection types.
 For the implementation Etebase uses the same algorithms as with [symmetric encryption](#symmetric-encryption), with the main difference that the `nonce` is generated using a keyed hash of the content (using a specifically derived key). This makes it so each clear text is encrypted to the same ciphertext without sacrificing security.
 
+Used in the rest of this document as follows:
+- Encrypt: `detEncrypt(key: [u8], content: [u8]): [u8]`
+- Decrypt: `detDecrypt(key: [u8], content: [u8]): [u8]`
 
 ### [Zero-Knowledge Proof](https://en.wikipedia.org/wiki/Zero-knowledge_proof)
 
