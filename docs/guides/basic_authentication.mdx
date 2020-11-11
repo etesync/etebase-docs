@@ -24,7 +24,9 @@ Sign up is just one easy call which returns an instance of the main etebase clas
 
 ```js
 // serverUrl can be obtained from the dashboard (or omitted for default)
-const etebase = await Etebase.Account.signup("username", "password", serverUrl);
+const etebase = await Etebase.Account.signup({
+  username: "username", email: "email"
+}, "password", serverUrl);
 ```
 
 </TabItem>
