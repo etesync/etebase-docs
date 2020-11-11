@@ -103,7 +103,7 @@ module.exports = {
     },
     prism: {
       theme: require('prism-react-renderer/themes/dracula'),
-      additionalLanguages: ['groovy', 'kotlin'],
+      additionalLanguages: ['groovy', 'rust', 'kotlin'],
     },
   },
   presets: [
