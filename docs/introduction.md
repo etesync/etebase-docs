@@ -7,7 +7,7 @@ slug: /
 
 Etebase is an end-to-end encrypted backend as a service. Think Firebase, but encrypted in a way that only your users can access their data.
 
-Etebase makes it easy to build end-to-end encrypted applications by taking care of the encryption and its related challanges. It is fully open-source (clients and server) so anyone can review, audit or contribute to its development!
+Etebase makes it easy to build end-to-end encrypted applications by taking care of the encryption and its related challenges. It is fully open-source (clients and server) so anyone can review, audit or contribute to its development!
 
 ## Contributing
 
