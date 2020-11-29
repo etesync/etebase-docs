@@ -18,6 +18,10 @@ This is the type indicating it's a vCard collection.
 
 The user visible name of the address book.
 
+#### description: string (optional)
+
+The user visible description of the address book.
+
 #### mtime: milliseconds since epoch
 
 When was this collection last modified.

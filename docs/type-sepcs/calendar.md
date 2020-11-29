@@ -20,6 +20,14 @@ This is the type indicating it's an iCalendar event collection.
 
 The user visible name of the calendar.
 
+#### description: string (optional)
+
+The user visible description of the calendar.
+
+#### color: string (recommended)
+
+The user visible color of the calendar as `#RRGGBB` or `#RRGGBBAA`.
+
 #### mtime: milliseconds since epoch
 
 When was this collection last modified.

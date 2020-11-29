@@ -20,6 +20,14 @@ This is the type indicating it's an iCalendar task collection.
 
 The user visible name of the task list.
 
+#### description: string (optional)
+
+The user visible description of the task list.
+
+#### color: string (recommended)
+
+The user visible color of the task list as `#RRGGBB` or `#RRGGBBAA`.
+
 #### mtime: milliseconds since epoch
 
 When was this collection last modified.
