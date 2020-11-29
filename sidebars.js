@@ -23,6 +23,7 @@ module.exports = {
         'type-sepcs/address-book',
         'type-sepcs/calendar',
         'type-sepcs/tasks',
+        'type-sepcs/notes',
       ],
       'Protocol Specifications': [
         'protocol-specs/introduction',
