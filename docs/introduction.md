@@ -11,4 +11,4 @@ Etebase makes it easy to build end-to-end encrypted applications by taking care 
 
 ## Contributing
 
-If you find any issues with website, please don't hesitate to open a pull request. There's an "Edit" link at the bottom of each page.
+If you find any issues with the website, please don't hesitate to open a pull request. There's an "Edit" link at the bottom of each page.
