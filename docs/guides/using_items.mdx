@@ -106,7 +106,7 @@ EtebaseAccount *etebase = etebase_account_login(client, "username", "password");
 EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
 EtebaseItemMetadata *col_meta = etebase_collection_metadata_new();
 etebase_collection_metadata_set_name(col_meta, "Holidays");
-etebase_collection_metadata_set_description(col_meta, "My holidy calendar");
+etebase_collection_metadata_set_description(col_meta, "My holiday calendar");
 etebase_collection_metadata_set_color(col_meta, "#23aabbff");
 EtebaseCollection *col = etebase_collection_manager_create(col_mgr, "cyberdyne.calendar", col_meta, "", 0);
 etebase_collection_metadata_destroy(col_meta);
@@ -116,6 +116,29 @@ etebase_collection_manager_upload(col_mgr, col, NULL);
 // Cleanup
 etebase_collection_destroy(col);
 etebase_collection_manager_destroy(col_mgr);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+use etebase::{Account, Client, ItemMetadata};
+
+let client = Client::new(..., server_url)?;
+let etebase = Account::login(client, "username", "password")?;
+
+let collection_manager = etebase.collection_manager()?;
+
+// Create, encrypt and upload a new collection
+let collection = collection_manager.create(
+    "cyberdyne.calendar",
+    ItemMetadata::new()
+        .set_name(Some("Holidays"))
+        .set_description(Some("My holiday calendar"))
+        .set_color(Some("#23aabbff")),
+    &[], // Empty content
+)?;
+collection_manager.upload(&collection, None)?;
 ```
 
 </TabItem>
@@ -241,6 +264,26 @@ etebase_item_manager_destroy(item_mgr);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+let collection_manager = ...
+let collection = ...
+
+// Similar to how we have collection manager
+let item_manager = collection_manager.item_manager(collection, None)?;
+
+// Create, encrypt and upload a new item
+let item = item_manager.create(
+    ItemMetadata::new()
+        .set_item_type("files")
+        .set_name("note.txt"),
+    b"My secret note",
+)?;
+item_manager.batch(vec![&item].into_iter(), None)?;
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -320,7 +363,7 @@ EtebaseItemListResponse *item_list = etebase_item_manager_list(item_mgr, NULL);
 /*
 Items:
 {
-  etebase_item_list_response_get_data(): EtebaseItem[] // Returnd array of items
+  etebase_item_list_response_get_data(): EtebaseItem[] // Returned array of items
   etebase_item_list_response_get_stoken(): const char * // The sync token for this fetch
   ... // More fields we'll cover later
 }
@@ -329,6 +372,22 @@ Items:
 // Cleanup
 etebase_item_list_response_destroy(item_list);
 etebase_item_manager_destroy(item_mgr);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let item_manager = collection_manager.item_manager(collection)?;
+
+let items = item_manager.list(None)?;
+/*
+items: ItemListResponse<Item> {
+  data: Vec<Item>, // Returned array of items
+  stoken: Option<String>, // The sync token for this fetch
+  ... // More fields we'll cover later
+}
+*/
 ```
 
 </TabItem>
@@ -380,6 +439,14 @@ EtebaseItemListResponse *col_list = etebase_item_manager_list(item_mgr, fetch_op
 etebase_fetch_options_destroy(fetch_options);
 etebase_item_list_response_destroy(col_list);
 etebase_item_manager_destroy(col_mgr);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let item_manager = collection_manager.item_manager(collection, None)?;
+let items = item_manager.list(Some(&FetchOptions::new().limit(50)))?;
 ```
 
 </TabItem>
@@ -440,6 +507,15 @@ EtebaseItemListResponse *col_list = etebase_item_manager_list(item_mgr, NULL);
 etebase_fetch_options_destroy(fetch_options);
 etebase_item_list_response_destroy(col_list);
 etebase_item_manager_destroy(col_mgr);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let stoken = "..." // An stoken we got previously (items.stoken())
+
+let items = item_manager.list(Some(&FetchOptions::new().limit(stoken)))?;
 ```
 
 </TabItem>
@@ -544,6 +620,25 @@ if (stoken) {
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+let mut stoken: Option<&str> = None;
+let mut items: ItemListResponse<Item>;
+loop {
+    items = item_manager.list(
+        Some(&FetchOptions::new().stoken(stoken).limit(30))
+    )?;
+    stoken = items.stoken();
+
+    process_new_items(items.data());
+    if items.done() {
+        break
+    }
+}
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -568,7 +663,7 @@ const item = await itemManager.fetch(itemUid, { stoken });
 item = item_mgr.fetch(item_uid)
 
 # Can optionally pass stoken to only return the items if changed:
-item = item_mgr.fetch(collection_uid, FetchOptions().stoken(stoken))
+item = item_mgr.fetch(item_uid, FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -578,7 +673,7 @@ item = item_mgr.fetch(collection_uid, FetchOptions().stoken(stoken))
 Item item = itemManager.fetch(itemUid);
 
 // Can optionally pass stoken to only return the item if changed:
-Item item = itemManager.fetch(colluctionUid, new FetchOptions().stoken(stoken));
+Item item = itemManager.fetch(itemUid, new FetchOptions().stoken(stoken));
 ```
 
 </TabItem>
@@ -588,7 +683,7 @@ Item item = itemManager.fetch(colluctionUid, new FetchOptions().stoken(stoken));
 val item = itemManager.fetch(itemUid);
 
 // Can optionally pass stoken to only return the item if changed:
-val item = itemManager.fetch(colluctionUid, FetchOptions().stoken(stoken))
+val item = itemManager.fetch(itemUid, FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -602,6 +697,16 @@ EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
 etebase_fetch_options_set_stoken(fetch_options, stoken);
 EtebaseItem *item = etebase_item_manager_fetch(item_mgr, item_uid, fetch_options);
 etebase_fetch_options_destroy(fetch_options);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let item = item_manager.fetch(item_uid, None)?;
+
+// Can optionally pass stoken to only return the item if changed:
+let item = item_manager.fetch(item_uid, Some(&FetchOptions::new().stoken(stoken)))?;
 ```
 
 </TabItem>
@@ -680,6 +785,18 @@ etebase_item_list_response_destroy(item_list);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+let to_fetch = vec![];
+let items = item_manager.fetch_updates(to_fetch.into_iter(), None)?;
+
+// Can optionally pass stoken to only return the item if changed:
+let fetch_options = FetchOptions::new().stoken(stoken);
+let items = item_manager.fetch_updates(to_fetch.into_iter(), Some(&fetch_options))?;
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -741,6 +858,17 @@ etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NU
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+let mut item_meta = item.meta()?;
+item_meta.set_name("Name");
+item.set_meta(&item_meta)?;
+
+item_manager.batch(vec![&item].into_iter(), None)?;
+```
+
+</TabItem>
 </CodeTabs>
 
 Deleting is even easier:
@@ -792,6 +920,15 @@ etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NU
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+item.delete()?;
+
+item_manager.batch(vec![&item].into_iter(), None)?;
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -833,6 +970,13 @@ itemManager.batch(arrayOf(item1, item2, item3, ...))
 ```c
 const EtebaseItem *items[] = { item1, item2, item3, ... };
 etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+item_manager.batch(vec![&item1, &item2, &item3, ...].into_iter(), None)?;
 ```
 
 </TabItem>
@@ -991,6 +1135,33 @@ etebase_item_manager_transaction(item_mgr, items2, ETEBASE_UTILS_C_ARRAY_LEN(ite
 
 etebase_item_destroy(item2);
 etebase_item_destroy(item1);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+// -> On device A:
+let mut item1 = item_manager.fetch(item_uid1, None)?;
+let mut item2 = item_manager.fetch(item_uid2, None)?;
+
+
+// -> On device B:
+let mut item1 = item_manager.fetch(item_uid1, None)?;
+item1.set_content(b"Something else for item 1")?;
+item_manager.batch(vec![&item1].into_iter(), None)?;
+
+
+// -> On device A (using the previously saved item)
+item1.set_content(b"New content for item 1")?;
+item2.set_content(b"New content for item 2")?;
+
+// Will fail because item1 changed on device B
+item_manager.transaction(vec![&item1, &item2].into_iter(), None)?;
+// Will succeed
+item_manager.batch(vec![&item1, &item2].into_iter(), None)?;
+// Will succeed because item2 hasn't changed on device B
+item_manager.transaction(vec![&item2].into_iter(), None)?;
 ```
 
 </TabItem>
@@ -1155,6 +1326,34 @@ etebase_item_destroy(item);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+// -> On device A:
+let stoken = collection.stoken();
+let mut item = item_manager.fetch(item_uid, None)?;
+
+
+// -> On device B:
+let mut another_item = item_manager.fetch(another_item_uid, None)?;
+another_item.set_content(b"content for another item")?;
+item_manager.batch(vec![&another_item].into_iter(), None)?;
+
+
+// -> On device A (using the previously saved item and stoken)
+item.set_content(b"new secret content")?;
+
+// Will both fail
+let fetch_options = FetchOptions::new().stoken(stoken);
+item_manager.transaction(vec![&item].into_iter(), Some(&fetch_options))?;
+item_manager.batch(vec![&item].into_iter(), Some(&fetch_options))?;
+
+// Will both succeed
+item_manager.transaction(vec![&item].into_iter(), None)?;
+item_manager.batch(vec![&item].into_iter(), None)?;
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -1311,6 +1510,33 @@ etebase_item_destroy(item1);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+// -> On device A:
+let mut item1 = item_manager.fetch(item_uid1, None)?;
+let mut item2 = item_manager.fetch(item_uid2, None)?;
+
+
+// -> On device B:
+let mut item1 = item_manager.fetch(item_uid1, None)?;
+item1.set_content(b"Something else for item1")?;
+item_manager.batch(vec![&item1].into_iter(), None)?;
+
+
+// -> On device A (using the previously saved collection)
+item2.set_content(b"New content for item 2")?;
+
+// Will both fail because item1 changed
+item_manager.transaction_deps(vec![&item2].into_iter(), vec![&item1].into_iter(), None)?;
+item_manager.batch_deps(vec![&item2].into_iter(), vec![&item1].into_iter(), None)?;
+
+// Can even use the item in both the list and deps in batch
+// Will fail because item1 changed on device B
+item_manager.batch_deps(vec![&item1, &item2].into_iter(), vec![&item1].into_iter(), None)?;
+```
+
+</TabItem>
 </CodeTabs>
 
 ### Treating collections as items
@@ -1344,7 +1570,8 @@ assert(collection.getMeta() === colItem.getMeta());
 assert((await collection.getContent()) === (await colItem.getContent()));
 ```
 
-</TabItem><TabItem value="py">
+</TabItem>
+<TabItem value="py">
 
 ```python
 # A pre-existing collection and a few items:
@@ -1429,6 +1656,27 @@ etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NU
 // In addition, these are true:
 // etebase_collection_get_meta_raw(col, ...) == etebase_item_get_meta_raw(col_item, ...)
 // etebase_collection_get_content(col, ...) == etebase_item_get_content(col_item, ...)
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let collection = ...
+let item1 = ...
+let item2 = ...
+
+// Get the item out of the collection
+let col_item = collection.item()?;
+
+// The collection item can then be used like any other item:
+item_manager.transaction_deps(vec![&col_item, &item1].into_iter(), vec![&item2].into_iter(), None)?;
+item_manager.transaction_deps(vec![&item1, &item2].into_iter(), vec![&col_item].into_iter(), None)?;
+item_manager.batch(vec![&col_item, &item1].into_iter(), None)?;
+
+// In addition, these are true:
+assert_eq!(collection.meta_raw()?, col_item.meta_raw()?);
+assert_eq!(collection.content()?, col_item.content()?);
 ```
 
 </TabItem>
@@ -1544,6 +1792,25 @@ EtebaseItemListResponse *item_list = etebase_item_manager_fetch_updates(item_mgr
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+let item_manager = collection_manager.item_manager(&collection)?;
+
+let items = item_manager.list(Some(&FetchOptions::new().with_collection(true)))?;
+
+// Assuming the collection is the first item returned:
+let col_item = &items.data()[0];
+assert_eq!(col_item.uid(), collection.uid());
+
+// You can also fetch collection items based on UID:
+let col_item = item_manager.fetch(collection.uid(), None)?;
+
+// Or fetch updates of the collection along with other items:
+let items = item_manager.fetch_updates(vec![&collection.item()?, &item1].into_iter(), None);
+```
+
+</TabItem>
 </CodeTabs>
 
 ## Binary content
@@ -1644,6 +1911,21 @@ if (len < 0) {
 } else {
     tmp[len] = 0;
 }
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+// The rust API returns `Vec<u8>` by default
+item.content()?;
+// Try decoding the binary data to a UTF-8 string and return that
+String::from_utf8(item.content()?);
+
+// Sets the content to a binary blob
+item.set_content(b"Bla")?;
+// Sets the content from a string
+item.set_content("Hello".as_bytes())?;
 ```
 
 </TabItem>

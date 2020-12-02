@@ -108,7 +108,7 @@ EtebaseAccount *etebase = etebase_account_login(client, "username", "password");
 EtebaseCollectionManager *col_mgr = etebase_account_get_collection_manager(etebase);
 EtebaseItemMetadata *col_meta = etebase_collection_metadata_new();
 etebase_collection_metadata_set_name(col_meta, "Holidays");
-etebase_collection_metadata_set_description(col_meta, "My holidy calendar");
+etebase_collection_metadata_set_description(col_meta, "My holiday calendar");
 etebase_collection_metadata_set_color(col_meta, "#23aabbff");
 EtebaseCollection *col = etebase_collection_manager_create("cyberdyne.calendar", col_mgr, col_meta, "", 0);
 etebase_collection_metadata_destroy(col_meta);
@@ -118,6 +118,29 @@ etebase_collection_manager_upload(col_mgr, col, NULL);
 // Cleanup
 etebase_collection_destroy(col);
 etebase_collection_manager_destroy(col_mgr);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+use etebase::{Account, Client, ItemMetadata};
+
+let client = Client::new(..., server_url)?;
+let etebase = Account::login(client, "username", "password")?;
+
+let collection_manager = etebase.collection_manager()?;
+
+// Create, encrypt and upload a new collection
+let collection = collection_manager.create(
+    "cyberdyne.calendar",
+    ItemMetadata::new()
+        .set_name(Some("Holidays"))
+        .set_description(Some("My holiday calendar"))
+        .set_color(Some("#23aabbff")),
+    &[], // Empty content
+)?;
+collection_manager.upload(&collection, None)?;
 ```
 
 </TabItem>
@@ -214,7 +237,7 @@ EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mg
 /*
 Collections:
 {
-  etebase_collection_list_response_get_data(): EtebaseCollection[] // Returnd array of collections
+  etebase_collection_list_response_get_data(): EtebaseCollection[] // Returned array of collections
   etebase_collection_list_response_get_stoken(): const char * // The sync token for this fetch
   ... // More fields we'll cover later
 }
@@ -223,6 +246,26 @@ Collections:
 // Cleanup
 etebase_collection_list_response_destroy(col_list);
 etebase_collection_manager_destroy(col_mgr);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+use etebase::{Account};
+
+let etebase = Account::login(...)?;
+
+let collection_manager = etebase.collection_manager()?;
+
+let collections = collection_manager.list("cyberdyne.calendar", None)?;
+/*
+collections: CollectionListResponse<Collection> {
+  data: Vec<Collection>, // Returned array of collections
+  stoken: Option<String>, // The sync token for this fetch
+  ... // More fields we'll cover later
+}
+*/
 ```
 
 </TabItem>
@@ -278,6 +321,14 @@ etebase_collection_list_response_destroy(col_list);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+let collections =
+    collection_manager.list("cyberdyne.calendar", Some(&FetchOptions::new().limit(50)))?;
+```
+
+</TabItem>
 </CodeTabs>
 
 You can also fetch multiple collection types at the same time:
@@ -300,27 +351,37 @@ collections = col_mgr.list(["cyberdyne.calendar", "cyberdyne.tasks"])
 <TabItem value="java">
 
 ```java
-CollectionListResponse collections = colMgr.list(new String[] {"cyberdyne.calendar", "cyberdyne.calendar"});
+CollectionListResponse collections = colMgr.list(new String[] {"cyberdyne.calendar", "cyberdyne.tasks"});
 ```
 
 </TabItem>
 <TabItem value="kt">
 
 ```kotlin
-val collections = colMgr.list(arrayOf("cyberdyne.calendar", "cyberdyne.calendar"))
+val collections = colMgr.list(arrayOf("cyberdyne.calendar", "cyberdyne.tasks"))
 ```
 
 </TabItem>
 <TabItem value="c">
 
 ```c
-const char *col_types[] = {"cyberdyne.calendar", "cyberdyne.calendar"};
+const char *col_types[] = {"cyberdyne.calendar", "cyberdyne.tasks"};
 
 EtebaseCollectionListResponse *col_list = etebase_collection_manager_list_multi(
     col_mgr, col_types, ETEBASE_UTILS_C_ARRAY_LEN(col_types), NULL);
 
 // Cleanup
 etebase_collection_list_response_destroy(col_list);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let collections = collection_manager.list_multi(
+    vec!["cyberdyne.calendar", "cyberdyne.tasks"].into_iter(),
+    None,
+)?;
 ```
 
 </TabItem>
@@ -384,6 +445,19 @@ EtebaseCollectionListResponse *col_list = etebase_collection_manager_list(col_mg
 etebase_fetch_options_destroy(fetch_options);
 etebase_collection_list_response_destroy(col_list);
 etebase_collection_manager_destroy(col_mgr);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let stoken = "..." // An stoken we got previously e.g. collections.stoken()
+
+let collection_manager = etebase.collection_manager()?;
+let collections = collection_manager.list(
+  "cyberdyne.calendar",
+  Some(&FetchOptions::new().stoken(Some(stoken)))
+)?;
 ```
 
 </TabItem>
@@ -488,6 +562,26 @@ if (stoken) {
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+let mut stoken: Option<&str> = None;
+let mut collections: CollectionListResponse<Collection>;
+loop {
+    collections = collection_manager.list(
+        "cyberdyne.calendar", 
+        Some(&FetchOptions::new().stoken(stoken).limit(30))
+    )?;
+    stoken = collections.stoken();
+
+    process_new_collections(collections.data());
+    if collections.done() {
+        break
+    }
+}
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -522,7 +616,7 @@ collection = col_mgr.fetch(collection_uid, FetchOptions().stoken(stoken))
 Collection collection = colMgr.fetch(collectionUid);
 
 // Can optionally pass stoken to only return the collection if changed:
-Collection collection = colMgr.fetch(colluctionUid, new FetchOptions().stoken(stoken));
+Collection collection = colMgr.fetch(collectionUid, new FetchOptions().stoken(stoken));
 ```
 
 </TabItem>
@@ -532,7 +626,7 @@ Collection collection = colMgr.fetch(colluctionUid, new FetchOptions().stoken(st
 val collection = colMgr.fetch(collectionUid);
 
 // Can optionally pass stoken to only return the collection if changed:
-val collection = colMgr.fetch(colluctionUid, FetchOptions().stoken(stoken))
+val collection = colMgr.fetch(collectionUid, FetchOptions().stoken(stoken))
 ```
 
 </TabItem>
@@ -546,6 +640,16 @@ EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
 etebase_fetch_options_set_stoken(fetch_options, stoken);
 EtebaseCollection *col = etebase_collection_manager_fetch(col_mgr, col_uid, fetch_options);
 etebase_fetch_options_destroy(fetch_options);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let collection = collection_manager.fetch(collection_uid, None)?;
+
+// Can optionally pass stoken to only return the collection if changed:
+let collection = collection_manager.fetch(collection_uid, Some(&FetchOptions::new().stoken(stoken)))?;
 ```
 
 </TabItem>
@@ -620,6 +724,17 @@ fail_if(etebase_collection_list_response_get_removed_memberships(col_list, remov
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+let stoken = "..."; // An stoken we got previously e.g. collections.stoken()
+
+let collections = collection_manager.list("cyberdyne.calendar", Some(&FetchOptions::new().stoken(Some(stoken))))?;
+
+// collections.removed_memberships() is either None or a list of removed uids.
+```
+
+</TabItem>
 </CodeTabs>
 
 *Note:* because membership removals are not signed, it's good practice to show an indication to the user before removing the local copy.
@@ -684,6 +799,17 @@ etebase_collection_manager_upload(col_mgr, col, NULL);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+let mut collection = collection_manager.fetch("collection_uid", None)?;
+let mut collection_meta = collection.meta()?;
+collection_meta.set_name("name");
+collection.set_meta(&collection_meta)?;
+collection_manager.upload(&collection, None)?;
+```
+
+</TabItem>
 </CodeTabs>
 
 Deleting is even easier:
@@ -734,6 +860,15 @@ etebase_collection_manager_upload(col_mgr, col, NULL);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+collection.delete()?;
+
+collection_manager.upload(&collection, None)?;
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -768,7 +903,7 @@ const meta = collection.getMeta();
 collection.setMeta({ ...meta, name: "Another name" });
 
 // Will fail
-await collectionManager.trannaction(collection);
+await collectionManager.transaction(collection);
 // Will succeed
 await collectionManager.upload(collection);
 ```
@@ -892,6 +1027,34 @@ etebase_collection_destroy(col);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+// -> On device A:
+let mut collection = collection_manager.fetch(collection_uid, None)?;
+
+
+// -> On device B:
+let mut collection = collection_manager.fetch(collection_uid, None)?;
+let mut meta = collection.meta()?;
+meta.set_name("New name");
+collection.set_meta(&meta)?;
+
+collection_manager.upload(&collection, None)?;
+
+
+// -> On device A (using the previously saved collection)
+let mut meta = collection.meta()?;
+meta.set_name("Another name");
+collection.set_meta(&meta)?;
+
+// Will fail
+collection_manager.transaction(&collection, None)?;
+// Will succeed
+collection_manager.upload(&collection, None)?;
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -921,11 +1084,11 @@ const meta = collection.getMeta();
 collection.setMeta({ ...meta, name: "Another name" });
 
 // Will both fail
-await collectionManager.trannaction(collection, { stoken });
+await collectionManager.transaction(collection, { stoken });
 await collectionManager.upload(collection, { stoken });
 
 // Will both succeed
-await collectionManager.trannaction(collection);
+await collectionManager.transaction(collection);
 await collectionManager.upload(collection);
 ```
 
@@ -1056,6 +1219,35 @@ etebase_collection_destroy(col);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+// -> On device A:
+let mut collection = collection_manager.fetch(collection_uid, None)?;
+let stoken = collection.stoken();
+
+
+// -> On device B:
+let mut collection = collection_manager.fetch(collection_uid, None)?;
+let item_manager = collection_manager.item_manager(&collection)?;
+// Add a new item to tho collection (redacted for simplicity)
+item_manager.batch(..., None);
+
+
+// -> On device A (using the previously saved collection)
+let mut meta = collection.meta()?;
+meta.set_name("Another name");
+collection.set_meta(&meta)?;
+
+// Will both fail
+collection_manager.transaction(&collection, Some(&FetchOptions::new().stoken(stoken)))?;
+collection_manager.upload(&collection, Some(&FetchOptions::new().stoken(stoken)))?;
+// Will both succeed
+collection_manager.transaction(&collection, None)?;
+collection_manager.upload(&collection, None)?;
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -1157,6 +1349,21 @@ if (len < 0) {
 } else {
     tmp[len] = 0;
 }
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+// The rust API returns `Vec<u8>` by default
+collection.content()?;
+// Try decoding the binary data to a UTF-8 string and return that
+String::from_utf8(collection.content()?);
+
+// Sets the content to a binary blob
+collection.set_content(&vec![0, 1, 2])?;
+// Sets the content to a string
+collection.set_content("Hello".as_bytes())?;
 ```
 
 </TabItem>

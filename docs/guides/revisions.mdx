@@ -157,6 +157,30 @@ EtebaseItemRevisionsListResponse *revisions = etebase_item_manager_item_revision
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+let mut meta = ItemMetadata::new();
+meta.set_item_type("file");
+let mut item = item_manager.create(&meta, b"First draft")?;
+item_manager.batch(vec![&item].into_iter(), None)?;
+
+item.set_content(b"Second draft")?;
+item_manager.batch(vec![&item].into_iter(), None)?;
+
+let revisions = item_manager.item_revisions(&item, None)?;
+assert_eq!(revisions.data().len(), 2);
+
+// Revisions are normal items so we can use them as such
+let content = revisions.data()[1].content()?;
+assert_eq!(content, b"First draft");
+
+
+// Collections are just items, so for collection revisions:
+let collection_revisions = item_manager.item_revisions(&collection.item()?, None);
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -259,6 +283,25 @@ while (!done) {
 
 if (iterator) {
     free(iterator);
+}
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let mut iterator: Option<&str> = None;
+let mut revisions: IteratorListResponse<Item>;
+loop {
+    revisions = item_manager.item_revisions(&item, 
+        Some(&FetchOptions::new().iterator(iterator).limit(30))
+    )?;
+    iterator = revisions.iterator();
+
+    process_revisions(revisions.data());
+    if revisions.done() {
+        break
+    }
 }
 ```
 

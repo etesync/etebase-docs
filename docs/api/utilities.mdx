@@ -80,6 +80,20 @@ etebase_utils_from_base64(encoded, decoded, sizeof(decoded), &decoded_len);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+use etebase::utils;
+
+let binary_data = b"test";
+
+let b64_encoded = utils::to_base64(binary_data)?;
+let decoded = utils::from_base64(&b64_encoded)?;
+// decoded is equal to binary_data
+assert_eq!(decoded, binary_data);
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -137,6 +151,16 @@ val randomData = Utils.randomBytes(32)
 // Generate 32 random bytes
 char buf[32];
 etebase_utils_randombytes(buf, sizeof(buf));
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+use etebase::utils;
+
+// Generate 32 random bytes
+let random_data = utils::randombytes(32);
 ```
 
 </TabItem>

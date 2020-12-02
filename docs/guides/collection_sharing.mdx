@@ -80,6 +80,18 @@ etebase_invitation_manager_destroy(invitation_manager);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+let etebase = Account::login(...)?;
+
+let invitation_manager = etebase.invitation_manager()?;
+
+// You can now share your pubkey
+let my_pubkey = invitation_manager.pubkey();
+```
+
+</TabItem>
 </CodeTabs>
 
 ### Pretty-print the public key
@@ -152,6 +164,19 @@ char pretty[ETEBASE_UTILS_PRETTY_FINGERPRINT_SIZE];
 etebase_utils_pretty_fingerprint(my_pubkey, my_pubkey_size, pretty);
 
 /* prettyFingerprint:
+45680   71497   88570   93128
+19189   84243   25687   20837
+47924   46071   54113   18789
+*/
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let pretty_fingerprint = utils::pretty_fingerprint(my_pubkey);
+
+/* pretty_fingerprint:
 45680   71497   88570   93128
 19189   84243   25687   20837
 47924   46071   54113   18789
@@ -252,6 +277,22 @@ etebase_invitation_manager_invite(invitation_manager, col, "username2",
 
 etebase_user_profile_destroy(user2);
 etebase_invitation_manager_destroy(invitation_manager);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let invitation_manager = etebase.invitation_manager()?;
+
+// Fetch their public key
+let user2 = invitation_manager.fetch_user_profile("username2")?;
+
+// Verify user2.pubkey is indeed the pubkey you expect.
+// This is done in a secure channel (e.g. encrypted chat or in person)
+
+// Assuming the pubkey is as expected, send the invitation
+invitation_manager.invite(collection, "username2", user2.pubkey(), CollectionAccessLevel::ReadOnly)?;
 ```
 
 </TabItem>
@@ -385,6 +426,28 @@ etebase_invitation_manager_destroy(invitation_manager);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+// login as user2
+let etebase = Account::login(client, "username2", "password")?;
+let invitation_manager = etebase.invitation_manager()?;
+
+// List pending invitations
+let invitations = invitation_manager.list_incoming(None)?;
+let invitation = &invitations.data()[0]; // get first invitation
+
+// Verify the sender's pubkey is indeed the pubkey you expect.
+// This is done in a secure channel (e.g. encrypted chat or in person)
+let from_pubkey = invitation.from_pubkey();
+
+// We can now either accept
+invitation_manager.accept(&invitation)?;
+// or reject the invitation:
+invitation_manager.reject(&invitation)?;
+```
+
+</TabItem>
 </CodeTabs>
 
 ## Leaving collections
@@ -436,6 +499,15 @@ EtebaseCollectionMemberManager *member_manager = etebase_collection_manager_get_
 etebase_collection_member_manager_leave(member_manager);
 
 etebase_collection_member_manager_destroy(member_manager);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let member_manager = collection_manager.member_manager(collection)?;
+
+member_manager.leave()?;
 ```
 
 </TabItem>
@@ -526,6 +598,20 @@ etebase_collection_member_manager_destroy(member_manager);
 ```
 
 </TabItem>
+<TabItem value="kt">
+
+```kotlin
+let member_manager = collection_manager.member_manager(collection)?;
+
+let members = member_manager.list(None)?;
+
+// Print the users and their access levels
+for member in members.data() {
+    println!("{} {:?}", member.username(), member.access_level());
+}
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -583,6 +669,16 @@ etebase_collection_member_manager_destroy(member_manager);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+let member_manager = collection_manager.member_manager(collection)?;
+
+let new_access_level = CollectionAccessLevel::ReadWrite;
+member_manager.modify_access_level("username2", new_access_level)?;
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -633,6 +729,15 @@ EtebaseCollectionMemberManager *member_manager = etebase_collection_manager_get_
 etebase_collection_member_manager_remove(member_manager, "username2");
 
 etebase_collection_member_manager_destroy(member_manager);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let member_manager = collection_manager.member_manager(collection)?;
+
+member_manager.remove("username2")?;
 ```
 
 </TabItem>
@@ -741,6 +846,25 @@ while (!done) {
 
 if (iterator) {
     free(iterator);
+}
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let mut iterator: Option<&str> = None;
+let mut invitations: IteratorListResponse<SignedInvitation>;
+loop {
+    invitations = invitation_manager.list_outgoing(
+        Some(&FetchOptions::new().iterator(iterator).limit(30))
+    )?;
+    iterator = invitations.iterator();
+
+    process_outgoing_invitations(invitations.data());
+    if invitations.done() {
+        break
+    }
 }
 ```
 

@@ -92,8 +92,17 @@ dependencies {
 To use the C library please get it from your distributions package manager (where available) or build the library from source.
 
 </TabItem>
-</CodeTabs>
+<TabItem value="rs">
 
+To use etebase add the etebase crate to the projects `Cargo.toml`
+
+```toml
+[dependencies]
+etebase="..."
+```
+
+</TabItem>
+</CodeTabs>
 
 ## Using the package in your project
 
@@ -141,6 +150,15 @@ val etebase = Account.login(...)
 #include <etebase.h>
 
 EtebaseAccount *account = etebase_account_login(...);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+use etebase::Account;
+
+let account = Account::login(...)?;
 ```
 
 </TabItem>
