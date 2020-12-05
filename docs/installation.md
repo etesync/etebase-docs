@@ -63,12 +63,14 @@ pip install etebase
 </TabItem>
 <TabItem value="java">
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.etebase/client.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.etebase%22%20AND%20a:%22client%22)
+
 To install Etebase on Android:
 
 ```groovy title="app/build.gradle"
 dependencies {
     // ... rest of the deps
-    def etebaseVersion = '2.1.0'  // IMPORTANT: replace with the latest etebase version
+    def etebaseVersion = '...'  // IMPORTANT: replace with the latest etebase version from the badge above
     implementation "com.etebase:client:$etebaseVersion"
 }
 ```
@@ -76,12 +78,14 @@ dependencies {
 </TabItem>
 <TabItem value="kt">
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.etebase/client.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.etebase%22%20AND%20a:%22client%22)
+
 To install Etebase on Android:
 
 ```groovy title="app/build.gradle"
 dependencies {
     // ... rest of the deps
-    def etebaseVersion = '2.1.0'  // IMPORTANT: replace with the latest etebase version
+    def etebaseVersion = '...'  // IMPORTANT: replace with the latest etebase version from the badge above
     implementation "com.etebase:client:$etebaseVersion"
 }
 ```
@@ -94,8 +98,10 @@ To use the C library please get it from your distributions package manager (wher
 </TabItem>
 <TabItem value="rs">
 
-[![crates.io](https://meritbadge.herokuapp.com/etebase)](https://crates.io/crates/etebase)    
+[![Crates.io](https://img.shields.io/crates/v/etebase)](https://crates.io/crates/etebase)
+
 To use etebase add the etebase crate to the project's `Cargo.toml`:
+
 ```toml
 [dependencies]
 etebase="..." # e.g. "^0.4.1", check latest version on crates.io
