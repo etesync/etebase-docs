@@ -94,11 +94,11 @@ To use the C library please get it from your distributions package manager (wher
 </TabItem>
 <TabItem value="rs">
 
-To use etebase add the etebase crate to the projects `Cargo.toml`
-
+[![crates.io](https://meritbadge.herokuapp.com/etebase)](https://crates.io/crates/etebase)    
+To use etebase add the etebase crate to the project's `Cargo.toml`:
 ```toml
 [dependencies]
-etebase="..."
+etebase="..." # e.g. "^0.4.1", check latest version on crates.io
 ```
 
 </TabItem>
