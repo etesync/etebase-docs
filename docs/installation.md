@@ -102,9 +102,9 @@ To use the C library please get it from your distributions package manager (wher
 
 To use etebase add the etebase crate to the project's `Cargo.toml`:
 
-```toml
+```toml title="Cargo.toml"
 [dependencies]
-etebase="..." # e.g. "^0.4.1", check latest version on crates.io
+etebase = "..." # e.g. "^0.4.1", check latest version on crates.io
 ```
 
 </TabItem>
