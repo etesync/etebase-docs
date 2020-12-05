@@ -84,8 +84,18 @@ EtebaseAccount *etebase = etebase_account_signup(client, user, "password");
 ```
 
 </TabItem>
-</CodeTabs>
+<TabItem value="rs">
 
+```rust
+use etebase::{Account, Client, User};
+
+let user = User::new("username", "text@example.com");
+let client = Client::new(..., server_url)?;
+let etebase = Account::signup(client, user, "password")?;
+```
+
+</TabItem>
+</CodeTabs>
 
 ## Login
 
@@ -149,8 +159,17 @@ EtebaseAccount *etebase = etebase_account_login(client, "username", "password");
 ```
 
 </TabItem>
-</CodeTabs>
+<TabItem value="rs">
 
+```rust
+use etebase::{Account, Client};
+
+let client = Client::new(..., server_url)?;
+let etebase = Account::login(client, "username", "password")?;
+```
+
+</TabItem>
+</CodeTabs>
 
 ## Change password
 
@@ -192,8 +211,14 @@ etebase_account_change_password(account, "new password");
 ```
 
 </TabItem>
-</CodeTabs>
+<TabItem value="rs">
 
+```rust
+etebase.change_password("new password")?;
+```
+
+</TabItem>
+</CodeTabs>
 
 ## Logout
 
@@ -233,8 +258,14 @@ etebase_account_logout(account);
 ```
 
 </TabItem>
-</CodeTabs>
+<TabItem value="rs">
 
+```rust
+etebase.logout()?;
+```
+
+</TabItem>
+</CodeTabs>
 
 ## Session save and restore
 
@@ -311,6 +342,21 @@ char *stored_session = etebase_account_save(etebase, NULL, 0);
 // later on...
 EtebaseAccount *etebase = etebase_account_restore(client, stored_session, NULL, 0);
 free(stored_session);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+use etebase::{Account, Client};
+
+let client = Client::new(..., server_url)?;
+let etebase = Account::login(client, "username", "password")?;
+
+let stored_session = etebase.save(None)?;
+
+// later on...
+let etebase = Account::restore(client, stored_session, None)?;
 ```
 
 </TabItem>
@@ -405,8 +451,24 @@ free(stored_session);
 ```
 
 </TabItem>
-</CodeTabs>
+<TabItem value="rs">
 
+```rust
+use etebase::{Account, Client, utils};
+
+let client = Client::new(..., server_url)?;
+let etebase = Account::login(client, "username", "password")?;
+
+// Save the key somewhere safe (e.g. the OS's key store)
+let encryption_key = utils::randombytes(32);
+let stored_session = etebase.save(Some(encryption_key))?;
+
+// later on...
+let etebase = Account::restore(client, stored_session, Some(encryption_key))?;
+```
+
+</TabItem>
+</CodeTabs>
 
 ## Checking custom server URLs
 
@@ -466,4 +528,17 @@ int32_t is_etebase = etebase_account_check_etebase_server(client);
 ```
 
 </TabItem>
+
+<TabItem value="rs">
+
+```rust
+use etebase::{Account, Client};
+
+let client = Client::new(..., server_url)?;
+
+let is_etebase = Account::is_etebase_server(client)?;
+```
+
+</TabItem>
+
 </CodeTabs>

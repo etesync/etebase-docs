@@ -92,8 +92,17 @@ dependencies {
 To use the C library please get it from your distributions package manager (where available) or build the library from source.
 
 </TabItem>
-</CodeTabs>
+<TabItem value="rs">
 
+[![crates.io](https://meritbadge.herokuapp.com/etebase)](https://crates.io/crates/etebase)    
+To use etebase add the etebase crate to the project's `Cargo.toml`:
+```toml
+[dependencies]
+etebase="..." # e.g. "^0.4.1", check latest version on crates.io
+```
+
+</TabItem>
+</CodeTabs>
 
 ## Using the package in your project
 
@@ -141,6 +150,15 @@ val etebase = Account.login(...)
 #include <etebase.h>
 
 EtebaseAccount *account = etebase_account_login(...);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+use etebase::Account;
+
+let account = Account::login(...)?;
 ```
 
 </TabItem>

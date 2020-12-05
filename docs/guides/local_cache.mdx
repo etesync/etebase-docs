@@ -107,6 +107,22 @@ free(cache_blob);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+// Create a collection
+let collection = collection_manager.create(...)?;
+
+// The cache blob is just a Uint8Array that can be saved for later use
+let cache_blob = collection_manager.cache_save(&collection)?;
+
+// Later on we can load the object back
+let mut collection = collection_manager.cache_load(&cache_blob)?;
+// And use it like any other object:
+collection.set_content(b"New content")?;
+```
+
+</TabItem>
 </CodeTabs>
 
 ### As Base64 encoded string
@@ -202,6 +218,22 @@ free(cache_blob);
 ```
 
 </TabItem>
+<TabItem value="rs">
+
+```rust
+// Create a collection
+let collection = collection_manager.create(...)?;
+
+// The cache blob is just a Uint8Array that can be saved for later use
+let cache_b64 = utils::to_base64(&collection_manager.cache_save(&collection)?)?;
+
+// Later on we can load the object back
+let mut collection = collection_manager.cache_load(&utils::from_base64(&cache_b64)?)?;
+// And use it like any other object:
+collection.set_content(b"New content")?;
+```
+
+</TabItem>
 </CodeTabs>
 
 
@@ -288,6 +320,22 @@ EtebaseItem *item = etebase_item_manager_cache_load(item_mgr, cache_blob, cache_
 etebase_item_get_uid(item);
 
 free(cache_blob);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+// Create an item
+let item = item_manager.create(...)?;
+
+// The cache blob is just a Uint8Array that can be saved for later use
+let cache_blob = item_manager.cache_save(&item)?;
+
+// Later on we can load the object back
+let mut item = item_manager.cache_load(&cache_blob)?;
+// And use it like any other object:
+item.set_content(b"New content")?;
 ```
 
 </TabItem>
@@ -383,6 +431,22 @@ EtebaseItem *item = etebase_item_manager_cache_load(item_mgr, decoded, decoded_l
 etebase_item_get_uid(item);
 
 free(cache_blob);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+// Create an item
+let item = item_manager.create(...)?;
+
+// The cache blob is just a Uint8Array that can be saved for later use
+let cache_b64 = utils::to_base64(&item_manager.cache_save(&item)?)?;
+
+// Later on we can load the object back
+let mut item = item_manager.cache_load(&utils::from_base64(&cache_b64)?)?;
+// And use it like any other object:
+item.set_content(b"New content")?;
 ```
 
 </TabItem>
