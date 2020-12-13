@@ -28,6 +28,7 @@ module.exports = {
       'Protocol Specifications': [
         'protocol-specs/introduction',
         'protocol-specs/authentication',
+        'protocol-specs/fetching-data',
         'protocol-specs/collections',
         'protocol-specs/items',
         'protocol-specs/invitations',
