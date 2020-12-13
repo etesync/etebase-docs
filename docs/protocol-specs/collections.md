@@ -17,6 +17,21 @@ Thanks to this property, Etebase clients can generate a unique collection type t
 colTypeToken = detEncrypt(key, collectionType)
 ```
 
+## Fetching collections
+
+Fetching collections is done using a `POST` request to the `collection/list_multi/` endpoint. The request includes a list of [collection type tokens](#collection-type) used to filter the results like so:
+
+```rust
+Body {
+  collectionTypes: [[u8]], // each array item is a type token
+}
+```
+
+You can additionally pass the following [fetch options](./fetching-data#fetch-options): `limit`, `stoken` and `prefetch`.
+
+The endpoint returns [an `stoken` list response](./fetching-data#list-responses) with type `Collection` and one additional field:
+
+* `removedMemberships: Option<RemovedCollection>`: the list of collections the user lost access to but haven't been deleted.
 
 ## Collection structure
 
