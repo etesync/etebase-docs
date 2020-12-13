@@ -24,7 +24,7 @@ It then encrypts `identityKeypair` and `accountKey` using `mainKey` into `encryp
 It then uploads the `SigupBody` to the server using the `authentication/signup/` HTTP endpoint as follows:
 
 ```rust
-struct User {
+User {
   username: str,
   email: str,
 }
@@ -97,7 +97,7 @@ And the following fields are added (similar to signup):
 The `Response` is uploaded to the `authentication/change_password/` HTTP endpoint as follows:
 
 ```rust
-struct Response {
+Response {
     username: str,
     challenge: [u8],
     host: str, // The server's hostname
