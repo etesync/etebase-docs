@@ -712,6 +712,54 @@ let item = item_manager.fetch(item_uid, Some(&FetchOptions::new().stoken(stoken)
 </TabItem>
 </CodeTabs>
 
+Or fetch multiple items at once:
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const items = await itemManager.fetchMulti([item1Uid, item2Uid]);
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+items = item_mgr.fetch_multi([item1_uid, item2_uid])
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+ItemListResponse items = itemManager.fetchMulti(new String[] {item1Uid, item2Uid});
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val items = itemManager.fetchMulti(arrayOf(item1Uid, item2Uid));
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+const char *uids[] = { item1_uid, item2_uid };
+EtebaseItemListResponse *items = etebase_item_manager_fetch_multi(item_mgr, uids, ETEBASE_UTILS_C_ARRAY_LEN(uids), NULL);
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let items = item_manager.fetch_multi(vec![&item1_uid, &item2_uid].into_iter(), None)?;
+```
+
+</TabItem>
+</CodeTabs>
+
 
 ### Fetch a group of items
 
