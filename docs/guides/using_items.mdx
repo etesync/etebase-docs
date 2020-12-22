@@ -788,7 +788,7 @@ etebase_item_list_response_destroy(item_list);
 <TabItem value="rs">
 
 ```rust
-let to_fetch = vec![];
+let to_fetch = vec![&item1, &item2, &item3];
 let items = item_manager.fetch_updates(to_fetch.into_iter(), None)?;
 
 // Can optionally pass stoken to only return the item if changed:
