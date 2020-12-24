@@ -21,7 +21,7 @@ module.exports = {
         },
         {
           href: 'https://www.etebase.com/community-chat/',
-          label: 'Chat',
+          label: 'Chat With Us',
           position: 'left',
         },
         {
