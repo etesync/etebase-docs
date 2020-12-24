@@ -34,5 +34,6 @@ module.exports = {
         'protocol-specs/invitations',
       ],
     },
+    'get-help',
   ],
 };
