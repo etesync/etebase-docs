@@ -12,7 +12,7 @@ This document assumes you already read [the overview section of the docs](../ove
 
 The Etebase protocol is purposefully very simple. Etebase uses existing, well-tested and industry standard encryption algorithms, and use them in the most standard way possible to avoid introducing any weaknesses in otherwise secure crypto systems.
 
-The client connects to the server using [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) and then interacts with the server using a very simple [REST API](https://en.wikipedia.org/wiki/Representational_state_transfer).
+The client connects to the server using [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) and then interacts with the server using a very simple [REST API](https://en.wikipedia.org/wiki/Representational_state_transfer). We provide an [OpenAPI](https://www.openapis.org/) interface description and an API explorer which can be accessed from [the server API docs](https://api.etebase.com/docs).
 
 This makes Etebase very easy to audit, get right, and implement. Making it a solid foundation.
 
