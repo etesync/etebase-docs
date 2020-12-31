@@ -67,6 +67,8 @@ They are in lower case and use a dotted notation, prefixed with a unique develop
 
 In addition to creating your own types, you can also use [existing types](type-sepcs/introduction) as long as you follow their specifications.
 
+**Not sure what you should use?** Just use your developer name, e.g. `cyberdyne`.
+
 ### Metadata
 
 Collections can be used interchangeably with items so they use the same `ItemMetadata` type. This means that all of the fields here are [the same as for items](#metadata), with the exception of `name` which unlike for items, should be set for collections.
