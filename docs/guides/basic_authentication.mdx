@@ -470,7 +470,9 @@ let etebase = Account::restore(client, stored_session, Some(encryption_key))?;
 </TabItem>
 </CodeTabs>
 
-## Checking custom server URLs
+## Using custom servers
+
+### Checking custom server URLs
 
 The login and signup operations above automatically check whether the URL passed is pointing to a valid Etebase server. However, some applications need to know if the URL is pointing to a valid server before asking for credentials. This function does exactly that.
 
@@ -541,4 +543,61 @@ let is_etebase = Account::is_etebase_server(client)?;
 
 </TabItem>
 
+</CodeTabs>
+
+
+### Forcing server URL for local development
+
+When saving etebase instances with `cacheSave` the server URL is also being saved. This is not an issue in production as the URL of the server is unlikely to change, however, when developing against a local server it's often useful to force the server URL without having to login again.
+
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const etebase = await Etebase.Account.restore(savedSession);
+etebase.serverUrl = "http://new-development-server";
+```
+
+</TabItem>
+<TabItem value="py">
+
+```python
+etebase = Account.restore(client, stored_session, None)
+etebase.force_server_url("http://new-development-server")
+```
+
+</TabItem>
+<TabItem value="java">
+
+```java
+Account etebase = Account.restore(client, storedSession, null);
+etebase.forceServerUrl("http://new-development-server");
+```
+
+</TabItem>
+<TabItem value="kt">
+
+```kotlin
+val etebase = Account.restore(client, storedSession, null)
+etebase.forceServerUrl("http://new-development-server")
+```
+
+</TabItem>
+<TabItem value="c">
+
+```c
+EtebaseAccount *etebase = etebase_account_restore(client, stored_session, NULL, 0);
+etebase_account_force_server_url(etebase, "http://new-development-server");
+```
+
+</TabItem>
+<TabItem value="rs">
+
+```rust
+let mut etebase = Account::restore(client, stored_session, None)?;
+etebase.force_server_url("http://new-development-server")?;
+```
+
+</TabItem>
 </CodeTabs>
