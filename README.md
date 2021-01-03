@@ -1,33 +1,29 @@
-# Website
+<p align="center">
+  <img width="120" src="https://github.com/etesync/etesync-web/blob/master/src/images/logo.svg" />
+  <h1 align="center">Etebase - Encrypt Everything</h1>
+</p>
 
-This website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
+Docs and protocol proposals for Etebase.
 
-### Installation
+This is the source code for the docs website at https://docs.etebase.com
+
+[![Chat with us](https://img.shields.io/badge/chat-IRC%20|%20Matrix%20|%20Web-blue.svg)](https://www.etebase.com/community-chat/)
+
+# Protocl Proposals
+
+In addition to the API and protocol documentation, this repo also houses discussions for [protocol proposals](https://github.com/etesync/etebase-docs/issues?q=is%3Aopen+is%3Aissue+label%3Aproposal).
+
+# Local development
+
+This website is built using [Docusaurus 2](https://v2.docusaurus.io/), a static website generator.
+To develop locally, first install dependencies:
 
 ```
 $ yarn
 ```
 
-### Local Development
+Then start the development server:
 
 ```
 $ yarn start
 ```
-
-This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
-
-### Build
-
-```
-$ yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Deployment
-
-```
-$ GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
