@@ -48,6 +48,10 @@ The UMD bundle is then available at `node_modules/etebase/dist/umd/Etebase.js`. 
 <script src="path/to/Etebase.js"></script>
 ```
 
+### Important information about the web
+
+Etebase uses WebAssembly and web workers behind the scenes to significantly speed up all of the cryptographic operations. However, please keep in mind that some [CSP](https://en.wikipedia.org/wiki/Content_Security_Policy) rules can block WebAssembly. If you are experiencing slowness, this is the place to look. You probably want to start with something like `script-src 'self' 'unsafe-eval' blob:; worker-src 'self' 'unsafe-eval' blob:;`, which should cover all major browsers.
+
 </TabItem>
 <TabItem value="py">
 
