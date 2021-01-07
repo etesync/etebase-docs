@@ -5,12 +5,7 @@ title: Installation
 import CodeTabs from '@theme/CodeTabs';
 import TabItem from '@theme/TabItem';
 
-
-:::info
-These docs currently refer to the TypeScript/JavaScript client library, but they will be expanded once we release the other clients.
-:::
-
-## Installation
+## Adding the Etebase dependency
 
 Run the following commands from your project's directory to install the Etebase dependency:
 
