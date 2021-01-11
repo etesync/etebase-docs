@@ -1861,6 +1861,59 @@ let items = item_manager.fetch_updates(vec![&collection.item()?, &item1].into_it
 </TabItem>
 </CodeTabs>
 
+## Subscriptions (live updates)
+
+Some applications are interactive in nature and their data changes often. For these applications it's useful to be able to subscribe to live-updates so your app gets notified the moment data is changed. This is what live updates are for.
+
+<CodeTabs>
+<TabItem value="js">
+
+```js
+const subscription = await itemMgr.subscribeChanges((items) => {
+    /*
+    items:
+    {
+      data: Etebase.Item[], // Returned array of items
+      stoken: string, // The sync token for this fetch
+      ... // More fields we'll cover later
+    }
+
+    This is the same as the list response above.
+    */
+});
+
+// Unsubscribe from updates:
+subscription.unsubscribe();
+```
+
+</TabItem>
+<TabItem value="py">
+
+Subscriptions are only supported in JavaScript at the moment. Please open a ticket if you would like to see it implemented.
+
+</TabItem>
+<TabItem value="java">
+
+Subscriptions are only supported in JavaScript at the moment. Please open a ticket if you would like to see it implemented.
+
+</TabItem>
+<TabItem value="kt">
+
+Subscriptions are only supported in JavaScript at the moment. Please open a ticket if you would like to see it implemented.
+
+</TabItem>
+<TabItem value="c">
+
+Subscriptions are only supported in JavaScript at the moment. Please open a ticket if you would like to see it implemented.
+
+</TabItem>
+<TabItem value="rs">
+
+Subscriptions are only supported in JavaScript at the moment. Please open a ticket if you would like to see it implemented.
+
+</TabItem>
+</CodeTabs>
+
 ## Binary content
 
 In the examples above content was always a string. However, content is actually a binary blob of data, not a string. Using it as a string is just a convenience.
