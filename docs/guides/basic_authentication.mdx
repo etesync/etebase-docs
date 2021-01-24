@@ -22,6 +22,14 @@ Sign up is just one easy call which returns an instance of the main etebase clas
 <CodeTabs>
 <TabItem value="js">
 
+<HiddenCode>
+
+```js
+const serverUrl = "";
+```
+
+</HiddenCode>
+
 ```js
 // serverUrl can be obtained from the dashboard (or omitted for default)
 const etebase = await Etebase.Account.signup({
@@ -104,6 +112,14 @@ Login is too just one easy call which returns an instance of the main etebase cl
 <CodeTabs>
 <TabItem value="js">
 
+<HiddenCode>
+
+```js
+const serverUrl = "";
+```
+
+</HiddenCode>
+
 ```js
 // serverUrl can be obtained from the dashboard (or omitted for default)
 const etebase = await Etebase.Account.login("username", "password", serverUrl);
@@ -178,6 +194,14 @@ Unlike signup and login, changing password requires an already set up etebase ob
 <CodeTabs>
 <TabItem value="js">
 
+<HiddenCode>
+
+```js
+const etebase = await Etebase.Account.restore('');
+```
+
+</HiddenCode>
+
 ```js
 await etebase.changePassword("new password");
 ```
@@ -224,6 +248,14 @@ etebase.change_password("new password")?;
 
 <CodeTabs>
 <TabItem value="js">
+
+<HiddenCode>
+
+```js
+const etebase = await Etebase.Account.restore('');
+```
+
+</HiddenCode>
 
 ```js
 await etebase.logout();
@@ -276,12 +308,20 @@ Saving and restoring a session is as simple as:
 <CodeTabs>
 <TabItem value="js">
 
+<HiddenCode>
+
 ```js
-const etebase = await Etebase.Account.login("username", "password", serverUrl);
+const serverUrl = "";
+```
+
+</HiddenCode>
+
+```js
+let etebase = await Etebase.Account.login("username", "password", serverUrl);
 const savedSession = await etebase.save();
 
 // Later on...
-const etebase = await Etebase.Account.restore(savedSession);
+etebase = await Etebase.Account.restore(savedSession);
 ```
 
 </TabItem>
@@ -371,14 +411,14 @@ stored securely (e.g. in the operating system's key store), or securely derived 
 <TabItem value="js">
 
 ```js
-const etebase = await Etebase.Account.login("username", "password");
+let etebase = await Etebase.Account.login("username", "password");
 
 // Save the key somewhere safe (e.g. the OS's key store)
 const encryptionKey = Etebase.randomBytes(32);
 const savedSession = await etebase.save(encryptionKey);
 
 // Later on...
-const etebase = await Etebase.Account.restore(savedSession, encryptionKey);
+etebase = await Etebase.Account.restore(savedSession, encryptionKey);
 ```
 
 </TabItem>
@@ -553,6 +593,14 @@ When saving etebase instances with `cacheSave` the server URL is also being save
 
 <CodeTabs>
 <TabItem value="js">
+
+<HiddenCode>
+
+```js
+const savedSession = "";
+```
+
+</HiddenCode>
 
 ```js
 const etebase = await Etebase.Account.restore(savedSession);
