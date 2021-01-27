@@ -470,6 +470,18 @@ let etebase = Account::restore(client, stored_session, Some(encryption_key))?;
 </TabItem>
 </CodeTabs>
 
+
+## Email as username
+
+In some cases you don't want a separate username, and would instead like users to be able to login using just their email address. Etebase supports this out of the box, just pass the email instead of the username in the `login` and anywhere else where Etebase accepts a username.
+
+Etebase however still needs a unique username passed to it during signup, though it can just be randomly generated. So for example, you can use [the Etebase utils](../api/utilities) to generate a username like shown in this psuedo-code:
+
+```js
+username = toBase64(randomBytes(24));
+```
+
+
 ## Using custom servers
 
 ### Checking custom server URLs
