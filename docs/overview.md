@@ -9,16 +9,16 @@ When working with Etebase you will mostly be working with `Collection` objects, 
 
 ## Client and server responsibilities
 
-Etebase is end-to-end encrypted so the server has no access to user data. This means that most of the operations are done on the client, and the server is just there to store the data and assist the clients. Which is why the documentation focuses on client side APIs.
+Etebase is end-to-end encrypted so the server has no access to user data. This means that most of the operations are done on the client, and the server is just there to store the data and assist the clients. Hence, the documentation focuses on client side APIs.
 
 To ensure the safety of user data, all of the operations should be run on client devices and in client-side applications. This includes `signup` and `login` and every other operation.
 
 
 ## Items
 
-Almost all of the data in Etebase is stored in items. Items, like the rest of Etebase are encrypted and signed to make sure no one can read or tamper with the data. Items must reside inside collections and don't live on their own.
+Almost all of the data in Etebase is stored in items. Items, like the rest of Etebase, are encrypted and signed to make sure no one can read or tamper with the data. Items must reside inside collections and don't live on their own.
 
-Items can represent and hold whatever kind of data and be organised in whatever structure that suits your needs, including: key-value stores, files and directories (pointing to other items). You can think of them as almost equivalent to [inodes](https://en.wikipedia.org/wiki/Inode).
+Items can represent and hold whatever kind of data and can be organised in whatever structure that suits your needs, including: key-value stores, files and directories (pointing to other items), and more. You can think of them as almost equivalent to [inodes](https://en.wikipedia.org/wiki/Inode).
 
 Items have two different areas where data is stored, one for metadata and one for the actual content.
 
@@ -48,7 +48,7 @@ A hash prefixed HTML-like color description that follows the following format: `
 
 ### Content
 
-The content of the item can be whatever you want. Internally it's treated like a blob of data. In most cases you will just store your raw data here, but in some cases, such as when representing an hierarchical structure (such as directories), it's better to conform to the standard Etebase way of doing it.
+The content of the item can be whatever you want. Internally, it's treated like a blob of data. In most cases you will just store your raw data here, but in some cases, such as when representing a hierarchical structure (such as directories), it's better to conform to the standard Etebase way of doing it.
 
 
 ## Collections
@@ -75,7 +75,7 @@ Collections can be used interchangeably with items so they use the same `ItemMet
 
 #### `name: string`
 
-A user visible name for this collection. In some cases this name will be shown to the user, for example if it represents a calendar, the name could be <q>Holiday</q>. Though a descriptive name is still useful even if it doesn't have a user-facing role.
+A user-visible name for this collection. In some cases this name will be shown to the user, for example if it represents a calendar, the name could be <q>Holiday</q>. Though a descriptive name is still useful even if it doesn't have a user-facing role.
 
 ### Content
 
@@ -87,6 +87,6 @@ The collection also has an addition read-only field called `stoken`. It changes 
 
 ## Revisions
 
-You won't often be interacting with revisions directly, but it's still good to know they are there. Essentially, every time you change a collection or an item a new revision is created. Each revision is a snapshot of the collection or item at that point in time so you can easily view and rollback changes.
+You won't often be interacting with revisions directly, but it's still good to know they are there. Essentially, every time you change a collection or an item, a new revision is created. Each revision is a snapshot of the collection or item at that point in time so you can easily view and rollback changes.
 
 This is very useful if you would like to offer a change history to your users, or even if you just want to make sure your data is never lost, even if you make a mistake.
