@@ -7,6 +7,8 @@ Etebase makes building end-to-end encrypted applications easy by taking care of 
 When working with Etebase you will mostly be working with `Collection` objects, `Item` objects, and sometimes with `Revision` items. These are the basic building blocks of every Etebase application.
 
 
+![Diagram of structure between items, collections and account](../static/img/overview_diagram.png "Structure between items, collections and account")
+
 ## Client and server responsibilities
 
 Etebase is end-to-end encrypted so the server has no access to user data. This means that most of the operations are done on the client, and the server is just there to store the data and assist the clients. Hence, the documentation focuses on client side APIs.
