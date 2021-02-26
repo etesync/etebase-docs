@@ -2,7 +2,7 @@
 title: Notes (Markdown)
 ---
 
-Note collections store their data in [markdown](https://en.wikipedia.org/wiki/Markdown).
+Note collections store their data in [Markdown](https://en.wikipedia.org/wiki/Markdown).
 
 The notes spec is still young and evolving, though as long as you follow the specification below your notes will continue working as the spec improves.
 
@@ -10,7 +10,7 @@ The notes spec is still young and evolving, though as long as you follow the spe
 
 ### Collection type: `etebase.md.note`
 
-This is the type indicating it's an Etebase-style markdown note.
+This is the type indicating it's an Etebase-style Markdown note.
 
 ### Metadata
 
@@ -49,4 +49,4 @@ When was this item last modified. Useful for sorting based on modification time.
 
 ### Content
 
-The content of the item is the note in the markdown format.
+The content of the item is the note in the Markdown format.

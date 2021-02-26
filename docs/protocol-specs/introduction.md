@@ -14,7 +14,7 @@ The Etebase protocol is purposefully very simple. Etebase uses existing, well-te
 
 The client connects to the server using [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security) and then interacts with the server using a very simple [REST API](https://en.wikipedia.org/wiki/Representational_state_transfer). We provide an [OpenAPI](https://www.openapis.org/) interface description and an API explorer which can be accessed from [the server API docs](https://api.etebase.com/docs).
 
-This makes Etebase very easy to audit, get right, and implement. Making it a solid foundation.
+This makes Etebase very easy to audit, get right and implement: thus making it a solid foundation.
 
 
 ## Cryptographic Primitives
