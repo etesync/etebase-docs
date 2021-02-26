@@ -19,6 +19,8 @@ Luckily they can be avoided almost entirely for most use-cases. Please take a lo
 
 Sign up is just one easy call which returns an instance of the main etebase class.
 
+When using a private server, make sure that either sign up is enabled, or that you have created a user beforehand using the Django Admin panel.
+
 <CodeTabs>
 <TabItem value="js">
 
@@ -99,7 +101,7 @@ let etebase = Account::signup(client, user, "password")?;
 
 ## Login
 
-Login is too just one easy call which returns an instance of the main etebase class.
+Login is also just one easy call which returns an instance of the main etebase class.
 
 <CodeTabs>
 <TabItem value="js">
