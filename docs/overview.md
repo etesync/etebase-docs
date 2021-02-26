@@ -67,7 +67,7 @@ Collection types are immutable and are set when an item is created. They describ
 
 They are in lower case and use a dotted notation, prefixed with a unique developer prefix followed with the rest of the type name. For example, if your developer name is _Cyberdyne_, example types could be: `cyberdyne.files`, `cyberdyne.calendar` or really, whatever you want.
 
-In addition to creating your own types, you can also use [existing types](type-sepcs/introduction) as long as you follow their specifications.
+In addition to creating your own types, you can also use [existing types](type-specs/introduction) as long as you follow their specifications.
 
 **Not sure what you should use?** Just use your developer name, e.g. `cyberdyne`.
 
