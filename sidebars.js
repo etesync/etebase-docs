@@ -19,11 +19,11 @@ module.exports = {
         'api/utilities',
       ],
       'Type Specifications': [
-        'type-sepcs/introduction',
-        'type-sepcs/address-book',
-        'type-sepcs/calendar',
-        'type-sepcs/tasks',
-        'type-sepcs/notes',
+        'type-specs/introduction',
+        'type-specs/address-book',
+        'type-specs/calendar',
+        'type-specs/tasks',
+        'type-specs/notes',
       ],
       'Protocol Specifications': [
         'protocol-specs/introduction',
