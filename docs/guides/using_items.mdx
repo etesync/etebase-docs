@@ -1238,11 +1238,11 @@ await itemManager.batch([anotherItem]);
 // -> On device A (using the previously saved items and stoken)
 await item.setContent("new secret content");
 
-// Will both fail
+// Both will fail
 await itemManager.transaction([item], null, { stoken });
 await itemManager.batch([item], null, { stoken });
 
-// Will both succeed
+// Both will succeed
 await itemManager.transaction([item]);
 await itemManager.batch([item]);
 ```
@@ -1265,12 +1265,12 @@ item_mgr.batch([another_item])
 # -> On device A (using the previously saved item and stoken)
 item.content = b"new secret content"
 
-# Will both fail
+# Both will fail
 fetch_options = FetchOptions().stoken(stoken)
 item_mgr.transaction([item], fetch_options=fetch_options)
 item_mgr.batch([item], fetch_options=fetch_options)
 
-# Will both succeed
+# Both will succeed
 item_mgr.transaction([item])
 item_mgr.batch([item])
 ```
@@ -1293,12 +1293,12 @@ itemManager.batch(new Item[] {anotherItem});
 // -> On device A (using the previously saved item and stoken)
 item.setContent("new secret content")
 
-// Will both fail
+// Both will fail
 FetchOptions fetchOptions = new FetchOptions().stoken(stoken);
 itemManager.transaction(new Item[] {item}, null, fetchOptions);
 itemManager.batch(new Item[] {item}, null, fetchOptions);
 
-// Will both succeed
+// Both will succeed
 itemManager.transaction(new Item[] {item});
 itemManager.batch(new Item[] {item});
 ```
@@ -1321,12 +1321,12 @@ itemManager.batch(arrayOf(anotherItem))
 // -> On device A (using the previously saved item and stoken)
 item.content = "new secret content"
 
-// Will both fail
+// Both will fail
 val fetchOptions = FetchOptions().stoken(stoken)
 itemManager.transaction(arrayOf(item), null, fetchOptions)
 itemManager.batch(arrayOf(item), null, fetchOptions)
 
-// Will both succeed
+// Both will succeed
 itemManager.transaction(arrayOf(item))
 itemManager.batch(arrayOf(item))
 ```
@@ -1357,7 +1357,7 @@ const char tmp[] = "new secret content";
 etebase_item_set_content(item, tmp, strlen(tmp));
 
 
-// Will both fail
+// Both will fail
 EtebaseFetchOptions *fetch_options = etebase_fetch_options_new();
 etebase_fetch_options_set_stoken(fetch_options, stoken);
 const EtebaseItem *items[] = { item };
@@ -1366,7 +1366,7 @@ etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), fe
 
 etebase_fetch_options_destroy(fetch_options);
 
-// Will both succeed
+// Both will succeed
 etebase_item_manager_transaction(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 etebase_item_manager_batch(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), NULL);
 
@@ -1391,12 +1391,12 @@ item_manager.batch(vec![&another_item].into_iter(), None)?;
 // -> On device A (using the previously saved item and stoken)
 item.set_content(b"new secret content")?;
 
-// Will both fail
+// Both will fail
 let fetch_options = FetchOptions::new().stoken(stoken);
 item_manager.transaction(vec![&item].into_iter(), Some(&fetch_options))?;
 item_manager.batch(vec![&item].into_iter(), Some(&fetch_options))?;
-
-// Will both succeed
+Both will
+// Both will succeed
 item_manager.transaction(vec![&item].into_iter(), None)?;
 item_manager.batch(vec![&item].into_iter(), None)?;
 ```
@@ -1427,7 +1427,7 @@ await itemManager.batch([item1]);
 // -> On device A (using the previously saved items and stoken)
 await item2.setContent("new secret content");
 
-// Will both fail because item1 changed
+// Both will fail because item1 changed
 await itemManager.transaction([item2], [item1]);
 await itemManager.batch([item2], [item1]);
 
@@ -1454,7 +1454,7 @@ item_mgr.batch([item1])
 # -> On device A (using the previously saved item)
 item2.content = b"new content for item 2"
 
-# Will both fail because item1 changed
+# Both will fail because item1 changed
 item_mgr.transaction([item2], [item1])
 item_mgr.batch([item2], [item1])
 
@@ -1481,7 +1481,7 @@ itemManager.batch(new Item[] {item1});
 // -> On device A (using the previously saved collection)
 item2.setContent("New content for item 2");
 
-// Will both fail because item1 changed
+// Both will fail because item1 changed
 itemManager.transaction(new Item[] {item2}, new Item[] {item1});
 itemManager.batch(new Item[] {item2}, new Item[] {item1});
 
@@ -1508,7 +1508,7 @@ itemManager.batch(arrayOf(item1))
 // -> On device A (using the previously saved collection)
 item2.content = "New content for item 2"
 
-// Will both fail because item1 changed
+// Both will fail because item1 changed
 itemManager.transaction(arrayOf(item2), arrayOf(item1));
 itemManager.batch(arrayOf(item2), arrayOf(item1));
 
@@ -1541,7 +1541,7 @@ etebase_item_destroy(item1);
 const char tmp2[] = "New content for item 2";
 etebase_item_set_content(item2, tmp2, strlen(tmp2));
 
-// Will both fail because item1 changed
+// Both will fail because item1 changed
 const EtebaseItem *items[] = { item2 };
 const EtebaseItem *deps[] = { item1 };
 etebase_item_manager_batch_deps(item_mgr, items, ETEBASE_UTILS_C_ARRAY_LEN(items), deps, ETEBASE_UTILS_C_ARRAY_LEN(deps), NULL);
@@ -1575,7 +1575,7 @@ item_manager.batch(vec![&item1].into_iter(), None)?;
 // -> On device A (using the previously saved collection)
 item2.set_content(b"New content for item 2")?;
 
-// Will both fail because item1 changed
+// Both will fail because item1 changed
 item_manager.transaction_deps(vec![&item2].into_iter(), vec![&item1].into_iter(), None)?;
 item_manager.batch_deps(vec![&item2].into_iter(), vec![&item1].into_iter(), None)?;
 
