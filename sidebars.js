@@ -16,6 +16,11 @@ module.exports = {
         'guides/local_cache',
       ],
       'API Reference': [
+        'api/js',
+        'api/py',
+        'api/java',
+        'api/c',
+        'api/rs',
         'api/utilities',
       ],
       'Type Specifications': [

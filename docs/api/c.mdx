@@ -1,0 +1,415 @@
+---
+title: C/C++
+---
+
+**TBD : add doc for other functions of the API not yet covered**
+
+## Structs
+
+### EtebaseAccount
+Represents a user account and is the main object for all user interactions and data manipulation.
+
+### EtebaseClient
+The network client to use to interact with the Etebase server.  
+This is in charge of actually connecting to the server and making network requests. Depending on your configuration this can be overridden and replaced with a completely different implementation.
+
+### EtebaseCollection
+A collection of items. They have an immutable type and an associated sync token.
+
+Like [Items](#etebaseitem), collections have two pieces of data associated with them :
+* [metadata](#etebaseitemmetadata) - contains meta information like name and modification time
+* Content - a buffer containing arbitrary binary data
+
+### EtebaseCollectionManager
+A manager for managing collection operations like creation and fetching.
+
+### EtebaseItem
+Items belong to collections and are where data is stored.
+
+Items have two pieces of data associated with them :
+* [metadata](#etebaseitemmetadata) - contains meta information like name and modification time
+* Content - a buffer containing arbitrary binary data
+
+### EtebaseItemManager
+A manager for managing item operations like creation and fetching.
+
+### EtebaseItemMetadata
+Metadata of the item.
+
+### EtebaseUser
+A user object
+
+### EtebaseUserProfile
+A user's public profile
+
+
+## Functions
+
+### Valid Usage
+**ALL** parameters of funcation below must be valid handle to their respective objects  
+(e.g. valid `EtebaseClient *`, `EtebaseAccout *`...). If `nullptr` is passed to any function, application may crash without throwing any error.
+
+### Error Handling
+Exceptions are not thrown directly by functions, instead errors can be handled with [etebase_error_get_code()](#etebase_error_get_code).
+
+#### etebase_error_get_code
+Get the [error code](#EtebaseErrorCode). This function should be called immediately after a failed API call.
+```c
+EtebaseErrorCode etebase_error_get_code(void);
+```
+
+> **Return :**  
+> &emsp;&emsp;`EtebaseErrorCode` is an error code
+
+#### etebase_error_get_code
+Get the error message. This function should be called immediately after a failed API call.
+```c
+const char *etebase_error_get_message(void);
+```
+> **Return :**  
+> &emsp;&emsp;`const char * ` is a char sequence of the error message  
+> &emsp;&emsp;**OR** `nullptr` if there is no error
+
+---
+
+### etebase_get_default_server_url
+The URL of the main hosted server.
+```c
+const char *etebase_get_default_server_url(void);
+```
+
+### etebase_client_new
+Creates a new client to interact with the Etebase server.  
+Should be destroyed with [etebase_client_destroy](#etebase_client_destroy)
+```c
+EtebaseClient *etebase_client_new(const char *client_name, const char *server_url);
+```
+
+* `client_name` is a char sequence identifier for the client.
+* `server_url` is a char sequence reprensting an Etebase server URL.
+
+> **Return :**  
+> &emsp;&emsp;`EtebaseClient *` instance.
+>
+> **Throw :**  
+> &emsp;&emsp;`ETEBASE_ERROR_CODE_URL_PARSE` if `server_url` is not an URL
+
+
+### etebase_client_set_server_url
+Set the server URL associated with `client`.
+```c
+int32_t etebase_client_set_server_url(EtebaseClient *client, const char *server_url);
+```
+
+* `client` is a pointer to an `EtebaseClient` instance to which you want to set new server URL.
+* `server_url` is a char sequence reprensting the new server URL.
+
+> **Return :**  
+> &emsp;&emsp;`0` if the new `server_url` was correctly set.  
+> &emsp;&emsp;`-1` if an error occured.
+>
+> **Throw :**  
+> &emsp;&emsp;`ETEBASE_ERROR_CODE_URL_PARSE` if `server_url` is not an URL
+
+### etebase_client_check_etebase_server
+Check if `client` is pointing a Etebase server.
+```c
+int32_t etebase_client_check_etebase_server(const EtebaseClient *client);
+```
+
+* `client` is a pointer to an `EtebaseClient` instance.
+
+> **Return :**  
+> &emsp;&emsp;`0` if `client` is pointing an Etebase server.  
+> &emsp;&emsp;`1` if not.  
+> &emsp;&emsp;`-1` if an error occured.
+>
+> **Throw :**  
+> &emsp;&emsp;`ETEBASE_ERROR_CODE_CONNECTION` if failed to connect to server pointed by `client`.
+
+### etebase_client_destroy
+Destroy the `client` object.
+```c
+void etebase_client_destroy(EtebaseClient *client);
+```
+* `client` is a pointer to an `EtebaseClient` instance to be destroyed.
+
+---
+
+### etebase_user_new
+Create a new user instance.  
+Should be destroyed with [etebase_user_destroy](#etebase_user_destroy)
+```c
+EtebaseUser *etebase_user_new(const char *username, const char *email);
+```
+
+* `username` is a char sequence of the user's username.
+* `email` is a char sequence of the user's email.
+
+> **Return :**  
+> &emsp;&emsp;`EtebaseUser *` is a pointer to a `EtebaseUser` instance.
+
+### etebase_user_get_username
+Get user's username
+```c
+const char *etebase_user_get_username(const EtebaseUser *user);
+```
+
+* `user` is a pointer to a `EtebaseUser` instance.
+
+> **Return :**  
+> &emsp;&emsp;`const char *` is a char sequence of the user's username.
+
+### etebase_user_get_email
+Get user's email
+```c
+const char *etebase_user_get_email(const EtebaseUser *user);
+```
+
+* `user` is a pointer to a `EtebaseUser` instance.
+
+> **Return :**  
+> &emsp;&emsp;`const char *` is a char sequence of the user's email.
+
+### etebase_user_set_username
+Set user's username
+```c
+void etebase_user_set_username(EtebaseUser *user, const char *username);
+```
+
+* `user` is a pointer to a `EtebaseUser` instance.
+* `username` is a char sequence of the new user's username.
+
+### etebase_user_set_email
+Set user's email
+```c
+void etebase_user_set_email(EtebaseUser *user, const char *email);
+```
+
+* `user` is a pointer to a `EtebaseUser` instance.
+* `email` is a char sequence of the new user's email.
+
+### etebase_user_destroy
+Destroy `EtebaseUser` instance.
+```c
+void etebase_user_destroy(EtebaseUser *user);
+```
+
+* `user` is a pointer to a `EtebaseUser` instance.
+
+---
+
+### etebase_account_login
+Login a user to the `server_url` associated with `client`.
+```c
+EtebaseAccount *etebase_account_login(const EtebaseClient *client, const char *username, const char *password);
+```
+
+* `client` is a pointer to an `EtebaseClient` instance.
+* `username` is a char sequence of the user's username, this is not the same as the user's email.
+* `password` is a char sequence of the user's password.
+
+> **Return :**  
+> &emsp;&emsp;`EtebaseAccount *` is pointer to a `EtebaseAccount` instance.
+>
+> **Throw :**  
+> &emsp;&emsp;`ETEBASE_ERROR_CODE_UNAUTHORIZED` if `password` is wrong for `username`.  
+> &emsp;&emsp;`ETEBASE_ERROR_CODE_CONNECTION` if failed to connect to server.  
+> &emsp;&emsp;`ETEBASE_ERROR_CODE_HTTP` if an HTTP error occur.  
+> &emsp;&emsp;`ETEBASE_ERROR_CODE_NOT_FOUND`
+
+### etebase_account_signup
+Signup a new user account
+```c
+EtebaseAccount *etebase_account_signup(const EtebaseClient *client, const EtebaseUser *user, const char *password);
+```
+
+* `client` is a pointer to an `EtebaseClient` instance.
+* `user` is a pointer to an `EtebaseUser` instance.
+* `password` is a char sequence of the user's password.
+
+> **Return :**  
+> &emsp;&emsp;`EtebaseAccount *` is pointer to a `EtebaseAccount` instance.
+>
+> **Throw :**  
+> &emsp;&emsp;N/A
+
+### etebase_account_fetch_token
+Fetch a new auth token for the account and update the `EtebaseAccount` object with it.
+```c
+int32_t etebase_account_fetch_token(EtebaseAccount *account);
+```
+
+* `account` is a pointer to an `EtebaseAccount` instance.
+
+> **Return :**  
+> &emsp;&emsp;`int` N/A
+>
+> **Throw :**  
+> &emsp;&emsp;N/A
+
+### etebase_account_change_password
+
+```c
+int32_t etebase_account_change_password(EtebaseAccount *account, const char *password);
+```
+
+### etebase_account_logout
+
+```c
+int32_t etebase_account_logout(EtebaseAccount *account);
+```
+
+### etebase_account_save
+
+```c
+char *etebase_account_save(const EtebaseAccount *account, const void *encryption_key, uintptr_t encryption_key_size);
+```
+
+### etebase_account_restore
+Restore and return the account object from the string obtained using [etebase_account_save](#etebase_account_save).
+```c
+EtebaseAccount *etebase_account_restore(const EtebaseClient *client, const char *account_data_stored, const void *encryption_key, uintptr_t encryption_key_size);
+```
+
+* `client` is a pointer to an `EtebaseClient` instance.
+* `account_data_stored` is a char sequence representing an `EtebaseAccount`.
+* `encryption_key` is the same buffer of byte which served to encrypt in [etebase_account_save](#etebase_account_save).
+* `encryption_key_size` is the length of `encryption_key`.
+
+> **Return :**  
+> &emsp;&emsp;`EtebaseAccount *` is pointer to a `EtebaseAccount` instance.
+>
+> **Throw :**  
+> &emsp;&emsp;`ETEBASE_ERROR_CODE_MSG_PACK` if `account_data_stored` is not valid.  
+> &emsp;&emsp;`ETEBASE_ERROR_CODE_ENCRYPTION` if `account_data_stored` is not valid for `encryption_key`.  
+
+### etebase_account_get_collection_manager
+
+```c
+EtebaseCollectionManager *etebase_account_get_collection_manager(const EtebaseAccount *account);
+```
+
+### etebase_account_get_invitation_manager
+
+```c
+EtebaseCollectionInvitationManager *etebase_account_get_invitation_manager(const EtebaseAccount *account);
+```
+
+### etebase_account_fetch_dashboard_url
+
+```c
+char *etebase_account_fetch_dashboard_url(const EtebaseAccount *account);
+```
+
+### etebase_account_force_server_url
+
+```c
+int32_t etebase_account_force_server_url(EtebaseAccount *account, const char *server_url);
+```
+
+### etebase_account_destroy
+Destroy `EtebaseAccount` instance.
+```c
+void etebase_account_destroy(EtebaseAccount *account);
+```
+
+* `account` is a pointer to a `EtebaseAccount` instance.
+
+---
+
+## Enums
+
+### EtebaseErrorCode
+
+```c
+enum EtebaseErrorCode {
+	ETEBASE_ERROR_CODE_NO_ERROR,
+	ETEBASE_ERROR_CODE_GENERIC,
+	ETEBASE_ERROR_CODE_URL_PARSE,
+	ETEBASE_ERROR_CODE_MSG_PACK,
+	ETEBASE_ERROR_CODE_PROGRAMMING_ERROR,
+	ETEBASE_ERROR_CODE_MISSING_CONTENT,
+	ETEBASE_ERROR_CODE_PADDING,
+	ETEBASE_ERROR_CODE_BASE64,
+	ETEBASE_ERROR_CODE_ENCRYPTION,
+	ETEBASE_ERROR_CODE_UNAUTHORIZED,
+	ETEBASE_ERROR_CODE_CONFLICT,
+	ETEBASE_ERROR_CODE_PERMISSION_DENIED,
+	ETEBASE_ERROR_CODE_NOT_FOUND,
+	ETEBASE_ERROR_CODE_CONNECTION,
+	ETEBASE_ERROR_CODE_TEMPORARY_SERVER_ERROR,
+	ETEBASE_ERROR_CODE_SERVER_ERROR,
+	ETEBASE_ERROR_CODE_HTTP
+};
+```
+
+* ETEBASE_ERROR_CODE_NO_ERROR  
+No error
+* ETEBASE_ERROR_CODE_GENERIC  
+A generic error
+* ETEBASE_ERROR_CODE_URL_PARSE  
+An error with parsing the a URL (e.g. from the server URL)
+* ETEBASE_ERROR_CODE_MSG_PACK  
+An error related to msgpack serialization and de-serialization
+* ETEBASE_ERROR_CODE_PROGRAMMING_ERROR  
+A programming error that indicates the developers are using the API wrong
+* ETEBASE_ERROR_CODE_MISSING_CONTENT  
+An attempt to fetch the content of an item that doesn't have the content yet
+* ETEBASE_ERROR_CODE_PADDING  
+An issue with the padding of the encrypted content
+* ETEBASE_ERROR_CODE_BASE64  
+An issue with the Base64 decoding
+* ETEBASE_ERROR_CODE_ENCRYPTION  
+An issue with the encryption
+* ETEBASE_ERROR_CODE_UNAUTHORIZED  
+An authorization issue from the server
+* ETEBASE_ERROR_CODE_CONFLICT  
+A conflict issue returned from the server, e.g. if a transaction failed
+* ETEBASE_ERROR_CODE_PERMISSION_DENIED  
+The operation was not allowed due to permissions
+* ETEBASE_ERROR_CODE_NOT_FOUND  
+The requested resource was not found
+* ETEBASE_ERROR_CODE_CONNECTION  
+There was an issue with the connection (e.g. DNS lookup, unreachable server)
+* ETEBASE_ERROR_CODE_TEMPORARY_SERVER_ERROR  
+There was an temporary server error (e.g. maintenance, or gateway issues)
+* ETEBASE_ERROR_CODE_SERVER_ERROR  
+There was a server error when processing the request (usually a bug in the server)
+* ETEBASE_ERROR_CODE_HTTP  
+A generic error with the server request
+
+
+### EtebaseCollectionAccessLevel
+
+```c
+enum EtebaseCollectionAccessLevel {
+	ETEBASE_COLLECTION_ACCESS_LEVEL_READ_ONLY,
+	ETEBASE_COLLECTION_ACCESS_LEVEL_ADMIN,
+	ETEBASE_COLLECTION_ACCESS_LEVEL_READ_WRITE,
+};
+```
+
+* ETEBASE_COLLECTION_ACCESS_LEVEL_READ_ONLY  
+Read only access
+* ETEBASE_COLLECTION_ACCESS_LEVEL_ADMIN  
+Admin access
+* ETEBASE_COLLECTION_ACCESS_LEVEL_READ_WRITE  
+Read and write access
+
+
+### EtebasePrefetchOption
+
+Dictates how much data to prefetch when passed to `EtebaseFetchOptions`
+
+```c
+enum EtebasePrefetchOption {
+	ETEBASE_PREFETCH_OPTION_AUTO,
+	ETEBASE_PREFETCH_OPTION_MEDIUM,
+};
+```
+
+* ETEBASE_PREFETCH_OPTION_AUTO  
+Automatically decide based on the size of the data fetched
+* ETEBASE_PREFETCH_OPTION_MEDIUM  
+Attempt to fetch a more lightweight (medium) amount of data
