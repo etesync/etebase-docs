@@ -53,7 +53,7 @@ A user's public profile
 Exceptions are not thrown directly by functions, instead errors can be handled with [etebase_error_get_code()](#etebase_error_get_code).
 
 #### etebase_error_get_code
-Get the [error code](#EtebaseErrorCode). This function should be called immediately after a failed API call.
+Get the [error code](#EtebaseErrorCode). This function should be called immediately after an API call that has returned `nullptr`.
 ```c
 EtebaseErrorCode etebase_error_get_code(void);
 ```
@@ -62,7 +62,7 @@ EtebaseErrorCode etebase_error_get_code(void);
 > &emsp;&emsp;`EtebaseErrorCode` is an error code
 
 #### etebase_error_get_code
-Get the error message. This function should be called immediately after a failed API call.
+Get the error message. This function should be called immediately after an API call that has returned `nullptr`.
 ```c
 const char *etebase_error_get_message(void);
 ```
@@ -85,7 +85,7 @@ Should be destroyed with [etebase_client_destroy](#etebase_client_destroy)
 EtebaseClient *etebase_client_new(const char *client_name, const char *server_url);
 ```
 
-* `client_name` is a char sequence identifier for the client.
+* `client_name` is a char sequence used for error messages, but also user agent for the http request.
 * `server_url` is a char sequence reprensting an Etebase server URL.
 
 > **Return :**  
@@ -216,7 +216,7 @@ EtebaseAccount *etebase_account_login(const EtebaseClient *client, const char *u
 > &emsp;&emsp;`ETEBASE_ERROR_CODE_UNAUTHORIZED` if `password` is wrong for `username`.  
 > &emsp;&emsp;`ETEBASE_ERROR_CODE_CONNECTION` if failed to connect to server.  
 > &emsp;&emsp;`ETEBASE_ERROR_CODE_HTTP` if an HTTP error occur.  
-> &emsp;&emsp;`ETEBASE_ERROR_CODE_NOT_FOUND`
+> &emsp;&emsp;`ETEBASE_ERROR_CODE_NOT_FOUND` N/A
 
 ### etebase_account_signup
 Signup a new user account
