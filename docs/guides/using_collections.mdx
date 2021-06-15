@@ -1261,15 +1261,15 @@ Here is how you can control the formatting of the data:
 <TabItem value="js">
 
 ```js
-// default, returns a Uint8Array
-collection.getContent();
+// default, returns a Promise<Uint8Array>
+await collection.getContent();
 // tries to convert the binary data to a string and returns that
-collection.getContent(Etebase.OutputFormat.String);
+await collection.getContent(Etebase.OutputFormat.String);
 
 // Sets the content to a binary blob
-collection.setContent(Uint8Array.from([72, 101, 108, 108, 111]));
+await collection.setContent(Uint8Array.from([72, 101, 108, 108, 111]));
 // Sets the content to a string
-collection.setContent("Hello");
+await collection.setContent("Hello");
 ```
 
 </TabItem>
