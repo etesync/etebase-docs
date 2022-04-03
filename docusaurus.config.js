@@ -1,10 +1,10 @@
 module.exports = {
   title: 'Etebase',
   tagline: 'The Etebase documentation',
-  url: 'https://etebase-docs.eliaspap.me',
+  url: 'https://docs.etebase.com',
   baseUrl: '/',
   favicon: 'img/favicon.ico',
-  organizationName: 'elias-pap',
+  organizationName: 'etesync',
   projectName: 'etebase-docs',
   trailingSlash: false,
   themeConfig: {

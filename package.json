@@ -6,7 +6,7 @@
     "start": "docusaurus start",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
-    "deploy": "GIT_USER=elias-pap docusaurus deploy"
+    "deploy": "GIT_USER=tasn docusaurus deploy"
   },
   "dependencies": {
     "@docusaurus/core": "^2.0.0-beta.18",
