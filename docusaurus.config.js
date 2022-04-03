@@ -1,8 +1,8 @@
 module.exports = {
   title: 'Etebase',
   tagline: 'The Etebase documentation',
-  url: 'https://elias-pap.github.io',
-  baseUrl: '/etebase-docs/',
+  url: 'https://etebase-docs.eliaspap.me',
+  baseUrl: '/',
   favicon: 'img/favicon.ico',
   organizationName: 'elias-pap',
   projectName: 'etebase-docs',
