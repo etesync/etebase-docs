@@ -6,7 +6,7 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'elias-pap',
   projectName: 'etebase-docs',
-  // trailingSlash: false,
+  trailingSlash: false,
   themeConfig: {
     navbar: {
       title: 'etebase',
