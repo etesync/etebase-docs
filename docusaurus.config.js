@@ -5,7 +5,8 @@ module.exports = {
   baseUrl: '/',
   favicon: 'img/favicon.ico',
   organizationName: 'etesync',
-  projectName: 'etebase',
+  projectName: 'etebase-docs',
+  trailingSlash: false,
   themeConfig: {
     navbar: {
       title: 'etebase',
